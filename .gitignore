@@ -11,7 +11,7 @@ ENV/
 
 # 环境变量
 .env
-
+.claude/
 # 日志
 logs/
 *.log
