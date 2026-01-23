@@ -33,3 +33,7 @@ output/
 Thumbs.db
 
 test_*.py
+*.backup
+
+# VS Code settings
+.vscode/
