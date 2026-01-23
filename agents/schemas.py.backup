@@ -1,0 +1,392 @@
+"""
+智能体输出Schema定义
+"""
+
+# 变量设计智能体Schema
+VARIABLE_DESIGNER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "core_variables": {
+            "type": "object",
+            "properties": {
+                "explanatory_variable_x": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "string"},
+                            "name": {"type": "string"},
+                            "definition": {"type": "string"},
+                            "economic_rationale": {"type": "string"},
+                            "measurement": {"type": "string"},
+                            "data_source": {"type": "string"},
+                            "literature_support": {"type": "array", "items": {"type": "string"}},
+                            "processing_method": {"type": "string"}
+                        }
+                    }
+                },
+                "dependent_variable_y": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "string"},
+                            "name": {"type": "string"},
+                            "definition": {"type": "string"},
+                            "economic_rationale": {"type": "string"},
+                            "measurement": {"type": "string"},
+                            "data_source": {"type": "string"},
+                            "literature_support": {"type": "array", "items": {"type": "string"}},
+                            "processing_method": {"type": "string"}
+                        }
+                    }
+                }
+            }
+        },
+        "mediating_moderating_variables": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "type": {"type": "string", "enum": ["mediating", "moderating"]},
+                    "id": {"type": "string"},
+                    "name": {"type": "string"},
+                    "definition": {"type": "string"},
+                    "role": {"type": "string"},
+                    "proxy_variables": {"type": "array", "items": {"type": "object"}}
+                }
+            }
+        },
+        "control_variables": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "definition": {"type": "string"},
+                    "data_source": {"type": "string"},
+                    "processing_method": {"type": "string"}
+                }
+            }
+        },
+        "variable_relationships": {
+            "type": "object",
+            "properties": {
+                "x_to_z": {"type": "string"},
+                "z_to_y": {"type": "string"},
+                "z_moderates_x_y": {"type": "string"}
+            }
+        },
+        "justification": {
+            "type": "string",
+            "description": "变量设置合理性总结"
+        }
+    },
+    "required": ["core_variables", "control_variables"]
+}
+
+# 理论设置智能体Schema
+THEORY_DESIGNER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "theoretical_framework": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "theory_name": {"type": "string"},
+                    "core_content": {"type": "string"},
+                    "application_logic": {"type": "string"},
+                    "literature_support": {"type": "array", "items": {"type": "string"}}
+                }
+            }
+        },
+        "theoretical_justification": {
+            "type": "object",
+            "properties": {
+                "for_variable_x": {"type": "string"},
+                "for_variable_y": {"type": "string"},
+                "for_mediating_moderating": {"type": "string"}
+            }
+        },
+        "research_hypotheses": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "hypothesis_id": {"type": "string"},
+                    "hypothesis_name": {"type": "string"},
+                    "hypothesis_content": {"type": "string"},
+                    "theoretical_basis": {"type": "string"},
+                    "derivation_logic": {"type": "string"},
+                    "literature_support": {"type": "array", "items": {"type": "string"}}
+                }
+            }
+        },
+        "potential_mechanisms": {
+            "type": "object",
+            "properties": {
+                "policy_shock": {"type": "boolean"},
+                "endogeneity_issues": {"type": "array", "items": {"type": "string"}},
+                "data_type": {"type": "string", "enum": ["panel", "cross-section", "time-series"]}
+            }
+        },
+        "references": {
+            "type": "array",
+            "items": {"type": "string"}
+        }
+    },
+    "required": ["theoretical_framework", "research_hypotheses"]
+}
+
+# 模型设计智能体Schema
+MODEL_DESIGNER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "baseline_model": {
+            "type": "object",
+            "properties": {
+                "model_type": {"type": "string"},
+                "rationale": {"type": "string"},
+                "equation": {"type": "string"},
+                "variables": {"type": "object"},
+                "expected_signs": {"type": "object"}
+            }
+        },
+        "mechanism_models": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "step": {"type": "number"},
+                    "description": {"type": "string"},
+                    "equation": {"type": "string"}
+                }
+            }
+        },
+        "heterogeneity_models": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "dimension": {"type": "string"},
+                    "groups": {"type": "array", "items": {"type": "string"}},
+                    "equation": {"type": "string"}
+                }
+            }
+        },
+        "robustness_checks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "check_type": {"type": "string"},
+                    "description": {"type": "string"},
+                    "equation": {"type": "string"}
+                }
+            }
+        },
+        "hypothesis_tests": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "hypothesis_id": {"type": "string"},
+                    "test_method": {"type": "string"}
+                }
+            }
+        }
+    },
+    "required": ["baseline_model"]
+}
+
+# 数据分析智能体Schema
+DATA_ANALYST_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "data_preprocessing": {
+            "type": "object",
+            "properties": {
+                "data_sources": {"type": "array", "items": {"type": "string"}},
+                "sample_size": {"type": "object"},
+                "cleaning_steps": {"type": "array", "items": {"type": "string"}},
+                "processing_details": {"type": "string"}
+            }
+        },
+        "descriptive_statistics": {
+            "type": "object",
+            "properties": {
+                "variables": {"type": "array", "items": {"type": "object"}},
+                "summary": {"type": "string"}
+            }
+        },
+        "baseline_regression": {
+            "type": "object",
+            "properties": {
+                "results": {"type": "array", "items": {"type": "object"}},
+                "interpretation": {"type": "string"},
+                "hypothesis_support": {"type": "array", "items": {"type": "string"}}
+            }
+        },
+        "mechanism_analysis": {
+            "type": "object",
+            "properties": {
+                "steps": {"type": "array", "items": {"type": "object"}},
+                "mediation_effects": {"type": "object"}
+            }
+        },
+        "heterogeneity_analysis": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "dimension": {"type": "string"},
+                    "results": {"type": "array", "items": {"type": "object"}},
+                    "interpretation": {"type": "string"}
+                }
+            }
+        },
+        "robustness_checks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "check_type": {"type": "string"},
+                    "results": {"type": "object"},
+                    "conclusion": {"type": "string"}
+                }
+            }
+        },
+        "conclusions": {
+            "type": "object",
+            "properties": {
+                "supported_hypotheses": {"type": "array", "items": {"type": "string"}},
+                "effect_size": {"type": "string"},
+                "robustness": {"type": "string"}
+            }
+        }
+    },
+    "required": ["baseline_regression"]
+}
+
+# 报告撰写智能体Schema
+REPORT_WRITER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "title": {"type": "string", "description": "论文标题"},
+        "subtitle": {"type": "string", "description": "副标题"},
+        "abstract": {"type": "string", "description": "摘要"},
+        "keywords": {"type": "array", "items": {"type": "string"}, "description": "关键词"},
+        "introduction": {
+            "type": "object",
+            "properties": {
+                "background": {"type": "string"},
+                "research_question": {"type": "string"},
+                "significance": {"type": "string"},
+                "contribution": {"type": "array", "items": {"type": "string"}},
+                "structure": {"type": "string"}
+            }
+        },
+        "literature_review": {
+            "type": "object",
+            "properties": {
+                "overview": {"type": "string"},
+                "key_studies": {"type": "array", "items": {"type": "object"}},
+                "research_gaps": {"type": "array", "items": {"type": "string"}}
+            }
+        },
+        "theoretical_framework": {
+            "type": "object",
+            "properties": {
+                "theories": {"type": "array", "items": {"type": "object"}},
+                "hypotheses": {"type": "array", "items": {"type": "object"}}
+            }
+        },
+        "methodology": {
+            "type": "object",
+            "properties": {
+                "data_description": {"type": "string"},
+                "variable_description": {"type": "string"},
+                "model_specification": {"type": "string"},
+                "identification_strategy": {"type": "string"}
+            }
+        },
+        "empirical_results": {
+            "type": "object",
+            "properties": {
+                "descriptive_stats": {"type": "string"},
+                "baseline_results": {"type": "string"},
+                "mechanism_analysis": {"type": "string"},
+                "heterogeneity_analysis": {"type": "string"},
+                "robustness_checks": {"type": "string"}
+            }
+        },
+        "conclusion": {
+            "type": "object",
+            "properties": {
+                "summary": {"type": "string"},
+                "policy_implications": {"type": "array", "items": {"type": "string"}},
+                "limitations": {"type": "array", "items": {"type": "string"}},
+                "future_research": {"type": "array", "items": {"type": "string"}}
+            }
+        },
+        "references": {"type": "array", "items": {"type": "string"}},
+        "word_count": {"type": "number"}
+    },
+    "required": ["title", "abstract", "keywords", "introduction", "empirical_results", "conclusion"]
+}
+
+# 审稿人智能体Schema
+REVIEWER_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "overall_assessment": {
+            "type": "object",
+            "properties": {
+                "strengths": {"type": "array", "items": {"type": "string"}},
+                "weaknesses": {"type": "array", "items": {"type": "string"}},
+                "overall_level": {"type": "string"},
+                "recommendation": {"type": "string", "enum": ["accept", "minor_revision", "major_revision", "reject"]}
+            }
+        },
+        "qualitative_analysis": {
+            "type": "object",
+            "properties": {
+                "endogeneity_rating": {"type": "string", "enum": ["good", "average", "poor"]},
+                "endogeneity_identification": {"type": "array", "items": {"type": "string"}},
+                "endogeneity_treatment": {"type": "array", "items": {"type": "string"}},
+                "causal_credibility": {"type": "array", "items": {"type": "string"}},
+                "improvement_suggestions": {"type": "array", "items": {"type": "string"}}
+            }
+        },
+        "quantitative_analysis": {
+            "type": "object",
+            "properties": {
+                "dimension_scores": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "dimension": {"type": "string"},
+                            "weight": {"type": "number"},
+                            "subscores": {"type": "array", "items": {"type": "object"}},
+                            "total_score": {"type": "number"}
+                        }
+                    }
+                },
+                "overall_score": {"type": "number"},
+                "grade": {"type": "string"}
+            }
+        },
+        "revision_suggestions": {
+            "type": "object",
+            "properties": {
+                "critical_issues": {"type": "array", "items": {"type": "object"}},
+                "minor_issues": {"type": "array", "items": {"type": "object"}},
+                "optional_improvements": {"type": "array", "items": {"type": "object"}}
+            }
+        },
+        "summary": {"type": "string"}
+    },
+    "required": ["overall_assessment", "qualitative_analysis", "quantitative_analysis"]
+}
