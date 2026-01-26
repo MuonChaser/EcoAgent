@@ -22,14 +22,16 @@ AES_CONFIG = {
 
     # 各指标权重（总和为1.0）
     "weights": {
+        # 基于 NLP 的定量指标（5个）
         "citation_coverage": 0.15,      # 引用覆盖率
         "causal_relevance": 0.15,       # 因果相关性
         "support_strength": 0.20,       # 支持强度
         "contradiction_penalty": 0.15,  # 矛盾惩罚
         "evidence_sufficiency": 0.15,   # 证据充分性
-        "indicator_6": 0.07,            # 待补充指标6
-        "indicator_7": 0.07,            # 待补充指标7
-        "indicator_8": 0.06,            # 待补充指标8
+        # 基于 LLM 的定性指标（3个，从 LLM 评审中提取）
+        "endogeneity_quality": 0.07,    # 内生性处理质量（good=1.0, average=0.5, poor=0.0）
+        "methodology_rigor": 0.07,      # 方法论严谨性（模型设计得分转换）
+        "academic_standards": 0.06,     # 学术规范性（论文质量得分转换）
     },
 
     # 不同类型 claim 的证据需求数量

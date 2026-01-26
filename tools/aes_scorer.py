@@ -143,13 +143,19 @@ class AESScorer:
         else:
             self.nli_pipeline = None
 
-    def score_paper(self, paper_text: str, metadata: Optional[Dict] = None) -> Dict[str, Any]:
+    def score_paper(
+        self,
+        paper_text: str,
+        metadata: Optional[Dict] = None,
+        llm_review: Optional[Dict] = None
+    ) -> Dict[str, Any]:
         """
         对论文进行评分
 
         Args:
             paper_text: 论文全文
             metadata: 论文元数据（可选）
+            llm_review: LLM 评审结果（可选），用于提取定性指标
 
         Returns:
             评分结果字典
@@ -185,10 +191,16 @@ class AESScorer:
         # 指标5: 证据充分性
         scores["evidence_sufficiency"] = self._calc_evidence_sufficiency(claims)
 
-        # 指标6-8: 待补充
-        scores["indicator_6"] = 0.0
-        scores["indicator_7"] = 0.0
-        scores["indicator_8"] = 0.0
+        # 指标6-8: 从 LLM 评审中提取定性指标
+        if llm_review:
+            llm_scores = self._extract_llm_qualitative_scores(llm_review)
+            scores["endogeneity_quality"] = llm_scores.get("endogeneity_quality", 0.0)
+            scores["methodology_rigor"] = llm_scores.get("methodology_rigor", 0.0)
+            scores["academic_standards"] = llm_scores.get("academic_standards", 0.0)
+        else:
+            scores["endogeneity_quality"] = 0.0
+            scores["methodology_rigor"] = 0.0
+            scores["academic_standards"] = 0.0
 
         # 5. 加权汇总
         total_score = self._calculate_total_score(scores)
@@ -521,6 +533,72 @@ class AESScorer:
         avg_sufficiency = np.mean(sufficiency_scores)
         logger.debug(f"证据充分性: {avg_sufficiency:.4f}")
         return float(avg_sufficiency)
+
+    def _extract_llm_qualitative_scores(self, llm_review: Dict[str, Any]) -> Dict[str, float]:
+        """
+        从 LLM 评审结果中提取定性指标（转换为 0/0.5/1 的量化值）
+
+        Args:
+            llm_review: LLM 评审结果字典
+
+        Returns:
+            包含 3 个定性指标的字典
+        """
+        scores = {
+            "endogeneity_quality": 0.0,      # 指标6: 内生性处理质量
+            "methodology_rigor": 0.0,        # 指标7: 方法论严谨性
+            "academic_standards": 0.0,       # 指标8: 学术规范性
+        }
+
+        try:
+            # 提取定性分析
+            qualitative = llm_review.get("qualitative_analysis", {})
+            quantitative = llm_review.get("quantitative_analysis", {})
+
+            # 指标6: 内生性处理质量 (从 endogeneity_rating 转换)
+            endogeneity_rating = qualitative.get("endogeneity_rating", "")
+            if isinstance(endogeneity_rating, str):
+                endogeneity_rating = endogeneity_rating.lower()
+                if endogeneity_rating == "good":
+                    scores["endogeneity_quality"] = 1.0
+                elif endogeneity_rating == "average":
+                    scores["endogeneity_quality"] = 0.5
+                elif endogeneity_rating == "poor":
+                    scores["endogeneity_quality"] = 0.0
+
+            # 指标7: 方法论严谨性 (从维度3模型设计得分转换，满分10分)
+            # 8-10分 -> 1.0, 5-7分 -> 0.5, <5分 -> 0.0
+            dimension_scores = quantitative.get("dimension_scores", [])
+            for dim in dimension_scores:
+                if isinstance(dim, dict) and "模型设计" in dim.get("dimension", ""):
+                    model_score = dim.get("total_score", 0)
+                    if model_score >= 8:
+                        scores["methodology_rigor"] = 1.0
+                    elif model_score >= 5:
+                        scores["methodology_rigor"] = 0.5
+                    else:
+                        scores["methodology_rigor"] = 0.0
+                    break
+
+            # 指标8: 学术规范性 (从维度5论文质量得分转换，满分10分)
+            # 8-10分 -> 1.0, 5-7分 -> 0.5, <5分 -> 0.0
+            for dim in dimension_scores:
+                if isinstance(dim, dict) and "论文质量" in dim.get("dimension", ""):
+                    quality_score = dim.get("total_score", 0)
+                    if quality_score >= 8:
+                        scores["academic_standards"] = 1.0
+                    elif quality_score >= 5:
+                        scores["academic_standards"] = 0.5
+                    else:
+                        scores["academic_standards"] = 0.0
+                    break
+
+            logger.debug(f"LLM 定性指标提取完成: {scores}")
+
+        except Exception as e:
+            logger.warning(f"提取 LLM 定性指标失败: {e}")
+
+        return scores
 
     def _calculate_total_score(self, scores: Dict[str, float]) -> float:
         """

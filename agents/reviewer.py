@@ -113,8 +113,12 @@ class ReviewerAgent(BaseAgent):
                     "data_analysis": input_data.get("data_analysis", ""),
                 }
 
-                # 执行 AES 评分
-                aes_result = self.aes_scorer.score_paper(paper_text, metadata)
+                # 执行 AES 评分（传入 LLM 评审结果以提取定性指标）
+                aes_result = self.aes_scorer.score_paper(
+                    paper_text,
+                    metadata,
+                    llm_review=parsed  # 传入 LLM 评审的 parsed_data
+                )
 
                 # 添加到结果中
                 result["aes_score"] = aes_result
