@@ -96,6 +96,17 @@ LITERATURE_STORAGE_CONFIG = {
     "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
 }
 
+# 数据存储配置 (用于存储数据集摘要和路径)
+DATA_STORAGE_CONFIG = {
+    "storage_dir": str(DATA_DIR / "datasets"),
+    "collection_name": "research_datasets",
+    "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
+}
+
+# 原始数据目录
+RAW_DATA_DIR = DATA_DIR / "raw"
+RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
+
 # 文献搜索配置
 LITERATURE_CONFIG = {
     "min_papers": 10,
