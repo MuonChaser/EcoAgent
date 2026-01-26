@@ -234,16 +234,34 @@ def test_reviewer_with_aes():
         print(f"原始分: {aes_score.get('total_score', 0):.4f}")
 
         print(f"\n分维度得分:")
-        for metric, score in aes_score.get('dimension_scores', {}).items():
-            metric_names = {
-                "citation_coverage": "引用覆盖率",
-                "causal_relevance": "因果相关性",
-                "support_strength": "支持强度",
-                "contradiction_penalty": "矛盾惩罚",
-                "evidence_sufficiency": "证据充分性",
-            }
-            name = metric_names.get(metric, metric)
-            print(f"  {name:15s}: {score:.4f}")
+        print(f"\n  NLP 定量指标:")
+        nlp_metrics = {
+            "citation_coverage": "引用覆盖率",
+            "causal_relevance": "因果相关性",
+            "support_strength": "支持强度",
+            "contradiction_penalty": "矛盾惩罚",
+            "evidence_sufficiency": "证据充分性",
+        }
+        for metric, name in nlp_metrics.items():
+            score = aes_score.get('dimension_scores', {}).get(metric, 0.0)
+            print(f"    {name:15s}: {score:.4f}")
+
+        print(f"\n  LLM 定性指标 (从 LLM 评审提取):")
+        llm_metrics = {
+            "endogeneity_quality": "内生性处理质量",
+            "methodology_rigor": "方法论严谨性",
+            "academic_standards": "学术规范性",
+        }
+        for metric, name in llm_metrics.items():
+            score = aes_score.get('dimension_scores', {}).get(metric, 0.0)
+            # 显示离散值说明
+            if score == 1.0:
+                level = "优秀"
+            elif score == 0.5:
+                level = "良好"
+            else:
+                level = "不足"
+            print(f"    {name:15s}: {score:.1f} ({level})")
 
         print(f"\n统计信息:")
         print(f"  Claims 总数: {aes_score.get('claims_count', 0)}")

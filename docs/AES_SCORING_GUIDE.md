@@ -315,12 +315,16 @@ AESScorer
 │   ├── 句向量相似度计算
 │   └── 阈值过滤（> 0.3）
 └── 8 维度评分
-    ├── 引用覆盖率
-    ├── 因果相关性
-    ├── 支持强度
-    ├── 矛盾惩罚
-    ├── 证据充分性
-    └── 指标 6-8（待实现）
+    ├── NLP 定量指标（5个）
+    │   ├── 引用覆盖率
+    │   ├── 因果相关性
+    │   ├── 支持强度
+    │   ├── 矛盾惩罚
+    │   └── 证据充分性
+    └── LLM 定性指标（3个）
+        ├── 内生性处理质量
+        ├── 方法论严谨性
+        └── 学术规范性
 ```
 
 ### 5.2 依赖模型
@@ -343,14 +347,16 @@ AESScorer
     "total_score": 0.7234,           # 原始总分（0-1）
     "normalized_score": 72.34,       # 归一化分数（0-100）
     "dimension_scores": {
+        # NLP 定量指标
         "citation_coverage": 0.85,
         "causal_relevance": 0.72,
         "support_strength": 0.68,
         "contradiction_penalty": 0.91,
         "evidence_sufficiency": 0.65,
-        "indicator_6": 0.0,
-        "indicator_7": 0.0,
-        "indicator_8": 0.0,
+        # LLM 定性指标（从 LLM 评审提取）
+        "endogeneity_quality": 1.0,      # good=1.0, average=0.5, poor=0.0
+        "methodology_rigor": 0.5,        # 模型设计 5-7分 → 0.5
+        "academic_standards": 1.0,       # 论文质量 8-10分 → 1.0
     },
     "claims_count": 45,              # Claim 总数
     "evidences_count": 38,           # Evidence 总数
@@ -452,13 +458,18 @@ def _classify_claim_type(self, text: str) -> str:
 
 ## 10. 更新日志
 
+### v1.1.0 (2026-01-26)
+
+- ✅ 集成 LLM 定性指标作为指标 6-8
+- ✅ 实现 8 个完整评分维度
+- ✅ 支持混合评分（NLP 定量 + LLM 定性）
+
 ### v1.0.0 (2026-01-26)
 
-- ✅ 实现 5 个核心评分指标
+- ✅ 实现 5 个核心评分指标（基于 NLP）
 - ✅ 集成到 ReviewerAgent
 - ✅ 支持中文论文评分
 - ✅ 创建配置系统和停词库
-- ⏳ 待补充指标 6-8
 
 ---
 
