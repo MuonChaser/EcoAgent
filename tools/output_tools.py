@@ -189,12 +189,17 @@ class ReportGenerator:
             }
 
             if format == "latex":
-                # 首先尝试从 final_report 的 latex_source 字段提取 LaTeX
+                # 获取 LaTeX 内容的多种方式（按优先级）
                 latex_content = None
-                final_report = results.get("final_report", "")
 
-                # 如果 final_report 是字符串（可能是JSON），尝试解析
-                if isinstance(final_report, str):
+                # 方法1：从 final_report 直接获取（ReportWriterAgent 已处理）
+                final_report = results.get("final_report", "")
+                if isinstance(final_report, str) and "\\documentclass" in final_report:
+                    latex_content = final_report
+                    logger.debug("从 final_report 直接获取 LaTeX 内容")
+
+                # 方法2：尝试从 final_report 解析 JSON（兼容旧版本）
+                if not latex_content and isinstance(final_report, str):
                     try:
                         # 移除可能的 markdown 代码块标记
                         import json
@@ -207,13 +212,10 @@ class ReportGenerator:
                         # 尝试解析 JSON
                         report_data = json.loads(clean_json.strip())
                         latex_content = report_data.get("latex_source")
-                    except Exception as e:
-                        # 不是 JSON，检查是否直接是 LaTeX
-                        if "\\documentclass" in final_report:
-                            latex_content = final_report
-                elif isinstance(final_report, dict):
-                    # 如果已经是字典，直接取 latex_source
-                    latex_content = final_report.get("latex_source")
+                        if latex_content:
+                            logger.debug("从 final_report JSON 中提取 LaTeX 内容")
+                    except:
+                        pass
 
                 # 检查是否成功获取 LaTeX 内容
                 if latex_content and "\\documentclass" in latex_content:
@@ -221,7 +223,7 @@ class ReportGenerator:
                     OutputFormatter.save_to_file(latex_content, str(filepath), "tex")
                     logger.info(f"LaTeX论文已保存: {filepath}")
                 else:
-                    logger.warning("final_report 不包含 LaTeX 内容（latex_source 字段为空或无效），回退到 markdown 格式")
+                    logger.warning("未找到有效的 LaTeX 内容，回退到 markdown 格式")
                     formatted = OutputFormatter.format_to_markdown(content, research_topic)
                     filepath = self.output_dir / f"report_{timestamp}.md"
                     OutputFormatter.save_to_file(formatted, str(filepath), "md")

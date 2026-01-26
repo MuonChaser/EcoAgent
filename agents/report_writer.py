@@ -43,7 +43,18 @@ class ReportWriterAgent(BaseAgent):
 
     def process_output(self, raw_output: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
         result = super().process_output(raw_output, input_data)
-        result["final_report"] = raw_output
+
+        # 优先从 parsed_data 中提取 latex_source
+        parsed_data = result.get("parsed_data", {})
+        if parsed_data and isinstance(parsed_data, dict):
+            latex_source = parsed_data.get("latex_source")
+            if latex_source:
+                result["final_report"] = latex_source
+            else:
+                result["final_report"] = raw_output
+        else:
+            result["final_report"] = raw_output
+
         result["research_topic"] = input_data.get("research_topic")
         result["word_count"] = input_data.get("word_count", 8000)
         return result

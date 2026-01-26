@@ -153,10 +153,22 @@ def get_task_prompt(
 \subsection{研究局限与未来展望}
 ...
 
-% 参考文献
+% 参考文献（使用thebibliography环境）
+\bibliographystyle{apalike}
 \begin{thebibliography}{99}
-\bibitem{ref1} 作者. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
-...
+% 中文文献示例
+\bibitem{zhang2020} 张三，李四. 论文标题[J]. 经济研究，2020，55(3)：45-60.
+
+% 英文文献示例
+\bibitem{smith2019} Smith, J. and Brown, A. Paper Title[J]. American Economic Review, 2019, 109(5): 1234-1256.
+
+% 工作论文示例
+\bibitem{jones2021} Jones, M. Working Paper Title[R]. NBER Working Paper No. 12345, 2021.
+
+% 书籍示例
+\bibitem{wang2018} 王五. 书名[M]. 北京：经济科学出版社，2018.
+
+% 重要：请根据实际引用的文献替换上述示例，保持格式一致
 \end{thebibliography}
 
 \end{document}"""
@@ -299,9 +311,15 @@ def get_task_prompt(
 {table_example}
    ```
 
-4. **文献引用**：使用\\citep{{}}或\\citet{{}}命令：
-   - \\citep{{reference1}}表示(作者, 年份)
-   - \\citet{{reference2}}表示作者(年份)
+4. **文献引用**：使用\\citep{{}}或\\citet{{}}命令，并在文末提供完整参考文献列表：
+   - 引用格式：
+     - \\citep{{zhang2020}}表示（张三和李四，2020）
+     - \\citet{{smith2019}}表示Smith and Brown (2019)
+   - 参考文献格式（在\\begin{{thebibliography}}环境中）：
+     - 中文期刊：作者. 论文标题[J]. 期刊名，年份，卷(期)：页码.
+     - 英文期刊：Author, A. and Author, B. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
+     - 确保标签（如{{zhang2020}}）与文中引用一致
+     - 按作者姓氏首字母或拼音排序
 
 5. **中文规范**：
    - 使用全角标点（，。；：）

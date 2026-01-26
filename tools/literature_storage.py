@@ -700,6 +700,112 @@ class LiteratureStorageTool:
         logger.info(f"从LiteratureCollector导入 {len(ids)} 篇文献")
         return ids
 
+    def import_from_csv(
+        self,
+        csv_path: str,
+        column_mapping: Dict[str, str] = None,
+        research_project: Optional[str] = None,
+        batch_size: int = 100
+    ) -> Dict[str, Any]:
+        """
+        从CSV文件导入实证论文数据
+
+        Args:
+            csv_path: CSV文件路径
+            column_mapping: 列名映射（CSV列名 -> 内部字段名）
+            research_project: 关联的研究项目名称
+            batch_size: 批量导入大小（用于显示进度）
+
+        Returns:
+            导入结果统计
+        """
+        try:
+            import pandas as pd
+        except ImportError:
+            logger.error("需要安装pandas: pip install pandas")
+            return {"success": False, "error": "pandas未安装"}
+
+        # 默认列名映射（针对"实证论文提取结果.csv"格式）
+        default_mapping = {
+            "文章名称": "title",
+            "核心研究问题": "abstract",
+            "X (自变量)": "variable_x_definition",
+            "Y (因变量)": "variable_y_definition",
+            "计量模型 (方法)": "identification_strategy",
+            "所属期刊": "journal",
+            "文件路径": "notes",
+        }
+
+        if column_mapping:
+            default_mapping.update(column_mapping)
+
+        # 读取CSV
+        try:
+            df = pd.read_csv(csv_path, encoding='utf-8-sig')
+            logger.info(f"读取CSV文件: {len(df)} 行, 列: {list(df.columns)}")
+        except Exception as e:
+            logger.error(f"读取CSV失败: {e}")
+            return {"success": False, "error": str(e)}
+
+        # 导入统计
+        stats = {
+            "total": len(df),
+            "imported": 0,
+            "skipped": 0,
+            "errors": 0,
+            "imported_ids": []
+        }
+
+        # 逐行导入
+        for idx, row in df.iterrows():
+            try:
+                # 构建文献数据
+                item_data = {
+                    "authors": "未知",  # CSV中没有作者信息
+                    "year": 2020,  # 默认年份
+                    "source": "csv_import",
+                    "research_project": research_project,
+                    "tags": ["实证论文", "CSV导入"]
+                }
+
+                # 映射列
+                for csv_col, field_name in default_mapping.items():
+                    if csv_col in df.columns:
+                        value = row.get(csv_col, "")
+                        if pd.notna(value) and str(value).strip():
+                            item_data[field_name] = str(value).strip()
+
+                # 检查必要字段
+                if not item_data.get("title"):
+                    stats["skipped"] += 1
+                    continue
+
+                # 从期刊信息推断（如果期刊格式包含年份）
+                journal = item_data.get("journal", "")
+                if journal:
+                    item_data["journal"] = journal
+
+                # 添加到数据库
+                item_id = self.add_literature(item_data, source="csv_import")
+                stats["imported_ids"].append(item_id)
+                stats["imported"] += 1
+
+                # 显示进度
+                if (idx + 1) % batch_size == 0:
+                    logger.info(f"导入进度: {idx + 1}/{len(df)}")
+
+            except Exception as e:
+                stats["errors"] += 1
+                logger.warning(f"导入第 {idx + 1} 行失败: {e}")
+
+        stats["success"] = True
+        logger.info(
+            f"CSV导入完成: 总计 {stats['total']} 行, "
+            f"成功 {stats['imported']}, 跳过 {stats['skipped']}, 错误 {stats['errors']}"
+        )
+
+        return stats
+
 
 # ==================== 便捷函数 ====================
 
