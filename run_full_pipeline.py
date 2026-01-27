@@ -245,7 +245,7 @@ def main():
     # 检查是否有输入
     if not args.topic and not args.input:
         # 使用默认主题
-        args.topic = "数字化转型对企业创新绩效的影响研究"
+        args.topic = "环境监管对企业全要素生产率的影响"
         logger.info(f"未指定主题，使用默认主题: {args.topic}")
 
     # 运行流程
