@@ -114,7 +114,7 @@ LITERATURE_CONFIG = {
     "years_range": 10,
     "top_journals": [
         "AER", "JPE", "QJE", "Econometrica", "Review of Economic Studies",
-        "经济研究", "经济学（季刊）", "管理世界"
+        "经济研究", "经济学（季刊）", "管理世界", "中国工业经济"
     ]
 }
 
