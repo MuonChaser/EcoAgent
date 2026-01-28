@@ -20,6 +20,11 @@
     python run_full_pipeline.py --no-review               # 不进行审稿评分
 """
 
+# ⚠️ 必须在所有其他导入之前加载环境变量！
+# 否则 sentence_transformers 等库会在 HF_ENDPOINT 生效前就访问 HuggingFace
+from dotenv import load_dotenv
+load_dotenv()
+
 import argparse
 import json
 import sys

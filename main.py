@@ -1,6 +1,10 @@
 """
 主入口文件
 """
+# ⚠️ 必须在所有其他导入之前加载环境变量！
+from dotenv import load_dotenv
+load_dotenv()
+
 from loguru import logger
 import sys
 from pathlib import Path
