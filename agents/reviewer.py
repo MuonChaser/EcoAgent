@@ -127,10 +127,20 @@ class ReviewerAgent(BaseAgent):
                 result["aes_score"] = aes_result
                 result["aes_enabled"] = True
 
-                logger.info(
-                    f"AES 评分完成: {aes_result['normalized_score']:.2f}/100 "
-                    f"(原始分: {aes_result['total_score']:.4f})"
-                )
+                # 输出详细评分到日志
+                logger.info("=" * 60)
+                logger.info("AES 评分完成")
+                logger.info("=" * 60)
+                logger.info(f"总分: {aes_result['normalized_score']:.2f}/100 (原始分: {aes_result['total_score']:.4f})")
+                logger.info(f"Claims数: {aes_result.get('claims_count', 0)}, Evidences数: {aes_result.get('evidences_count', 0)}")
+                logger.info("-" * 60)
+                logger.info("各维度评分:")
+                dimension_scores = aes_result.get("dimension_scores", aes_result.get("indicator_scores", {}))
+                weights = aes_result.get("weights", {})
+                for metric, score in dimension_scores.items():
+                    weight = weights.get(metric, 0)
+                    logger.info(f"  - {metric}: {score:.4f} (权重: {weight:.0%})")
+                logger.info("=" * 60)
 
             except Exception as e:
                 logger.error(f"AES 评分失败: {e}")
@@ -157,7 +167,7 @@ class ReviewerAgent(BaseAgent):
         input_data: Dict[str, Any]
     ) -> Optional[str]:
         """
-        生成简洁的 CSV 评分表（只包含8个核心指标）
+        生成综合评分 CSV 表（包含 LLM 评审和 AES 评分）
 
         Args:
             llm_review: LLM 评审结果
@@ -176,45 +186,154 @@ class ReviewerAgent(BaseAgent):
 
         rows = []
 
-        # 表头
-        rows.append(["序号", "评分指标", "得分", "权重", "加权得分", "说明"])
+        # === 基本信息 ===
+        rows.append(["评分类别", "评分项", "满分", "得分", "权重", "加权得分", "评分理由/说明"])
+        rows.append(["基本信息", "研究主题", "", "", "", "", input_data.get("research_topic", "")])
+        rows.append(["基本信息", "评审时间", "", "", "", "", timestamp])
+        rows.append([])
 
-        # 8个AES指标
-        aes_indicators = [
-            ("citation_coverage", "引用覆盖率", "论文中引用是否充分覆盖claims"),
-            ("causal_relevance", "因果相关性", "evidence与claim的语义相关程度"),
-            ("support_strength", "支持强度", "evidence对claim的NLI支持程度"),
-            ("contradiction_penalty", "矛盾惩罚", "证据间矛盾程度（越高越好）"),
-            ("evidence_sufficiency", "证据充分性", "每个claim是否有足够的证据支持"),
-            ("endogeneity_quality", "内生性处理质量", "从LLM评审提取"),
-            ("methodology_rigor", "方法论严谨性", "从LLM评审提取"),
-            ("academic_standards", "学术规范性", "从LLM评审提取"),
+        # === LLM 定性评审 ===
+        rows.append(["LLM定性评审", "总体评价", "", "", "", "", ""])
+
+        # 提取 LLM 评审的关键信息
+        overall = llm_review.get("overall_assessment", {})
+        if overall:
+            rows.append(["总体评价", "推荐意见", "", "", "", "", overall.get("recommendation", "")])
+            rows.append(["总体评价", "总体水平", "", "", "", "", overall.get("overall_level", "")])
+
+            strengths = overall.get("major_strengths", [])
+            if strengths:
+                for i, s in enumerate(strengths[:3], 1):
+                    rows.append(["总体评价", f"优势{i}", "", "", "", "", s])
+
+            weaknesses = overall.get("major_weaknesses", [])
+            if weaknesses:
+                for i, w in enumerate(weaknesses[:3], 1):
+                    rows.append(["总体评价", f"不足{i}", "", "", "", "", w])
+
+        rows.append([])
+
+        # 内生性评估
+        quant = llm_review.get("quantitative_analysis", {})
+        endogeneity = quant.get("endogeneity_assessment", {})
+        rows.append(["内生性评估", "总体评级", "", endogeneity.get("overall_rating", ""), "", "", "good/average/poor"])
+        rows.append([])
+
+        # === LLM 维度评分 ===
+        rows.append(["LLM定量评分", "维度评分详情", "", "", "", "", ""])
+
+        dimension_config = [
+            ("variable_design", "核心变量设定", 25, [
+                ("x_proxy_quality", "X的代理变量设计"),
+                ("y_proxy_quality", "Y的代理变量设计"),
+            ]),
+            ("theoretical_framework", "理论框架构建", 20, [
+                ("theory_selection", "理论选择与适配"),
+                ("hypothesis_development", "假设提出与推导"),
+            ]),
+            ("model_design", "模型设计", 25, [
+                ("baseline_model", "基准模型设计"),
+                ("identification_strategy", "识别策略"),
+            ]),
+            ("empirical_analysis", "实证分析", 20, [
+                ("data_handling", "数据处理"),
+                ("result_interpretation", "结果呈现与解读"),
+            ]),
+            ("paper_quality", "论文质量", 10, [
+                ("academic_rigor", "学术规范"),
+                ("innovation", "创新性与贡献"),
+            ]),
         ]
 
+        total_llm_score = 0
+        for dim_key, dim_name, dim_weight, sub_items in dimension_config:
+            dim_data = quant.get(dim_key, {})
+            dim_score = dim_data.get("score", 0) if isinstance(dim_data, dict) else 0
+            weighted_score = dim_score * dim_weight / 100
+            total_llm_score += weighted_score
+
+            rows.append(["维度评分", dim_name, "100", dim_score, f"{dim_weight}%", f"{weighted_score:.1f}", ""])
+
+            # 子项评分
+            for sub_key, sub_name in sub_items:
+                sub_data = dim_data.get(sub_key, {}) if isinstance(dim_data, dict) else {}
+                sub_score = sub_data.get("score", "") if isinstance(sub_data, dict) else ""
+                sub_reason = sub_data.get("reason", "") if isinstance(sub_data, dict) else ""
+                rows.append([f"  {dim_name}", sub_name, "10", sub_score, "", "", sub_reason])
+
+        rows.append([])
+        rows.append(["LLM评分汇总", "加权总分", "100", f"{total_llm_score:.2f}", "100%", f"{total_llm_score:.2f}", ""])
+
+        # 评级
+        if total_llm_score >= 85:
+            grade = "优秀"
+        elif total_llm_score >= 75:
+            grade = "良好"
+        elif total_llm_score >= 60:
+            grade = "中等"
+        else:
+            grade = "不合格"
+        rows.append(["LLM评分汇总", "等级评定", "", grade, "", "", "优秀(85+)/良好(75-84)/中等(60-74)/不合格(<60)"])
+
+        rows.append([])
+
+        # === AES 自动评分 ===
         if aes_score:
-            indicator_scores = aes_score.get("indicator_scores", {})
+            rows.append(["AES自动评分", "评分详情", "", "", "", "", ""])
+
+            # 获取评分数据（兼容两种键名）
+            indicator_scores = aes_score.get("dimension_scores", aes_score.get("indicator_scores", {}))
             weights = aes_score.get("weights", {})
 
-            for i, (key, name, desc) in enumerate(aes_indicators, 1):
+            aes_indicators = [
+                ("citation_coverage", "引用覆盖率", "论文中引用是否充分覆盖claims"),
+                ("causal_relevance", "因果相关性", "evidence与claim的语义相关程度"),
+                ("support_strength", "支持强度", "evidence对claim的NLI支持程度"),
+                ("contradiction_penalty", "矛盾惩罚", "证据间矛盾程度（越高越好）"),
+                ("evidence_sufficiency", "证据充分性", "每个claim是否有足够的证据支持"),
+                ("endogeneity_quality", "内生性处理质量", "从LLM评审提取"),
+                ("methodology_rigor", "方法论严谨性", "从LLM评审提取"),
+                ("academic_standards", "学术规范性", "从LLM评审提取"),
+            ]
+
+            for key, name, desc in aes_indicators:
                 score = indicator_scores.get(key, 0)
                 weight = weights.get(key, 0)
-                rows.append([
-                    i,
-                    name,
-                    f"{score:.4f}",
-                    f"{weight:.0%}",
-                    f"{score * weight:.4f}",
-                    desc
-                ])
+                weighted = score * weight
+                rows.append(["AES评分", name, "1.0", f"{score:.4f}", f"{weight:.0%}", f"{weighted:.4f}", desc])
 
+            rows.append([])
+            aes_total = aes_score.get("normalized_score", 0)
+            rows.append(["AES评分汇总", "总分", "100", f"{aes_total:.2f}", "", "", ""])
+            rows.append(["AES评分汇总", "Claims数", "", aes_score.get("claims_count", 0), "", "", ""])
+            rows.append(["AES评分汇总", "Evidences数", "", aes_score.get("evidences_count", 0), "", "", ""])
         else:
-            # 如果没有 AES 评分，使用默认值
-            for i, (key, name, desc) in enumerate(aes_indicators, 1):
-                rows.append([i, name, "N/A", "N/A", "N/A", desc])
+            rows.append(["AES自动评分", "状态", "", "未启用或评分失败", "", "", ""])
+
+        rows.append([])
+
+        # === 综合评分 ===
+        rows.append(["综合评分", "", "", "", "", "", ""])
+        rows.append(["综合评分", "LLM评分", "100", f"{total_llm_score:.2f}", "100%", f"{total_llm_score:.2f}", "仅LLM评分"])
+
+        if aes_score:
+            aes_total = aes_score.get("normalized_score", 0)
+            # 综合评分 = 70% LLM + 30% AES
+            combined = total_llm_score * 0.7 + aes_total * 0.3
+            rows.append(["综合评分", "AES评分", "100", f"{aes_total:.2f}", "", "", ""])
+            rows.append(["综合评分", "综合总分", "100", f"{combined:.2f}", "", "", "LLM(70%) + AES(30%)"])
 
         # 写入 CSV
         with open(csv_path, 'w', newline='', encoding='utf-8-sig') as f:
             writer = csv.writer(f)
             writer.writerows(rows)
+
+        # 输出日志
+        logger.info("=" * 60)
+        logger.info(f"评分表已生成: {csv_path}")
+        logger.info(f"LLM评分: {total_llm_score:.2f}/100 ({grade})")
+        if aes_score:
+            logger.info(f"AES评分: {aes_score.get('normalized_score', 0):.2f}/100")
+        logger.info("=" * 60)
 
         return str(csv_path)

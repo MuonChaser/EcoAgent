@@ -82,16 +82,16 @@ class AESScorer:
         # 加载模型
         self._load_models()
 
-        # 配置参数
+        # 配置参数 - 8个评分指标及其权重（总和为1.0）
         self.weights = self.config.get("weights", {
-            "citation_coverage": 0.15,      # 引用覆盖率
-            "causal_relevance": 0.15,       # 因果相关性
-            "support_strength": 0.20,       # 支持强度
-            "contradiction_penalty": 0.15,  # 矛盾惩罚（负向）
-            "evidence_sufficiency": 0.15,   # 证据充分性
-            "indicator_6": 0.07,            # 待补充指标6
-            "indicator_7": 0.07,            # 待补充指标7
-            "indicator_8": 0.06,            # 待补充指标8
+            "citation_coverage": 0.15,      # 1. 引用覆盖率
+            "causal_relevance": 0.15,       # 2. 因果相关性
+            "support_strength": 0.20,       # 3. 支持强度
+            "contradiction_penalty": 0.15,  # 4. 矛盾惩罚（越高越好）
+            "evidence_sufficiency": 0.15,   # 5. 证据充分性
+            "endogeneity_quality": 0.07,    # 6. 内生性处理质量（从LLM评审提取）
+            "methodology_rigor": 0.07,      # 7. 方法论严谨性（从LLM评审提取）
+            "academic_standards": 0.06,     # 8. 学术规范性（从LLM评审提取）
         })
 
         # 不同类型 claim 的证据需求数量
@@ -232,6 +232,8 @@ class AESScorer:
             "total_score": total_score,
             "normalized_score": total_score * 100,  # 归一化到 0-100
             "dimension_scores": scores,
+            "indicator_scores": scores,  # 兼容别名
+            "weights": self.weights,  # 包含权重信息
             "claims_count": len(claims),
             "evidences_count": len(evidences),
             "claims_with_evidence": sum(1 for c in claims if c.evidences),
@@ -241,7 +243,18 @@ class AESScorer:
             }
         }
 
-        logger.info(f"AES 评分完成，总分: {total_score:.4f} ({result['normalized_score']:.2f}/100)")
+        # 输出详细评分日志
+        logger.info("=" * 50)
+        logger.info("AES 评分结果汇总")
+        logger.info("=" * 50)
+        for metric, score in scores.items():
+            weight = self.weights.get(metric, 0.0)
+            weighted = score * weight
+            logger.info(f"  {metric}: {score:.4f} (权重: {weight:.0%}, 加权: {weighted:.4f})")
+        logger.info("-" * 50)
+        logger.info(f"  总分: {total_score:.4f} ({result['normalized_score']:.2f}/100)")
+        logger.info(f"  Claims数: {len(claims)}, Evidences数: {len(evidences)}")
+        logger.info("=" * 50)
         return result
 
     def _extract_claims(self, text: str) -> List[Claim]:

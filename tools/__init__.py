@@ -51,6 +51,14 @@ from .aes_scorer import (
     Evidence,
     get_aes_scorer,
 )
+from .methodology_graph import (
+    MethodologyKnowledgeGraph,
+    VariableNode,
+    MethodEdge,
+    SubgraphResult,
+    get_methodology_graph,
+    create_langchain_tools as create_methodology_graph_tools,
+)
 
 __all__ = [
     # 文献搜索
@@ -86,4 +94,11 @@ __all__ = [
     "Claim",
     "Evidence",
     "get_aes_scorer",
+    # 方法论知识图谱
+    "MethodologyKnowledgeGraph",
+    "VariableNode",
+    "MethodEdge",
+    "SubgraphResult",
+    "get_methodology_graph",
+    "create_methodology_graph_tools",
 ]
