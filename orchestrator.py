@@ -44,22 +44,31 @@ class ResearchOrchestrator:
     8. 审稿人评审 (最后进行评分)
     """
 
-    def __init__(self, output_dir: str = "output", data_storage_dir: str = "data/datasets"):
+    def __init__(
+        self,
+        output_dir: str = "output",
+        data_storage_dir: str = "data/datasets",
+        literature_storage_dir: str = "data/literature"
+    ):
         """
         初始化编排器
 
         Args:
             output_dir: 输出目录
             data_storage_dir: 数据存储目录
+            literature_storage_dir: 文献存储目录
         """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         self.data_storage_dir = data_storage_dir
+        self.literature_storage_dir = literature_storage_dir
 
         # 初始化所有智能体
         self.input_parser = InputParserAgent()
-        self.literature_collector = LiteratureCollectorAgent()
+        self.literature_collector = LiteratureCollectorAgent(
+            literature_storage_dir=literature_storage_dir
+        )
         self.variable_designer = VariableDesignerAgent()
         self.theory_designer = TheoryDesignerAgent()
         self.model_designer = ModelDesignerAgent()
@@ -514,8 +523,15 @@ class SimplifiedOrchestrator:
     用于快速测试或简单场景
     """
 
-    def __init__(self, data_storage_dir: str = "data/datasets"):
-        self.orchestrator = ResearchOrchestrator(data_storage_dir=data_storage_dir)
+    def __init__(
+        self,
+        data_storage_dir: str = "data/datasets",
+        literature_storage_dir: str = "data/literature"
+    ):
+        self.orchestrator = ResearchOrchestrator(
+            data_storage_dir=data_storage_dir,
+            literature_storage_dir=literature_storage_dir
+        )
 
     def quick_research(
         self,
