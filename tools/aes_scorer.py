@@ -160,49 +160,63 @@ class AESScorer:
         Returns:
             评分结果字典
         """
+        logger.info("=" * 50)
         logger.info("开始 AES 评分流程")
+        logger.info("=" * 50)
 
         # 1. 分割 claims
+        logger.info("步骤 1/5: 提取 claims（陈述）")
         claims = self._extract_claims(paper_text)
-        logger.info(f"提取到 {len(claims)} 个 claims")
+        logger.info(f"  提取到 {len(claims)} 个 claims")
 
         # 2. 提取 evidences
+        logger.info("步骤 2/5: 提取 evidences（证据）")
         evidences = self._extract_evidences(paper_text)
-        logger.info(f"提取到 {len(evidences)} 个 evidences")
+        logger.info(f"  提取到 {len(evidences)} 个 evidences")
 
         # 3. 绑定 claim 和 evidence
+        logger.info("步骤 3/5: 绑定 claims 和 evidences")
         self._bind_claims_evidences(claims, evidences)
 
         # 4. 计算各项指标
+        logger.info("步骤 4/5: 计算评分指标")
         scores = {}
 
         # 指标1: 引用覆盖率
+        logger.info("  计算指标 1/8: 引用覆盖率")
         scores["citation_coverage"] = self._calc_citation_coverage(claims)
 
         # 指标2: 因果相关性
+        logger.info("  计算指标 2/8: 因果相关性")
         scores["causal_relevance"] = self._calc_causal_relevance(claims)
 
         # 指标3: 支持强度
+        logger.info("  计算指标 3/8: 支持强度")
         scores["support_strength"] = self._calc_support_strength(claims)
 
         # 指标4: 矛盾惩罚
+        logger.info("  计算指标 4/8: 矛盾惩罚")
         scores["contradiction_penalty"] = self._calc_contradiction_penalty(claims)
 
         # 指标5: 证据充分性
+        logger.info("  计算指标 5/8: 证据充分性")
         scores["evidence_sufficiency"] = self._calc_evidence_sufficiency(claims)
 
         # 指标6-8: 从 LLM 评审中提取定性指标
+        logger.info("  计算指标 6-8: 定性指标（从LLM评审提取）")
         if llm_review:
             llm_scores = self._extract_llm_qualitative_scores(llm_review)
             scores["endogeneity_quality"] = llm_scores.get("endogeneity_quality", 0.0)
             scores["methodology_rigor"] = llm_scores.get("methodology_rigor", 0.0)
             scores["academic_standards"] = llm_scores.get("academic_standards", 0.0)
         else:
+            logger.warning("  未提供 LLM 评审结果，定性指标将使用默认值 0.0")
             scores["endogeneity_quality"] = 0.0
             scores["methodology_rigor"] = 0.0
             scores["academic_standards"] = 0.0
 
         # 5. 加权汇总
+        logger.info("步骤 5/5: 加权汇总总分")
         total_score = self._calculate_total_score(scores)
 
         result = {
@@ -334,33 +348,50 @@ class AESScorer:
 
         策略：基于文本相似度或位置邻近性
         """
+        logger.info(f"开始绑定 claims 和 evidences...")
+
         if not self.sentence_model:
+            logger.info("使用简单文本匹配策略（sentence_model 不可用）")
             # 简单策略：基于文本包含关系
-            for claim in claims:
+            for i, claim in enumerate(claims):
+                if i % 100 == 0:
+                    logger.info(f"  处理进度: {i}/{len(claims)} claims")
                 for evi in evidences:
                     # 如果 evidence 在 claim 附近（简化为文本包含）
                     if evi.text in claim.text or any(word in evi.text for word in claim.text.split()[:10]):
                         claim.evidences.append(evi)
                         evi.claim_id = claim.id
         else:
+            logger.info(f"使用句向量模型计算相似度 (claims: {len(claims)}, evidences: {len(evidences)})")
             # 使用句向量计算相似度
             claim_texts = [c.text for c in claims]
             evi_texts = [e.text for e in evidences]
 
-            claim_embeddings = self.sentence_model.encode(claim_texts)
-            evi_embeddings = self.sentence_model.encode(evi_texts)
+            logger.info("  正在编码 claims...")
+            claim_embeddings = self.sentence_model.encode(claim_texts, show_progress_bar=True)
+
+            logger.info("  正在编码 evidences...")
+            evi_embeddings = self.sentence_model.encode(evi_texts, show_progress_bar=True)
 
             # 计算相似度矩阵
+            logger.info("  计算相似度矩阵...")
             similarity_matrix = np.dot(claim_embeddings, evi_embeddings.T)
 
             # 绑定最相关的证据（阈值 > 0.3）
             threshold = 0.3
+            logger.info(f"  绑定证据到 claims (阈值: {threshold})...")
+            matched_count = 0
             for i, claim in enumerate(claims):
+                if i % 100 == 0:
+                    logger.info(f"    绑定进度: {i}/{len(claims)} claims")
                 for j, evi in enumerate(evidences):
                     if similarity_matrix[i, j] > threshold:
                         claim.evidences.append(evi)
+                        matched_count += 1
                         if evi.claim_id == -1:
                             evi.claim_id = claim.id
+
+            logger.info(f"绑定完成: {matched_count} 个 claim-evidence 对")
 
     def _calc_citation_coverage(self, claims: List[Claim]) -> float:
         """
@@ -422,12 +453,20 @@ class AESScorer:
         """
         指标3: 支持强度
         用 NLI 测试 evi 支持/反驳/无关 claim 的概率
+
+        优化策略：
+        1. 批量处理 NLI 推理
+        2. 限制最大计算数量（采样）
+        3. 添加进度日志
         """
         if not self.nli_pipeline:
             logger.warning("NLI 模型不可用，支持强度使用默认值 0.6")
             return 0.6
 
-        support_scores = []
+        # 收集所有需要计算的 (evidence, claim) 对
+        text_pairs = []
+        max_pairs = self.config.get("performance", {}).get("max_support_pairs", 500)
+        batch_size = self.config.get("performance", {}).get("nli_batch_size", 32)
 
         for claim in claims:
             if not claim.evidences:
@@ -436,27 +475,70 @@ class AESScorer:
             claim_text = claim.text
 
             for evi in claim.evidences:
+                text_pairs.append(f"{evi.text} [SEP] {claim_text}")
+
+                # 如果超过限制，停止收集
+                if len(text_pairs) >= max_pairs:
+                    break
+
+            if len(text_pairs) >= max_pairs:
+                logger.info(f"  支持强度计算已达到最大限制 {max_pairs} 对，将采样计算")
+                break
+
+        if not text_pairs:
+            logger.warning("  没有可计算的 evidence-claim 对")
+            return 0.0
+
+        logger.info(f"  将计算 {len(text_pairs)} 个 evidence-claim 对的支持强度...")
+
+        # 批量处理（如果 pipeline 支持）
+        support_scores = []
+
+        try:
+            for i in range(0, len(text_pairs), batch_size):
+                batch = text_pairs[i:i + batch_size]
+
+                # 显示进度
+                if i % (batch_size * 5) == 0 and i > 0:
+                    logger.info(f"    进度: {i}/{len(text_pairs)}")
+
                 try:
-                    # NLI: premise=evi, hypothesis=claim
-                    result = self.nli_pipeline(f"{evi.text} [SEP] {claim_text}")
+                    # 批量推理
+                    results = self.nli_pipeline(batch)
 
-                    # 提取支持概率（label: entailment）
-                    support_prob = 0.0
-                    for item in result:
-                        if 'entailment' in item.get('label', '').lower():
-                            support_prob = item.get('score', 0.0)
-                            break
+                    # 处理批量结果
+                    if isinstance(results, list) and len(results) > 0:
+                        # 如果返回的是列表的列表（每个输入返回多个结果）
+                        if isinstance(results[0], list):
+                            for result_list in results:
+                                support_prob = 0.0
+                                for item in result_list:
+                                    if 'entailment' in item.get('label', '').lower():
+                                        support_prob = item.get('score', 0.0)
+                                        break
+                                support_scores.append(support_prob)
+                        # 如果返回的是单层列表（每个输入一个结果）
+                        else:
+                            for item in results:
+                                if 'entailment' in item.get('label', '').lower():
+                                    support_scores.append(item.get('score', 0.0))
+                                else:
+                                    support_scores.append(0.0)
 
-                    support_scores.append(support_prob)
                 except Exception as e:
-                    logger.warning(f"NLI 计算失败: {e}")
+                    logger.warning(f"  批量 NLI 计算失败: {e}，跳过该批次")
                     continue
 
+        except Exception as e:
+            logger.error(f"  支持强度计算失败: {e}")
+            return 0.6  # 使用默认值
+
         if not support_scores:
+            logger.warning("  未能计算任何支持强度分数")
             return 0.0
 
         avg_support = np.mean(support_scores)
-        logger.debug(f"支持强度: {avg_support:.4f}")
+        logger.info(f"  支持强度计算完成: 平均分 {avg_support:.4f}")
         return float(avg_support)
 
     def _calc_contradiction_penalty(self, claims: List[Claim]) -> float:
@@ -464,43 +546,107 @@ class AESScorer:
         指标4: 矛盾惩罚
         多证据下，证据两两做 NLI，检测矛盾
         返回值越高越好（1 - 矛盾率）
+
+        优化策略：
+        1. 批量处理 NLI 推理
+        2. 限制最大计算数量（采样）
+        3. 对 evidences 过多的 claim 进行采样
         """
         if not self.nli_pipeline:
             logger.warning("NLI 模型不可用，矛盾惩罚使用默认值 0.8")
             return 0.8
 
-        contradiction_count = 0
-        total_pairs = 0
+        # 收集所有需要比较的 evidence 对
+        text_pairs = []
+        max_pairs = self.config.get("performance", {}).get("max_contradiction_pairs", 300)
+        batch_size = self.config.get("performance", {}).get("nli_batch_size", 32)
+        max_evi_per_claim = self.config.get("performance", {}).get("max_evidences_per_claim", 5)
 
         for claim in claims:
             evidences = claim.evidences
             if len(evidences) < 2:
                 continue
 
+            # 如果 evidence 太多，采样比较
+            if len(evidences) > max_evi_per_claim:
+                # 随机采样
+                import random
+                sampled_evidences = random.sample(evidences, max_evi_per_claim)
+            else:
+                sampled_evidences = evidences
+
             # 两两比较
-            for i in range(len(evidences)):
-                for j in range(i + 1, len(evidences)):
-                    try:
-                        result = self.nli_pipeline(f"{evidences[i].text} [SEP] {evidences[j].text}")
+            for i in range(len(sampled_evidences)):
+                for j in range(i + 1, len(sampled_evidences)):
+                    text_pairs.append(f"{sampled_evidences[i].text} [SEP] {sampled_evidences[j].text}")
 
-                        # 检测矛盾（label: contradiction）
-                        for item in result:
-                            if 'contradiction' in item.get('label', '').lower():
-                                if item.get('score', 0.0) > 0.5:
-                                    contradiction_count += 1
-                                break
+                    # 达到上限就停止
+                    if len(text_pairs) >= max_pairs:
+                        break
 
-                        total_pairs += 1
-                    except Exception as e:
-                        logger.warning(f"NLI 矛盾检测失败: {e}")
-                        continue
+                if len(text_pairs) >= max_pairs:
+                    break
+
+            if len(text_pairs) >= max_pairs:
+                logger.info(f"  矛盾检测已达到最大限制 {max_pairs} 对，将采样计算")
+                break
+
+        if not text_pairs:
+            logger.info("  没有足够的 evidence 对进行矛盾检测")
+            return 1.0
+
+        logger.info(f"  将检测 {len(text_pairs)} 个 evidence 对的矛盾性...")
+
+        # 批量处理
+        contradiction_count = 0
+        total_pairs = 0
+
+        try:
+            for i in range(0, len(text_pairs), batch_size):
+                batch = text_pairs[i:i + batch_size]
+
+                # 显示进度
+                if i % (batch_size * 5) == 0 and i > 0:
+                    logger.info(f"    进度: {i}/{len(text_pairs)}")
+
+                try:
+                    # 批量推理
+                    results = self.nli_pipeline(batch)
+
+                    # 处理批量结果
+                    if isinstance(results, list) and len(results) > 0:
+                        # 如果返回的是列表的列表
+                        if isinstance(results[0], list):
+                            for result_list in results:
+                                for item in result_list:
+                                    if 'contradiction' in item.get('label', '').lower():
+                                        if item.get('score', 0.0) > 0.5:
+                                            contradiction_count += 1
+                                        break
+                                total_pairs += 1
+                        # 如果返回的是单层列表
+                        else:
+                            for item in results:
+                                if 'contradiction' in item.get('label', '').lower():
+                                    if item.get('score', 0.0) > 0.5:
+                                        contradiction_count += 1
+                                total_pairs += 1
+
+                except Exception as e:
+                    logger.warning(f"  批量矛盾检测失败: {e}，跳过该批次")
+                    continue
+
+        except Exception as e:
+            logger.error(f"  矛盾惩罚计算失败: {e}")
+            return 0.8  # 使用默认值
 
         if total_pairs == 0:
+            logger.warning("  未能计算任何矛盾对")
             return 1.0
 
         # 矛盾惩罚：1 - 矛盾率
         penalty = 1.0 - (contradiction_count / total_pairs)
-        logger.debug(f"矛盾惩罚: {contradiction_count}/{total_pairs}, 得分 {penalty:.4f}")
+        logger.info(f"  矛盾检测完成: {contradiction_count}/{total_pairs} 对存在矛盾, 得分 {penalty:.4f}")
         return penalty
 
     def _calc_evidence_sufficiency(self, claims: List[Claim]) -> float:

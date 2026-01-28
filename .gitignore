@@ -21,7 +21,7 @@ data/
 output/
 *.csv
 *.xlsx
-
+*.zip
 # IDE
 .vscode/
 .idea/

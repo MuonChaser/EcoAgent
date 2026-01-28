@@ -3,8 +3,9 @@
 
 包含以下智能体:
 - BaseAgent: 基础智能体抽象类
+- ToolAgent: 支持工具调用的智能体基类
 - InputParserAgent: 输入解析专家
-- LiteratureCollectorAgent: 文献搜集专家
+- LiteratureCollectorAgent: 文献搜集专家（支持本地数据库检索）
 - VariableDesignerAgent: 变量设计专家
 - TheoryDesignerAgent: 理论设计专家
 - ModelDesignerAgent: 模型设计专家
@@ -12,6 +13,11 @@
 - ReportWriterAgent: 报告撰写专家
 - ReviewerAgent: 审稿人专家
 - EnhancedReviewerAgent: 增强版审稿人
+
+LiteratureCollectorAgent 已集成文献检索功能:
+- search_literature_semantic(): 语义搜索本地文献数据库
+- search_literature_keyword(): 关键词搜索本地文献数据库
+- get_literature_stats(): 获取文献数据库统计信息
 
 DataAnalystAgent 已集成数据工具功能:
 - search_data(): 搜索数据集
@@ -21,6 +27,7 @@ DataAnalystAgent 已集成数据工具功能:
 - run_with_data(): 使用指定数据文件运行分析
 """
 from .base_agent import BaseAgent
+from .tool_agent import ToolAgent
 from .input_parser import InputParserAgent
 from .literature_collector import LiteratureCollectorAgent
 from .variable_designer import VariableDesignerAgent
@@ -33,6 +40,7 @@ from .enhanced_reviewer import EnhancedReviewerAgent
 
 __all__ = [
     "BaseAgent",
+    "ToolAgent",
     "InputParserAgent",
     "LiteratureCollectorAgent",
     "VariableDesignerAgent",

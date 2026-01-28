@@ -327,6 +327,39 @@ class ResearchOrchestrator:
                 # 保存阶段性结果
                 self._save_stage_result(results, "6_report")
 
+            # ========== 生成最终报告文件 ==========
+
+            logger.info("=" * 50)
+            logger.info("生成完整报告文件")
+            logger.info("=" * 50)
+
+            # 生成LaTeX格式论文
+            latex_path = self.report_generator.generate_full_report(
+                research_topic,
+                results,
+                format="latex"
+            )
+            results["latex_path"] = latex_path
+            logger.info(f"LaTeX论文已生成: {latex_path}")
+
+            # 生成Markdown格式备份（便于阅读）
+            report_path = self.report_generator.generate_full_report(
+                research_topic,
+                results,
+                format="markdown"
+            )
+            results["report_path"] = report_path
+            logger.info(f"Markdown报告已生成: {report_path}")
+
+            # 生成JSON格式备份（便于数据处理）
+            json_path = self.report_generator.generate_full_report(
+                research_topic,
+                results,
+                format="json"
+            )
+            results["json_path"] = json_path
+            logger.info(f"JSON数据已生成: {json_path}")
+
             # ========== 阶段2: 审稿人评审 ==========
 
             # 步骤7: 审稿人评审（在论文完成后进行评分）
@@ -356,48 +389,30 @@ class ResearchOrchestrator:
                         "dimension_scores": parsed_data.get("dimension_scores", {}),
                         "decision": parsed_data.get("decision"),
                     }
-                    logger.info(f"论文评分: {parsed_data.get('overall_score', 'N/A')}")
+                    logger.info(f"LLM 论文评分: {parsed_data.get('overall_score', 'N/A')}")
+
+                # 提取 AES 评分信息
+                if review_result.get("aes_enabled", False):
+                    results["aes_score"] = review_result.get("aes_score", {})
+                    aes_normalized = results["aes_score"].get("normalized_score", 0)
+                    logger.info(f"AES 自动评分: {aes_normalized:.2f}/100")
 
                 # 保存阶段性结果
                 self._save_stage_result(results, "7_review")
 
-            # ========== 生成最终报告 ==========
-
-            logger.info("=" * 50)
-            logger.info("生成完整报告")
-            logger.info("=" * 50)
-
-            # 生成LaTeX格式论文
-            latex_path = self.report_generator.generate_full_report(
-                research_topic,
-                results,
-                format="latex"
-            )
-            results["latex_path"] = latex_path
-
-            # 生成Markdown格式备份（便于阅读）
-            report_path = self.report_generator.generate_full_report(
-                research_topic,
-                results,
-                format="markdown"
-            )
-            results["report_path"] = report_path
-
-            # 生成JSON格式备份（便于数据处理）
-            json_path = self.report_generator.generate_full_report(
-                research_topic,
-                results,
-                format="json"
-            )
-            results["json_path"] = json_path
-
             logger.info("=" * 50)
             logger.info(f"研究流程完成！")
-            logger.info(f"LaTeX论文: {latex_path}")
-            logger.info(f"Markdown报告: {report_path}")
-            logger.info(f"JSON数据: {json_path}")
-            if "review_scores" in results:
-                logger.info(f"论文评分: {results['review_scores'].get('overall_score', 'N/A')}")
+            logger.info("=" * 50)
+            logger.info(f"生成的文件:")
+            logger.info(f"  - LaTeX论文: {latex_path}")
+            logger.info(f"  - Markdown报告: {report_path}")
+            logger.info(f"  - JSON数据: {json_path}")
+            if enable_review and "review_scores" in results:
+                logger.info(f"评分结果:")
+                logger.info(f"  - 论文评分: {results['review_scores'].get('overall_score', 'N/A')}")
+                if "aes_score" in results:
+                    aes_score = results["aes_score"]
+                    logger.info(f"  - AES评分: {aes_score.get('normalized_score', 'N/A'):.2f}/100")
             logger.info("=" * 50)
 
             return results

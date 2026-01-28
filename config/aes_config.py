@@ -78,6 +78,15 @@ AES_CONFIG = {
         "max_claim_length": 500,  # 最长 claim 长度
         "min_evidence_length": 5,  # 最短 evidence 长度
     },
+
+    # 性能优化参数
+    "performance": {
+        "nli_batch_size": 32,              # NLI 批量推理大小
+        "max_support_pairs": 999999,       # 支持强度计算最大对数（设为999999表示不限制）
+        "max_contradiction_pairs": 999999, # 矛盾检测最大对数（设为999999表示不限制）
+        "max_evidences_per_claim": 999,    # 每个 claim 最多采样的 evidence 数（设为999表示不限制）
+        "enable_nli": True,                # 是否启用 NLI 计算（如果为 False，使用默认值）
+    },
 }
 
 
