@@ -3,6 +3,10 @@
 完整研究流程 - 从自然语言输入到完整报告
 使用方式: python run_research.py
 """
+# ⚠️ 必须在所有其他导入之前加载环境变量！
+from dotenv import load_dotenv
+load_dotenv()
+
 from orchestrator import ResearchOrchestrator
 from loguru import logger
 import sys

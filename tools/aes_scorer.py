@@ -11,6 +11,12 @@ from collections import defaultdict
 from loguru import logger
 
 try:
+    import torch
+    CUDA_AVAILABLE = torch.cuda.is_available()
+except ImportError:
+    CUDA_AVAILABLE = False
+
+try:
     from sentence_transformers import SentenceTransformer
     SENTENCE_TRANSFORMERS_AVAILABLE = True
 except ImportError:
@@ -123,8 +129,9 @@ class AESScorer:
         if SENTENCE_TRANSFORMERS_AVAILABLE:
             model_name = self.config.get("sentence_model", "paraphrase-multilingual-MiniLM-L12-v2")
             try:
-                self.sentence_model = SentenceTransformer(model_name)
-                logger.info(f"句向量模型加载成功: {model_name}")
+                device = "cuda" if CUDA_AVAILABLE else "cpu"
+                self.sentence_model = SentenceTransformer(model_name, device=device)
+                logger.info(f"句向量模型加载成功: {model_name} (device={device})")
             except Exception as e:
                 logger.warning(f"句向量模型加载失败: {e}")
                 self.sentence_model = None
@@ -135,8 +142,10 @@ class AESScorer:
         if NLI_AVAILABLE:
             nli_model = self.config.get("nli_model", "microsoft/deberta-v3-base")
             try:
-                self.nli_pipeline = pipeline("text-classification", model=nli_model)
-                logger.info(f"NLI 模型加载成功: {nli_model}")
+                # pipeline device argument: -1 for CPU, >=0 for GPU device ordinal
+                device_id = 0 if CUDA_AVAILABLE else -1
+                self.nli_pipeline = pipeline("text-classification", model=nli_model, device=device_id)
+                logger.info(f"NLI 模型加载成功: {nli_model} (device={'cuda:0' if CUDA_AVAILABLE else 'cpu'})")
             except Exception as e:
                 logger.warning(f"NLI 模型加载失败: {e}")
                 self.nli_pipeline = None

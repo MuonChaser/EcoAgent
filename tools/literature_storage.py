@@ -198,6 +198,89 @@ class LiteratureStorageTool:
             return self.embedding_model.encode(text).tolist()
         return None
 
+    def _extract_author_from_filename(self, filename: str) -> Optional[str]:
+        """
+        从文件名中提取作者名
+
+        支持格式:
+        - 标题_作者.pdf (如: 环境规制强度和生产技术进步_张成.pdf)
+        - 标题_作者名.docx
+        - 复杂标题(带括号)_作者.pdf (如: 中国的绿色工业革命(1980—2008)_陈诗一.pdf)
+
+        Returns:
+            提取的作者名，若无法提取则返回None
+        """
+        import re
+
+        if not filename:
+            return None
+
+        # 去除扩展名
+        name = Path(filename).stem
+
+        # 按下划线分割，最后一部分通常是作者名
+        parts = name.split('_')
+        if len(parts) < 2:
+            return None
+
+        author_candidate = parts[-1].strip()
+
+        # 验证是否像中文作者名（2-4个汉字，可能带"等"字）
+        # 或英文作者名
+        chinese_pattern = re.compile(r'^[\u4e00-\u9fa5]{2,4}(等)?$')
+        english_pattern = re.compile(r'^[A-Za-z\s\.\-]+$')
+
+        if chinese_pattern.match(author_candidate) or english_pattern.match(author_candidate):
+            return author_candidate
+
+        # 如果最后一部分不像作者名，尝试倒数第二部分
+        if len(parts) >= 3:
+            author_candidate = parts[-2].strip()
+            if chinese_pattern.match(author_candidate) or english_pattern.match(author_candidate):
+                return author_candidate
+
+        return None
+
+    def _extract_year_from_text(self, text: str) -> Optional[int]:
+        """
+        从文本中提取年份
+
+        支持格式:
+        - (2020)
+        - (1980-2008) -> 取较新的年份
+        - 2020年
+        - 直接的4位数字年份
+
+        Returns:
+            提取的年份，若无法提取则返回None
+        """
+        import re
+
+        if not text:
+            return None
+
+        # 优先匹配括号中的年份
+        bracket_pattern = re.compile(r'[（\(](\d{4})[-—～]?(\d{4})?[）\)]')
+        match = bracket_pattern.search(text)
+        if match:
+            year1 = int(match.group(1))
+            year2 = int(match.group(2)) if match.group(2) else year1
+            return max(year1, year2)  # 返回较新的年份
+
+        # 匹配"XXXX年"格式
+        year_pattern = re.compile(r'(\d{4})年')
+        match = year_pattern.search(text)
+        if match:
+            return int(match.group(1))
+
+        # 匹配独立的4位年份数字（2000-2030范围）
+        standalone_pattern = re.compile(r'\b(20[0-3]\d)\b')
+        matches = standalone_pattern.findall(text)
+        if matches:
+            return int(matches[-1])  # 返回最后一个匹配
+
+        return None
+
     # ==================== 核心功能 ====================
 
     def add_literature(
@@ -759,10 +842,27 @@ class LiteratureStorageTool:
         # 逐行导入
         for idx, row in df.iterrows():
             try:
+                # 尝试从文件路径/文件名提取作者和年份
+                file_path = row.get("文件路径", "") if "文件路径" in df.columns else ""
+                title = row.get("文章名称", "") if "文章名称" in df.columns else ""
+
+                # 提取作者：优先从文件名，其次设为未知
+                extracted_author = None
+                if file_path:
+                    filename = Path(str(file_path)).name
+                    extracted_author = self._extract_author_from_filename(filename)
+
+                # 提取年份：优先从文件名，其次从标题
+                extracted_year = None
+                if file_path:
+                    extracted_year = self._extract_year_from_text(str(file_path))
+                if not extracted_year and title:
+                    extracted_year = self._extract_year_from_text(str(title))
+
                 # 构建文献数据
                 item_data = {
-                    "authors": "未知",  # CSV中没有作者信息
-                    "year": 2020,  # 默认年份
+                    "authors": extracted_author or "未知",
+                    "year": extracted_year or 2020,
                     "source": "csv_import",
                     "research_project": research_project,
                     "tags": ["实证论文", "CSV导入"]
@@ -802,6 +902,131 @@ class LiteratureStorageTool:
         logger.info(
             f"CSV导入完成: 总计 {stats['total']} 行, "
             f"成功 {stats['imported']}, 跳过 {stats['skipped']}, 错误 {stats['errors']}"
+        )
+
+        return stats
+
+    def import_from_pdf_directory(
+        self,
+        pdf_dir: str,
+        research_project: Optional[str] = None,
+        extract_text: bool = False
+    ) -> Dict[str, Any]:
+        """
+        从PDF目录批量导入文献
+
+        从PDF文件名自动提取:
+        - 作者名（文件名最后一个下划线后的部分）
+        - 年份（从括号或文件名中提取）
+        - 标题（文件名去除作者部分）
+
+        Args:
+            pdf_dir: 包含PDF文件的目录路径
+            research_project: 关联的研究项目名称
+            extract_text: 是否尝试提取PDF文本内容作为摘要（需要PyPDF2）
+
+        Returns:
+            导入结果统计
+        """
+        pdf_path = Path(pdf_dir)
+        if not pdf_path.exists():
+            logger.error(f"目录不存在: {pdf_dir}")
+            return {"success": False, "error": "目录不存在"}
+
+        # 查找所有PDF文件
+        pdf_files = list(pdf_path.glob("*.pdf")) + list(pdf_path.glob("*.PDF"))
+        logger.info(f"找到 {len(pdf_files)} 个PDF文件")
+
+        if not pdf_files:
+            return {"success": True, "total": 0, "imported": 0, "skipped": 0, "errors": 0}
+
+        # 尝试导入PDF解析库
+        pdf_reader = None
+        if extract_text:
+            try:
+                import PyPDF2
+                pdf_reader = PyPDF2
+                logger.info("PyPDF2已加载，将提取PDF文本")
+            except ImportError:
+                logger.warning("PyPDF2未安装，跳过文本提取。安装: pip install PyPDF2")
+
+        stats = {
+            "total": len(pdf_files),
+            "imported": 0,
+            "skipped": 0,
+            "errors": 0,
+            "imported_ids": []
+        }
+
+        for pdf_file in pdf_files:
+            try:
+                filename = pdf_file.name
+                stem = pdf_file.stem  # 不含扩展名的文件名
+
+                # 提取作者
+                author = self._extract_author_from_filename(filename)
+                if not author:
+                    author = "未知"
+                    logger.debug(f"无法从文件名提取作者: {filename}")
+
+                # 提取年份
+                year = self._extract_year_from_text(stem)
+                if not year:
+                    year = 2020
+                    logger.debug(f"无法从文件名提取年份: {filename}")
+
+                # 提取标题（去除作者部分）
+                title_parts = stem.split('_')
+                if len(title_parts) > 1 and author != "未知":
+                    # 移除最后一个部分（作者名）
+                    title = '_'.join(title_parts[:-1])
+                else:
+                    title = stem
+                # 清理标题中的括号年份
+                import re
+                title = re.sub(r'[（\(]\d{4}[-—～]?\d{0,4}[）\)]', '', title).strip()
+
+                # 提取PDF文本作为摘要（可选）
+                abstract = None
+                if pdf_reader:
+                    try:
+                        with open(pdf_file, 'rb') as f:
+                            reader = pdf_reader.PdfReader(f)
+                            if len(reader.pages) > 0:
+                                # 只读取第一页
+                                first_page = reader.pages[0].extract_text()
+                                if first_page:
+                                    # 截取前500字符作为摘要预览
+                                    abstract = first_page[:500].strip()
+                    except Exception as e:
+                        logger.debug(f"提取PDF文本失败 {filename}: {e}")
+
+                # 构建文献数据
+                item_data = {
+                    "authors": author,
+                    "year": year,
+                    "title": title,
+                    "abstract": abstract,
+                    "source": "pdf_import",
+                    "research_project": research_project,
+                    "tags": ["PDF导入"],
+                    "notes": str(pdf_file.absolute())  # 保存原始文件路径
+                }
+
+                # 添加到数据库
+                item_id = self.add_literature(item_data, source="pdf_import")
+                stats["imported_ids"].append(item_id)
+                stats["imported"] += 1
+                logger.info(f"导入成功: {title} - {author} ({year})")
+
+            except Exception as e:
+                stats["errors"] += 1
+                logger.warning(f"导入PDF失败 {pdf_file.name}: {e}")
+
+        stats["success"] = True
+        logger.info(
+            f"PDF导入完成: 总计 {stats['total']} 个, "
+            f"成功 {stats['imported']}, 错误 {stats['errors']}"
         )
 
         return stats
