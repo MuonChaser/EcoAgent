@@ -106,20 +106,21 @@ def get_task_prompt(
 - 是缺乏微观数据？识别策略有瑕疵？还是缺乏某种机制的讨论？
 
 # 5. 输出规范
-将上述内容整理成条理清晰的**表格**输出给我。不要输出长篇大论的废话。
 
-表格应包含以下列：
-1. 序号
-2. 作者（年份）
-3. 论文标题
-4. 期刊名称
-5. X的定义与衡量
-6. Y的定义与衡量
-7. 核心结论（量化）
-8. 理论机制
-9. 数据来源
-10. 异质性维度
-11. 识别策略
-12. 研究不足
+【重要】完成工具调用和文献整理后，你必须输出**JSON格式**的结果，不要输出Markdown表格。
 
-请立即开始执行任务。"""
+每篇文献应包含以下字段：
+1. id: 序号
+2. authors: 作者
+3. year: 年份
+4. title: 论文标题
+5. journal: 期刊名称
+6. variable_x: X变量（包含definition和measurement）
+7. variable_y: Y变量（包含definition和measurement）
+8. core_conclusion: 核心结论（量化）
+10. data_source: 数据来源
+11. heterogeneity_dimensions: 异质性维度（数组）
+12. identification_strategy: 识别策略
+13. limitations: 研究不足（数组）
+
+请立即开始执行任务，先调用工具检索本地数据库，然后整理文献并输出JSON格式结果。"""

@@ -1,7 +1,10 @@
 """
 智能体7：审稿人专家
 """
-from typing import Dict, Any, Optional
+import csv
+from pathlib import Path
+from datetime import datetime
+from typing import Dict, Any, Optional, List
 from loguru import logger
 from .base_agent import BaseAgent
 from .schemas import REVIEWER_SCHEMA
@@ -136,4 +139,82 @@ class ReviewerAgent(BaseAgent):
         else:
             result["aes_enabled"] = False
 
+        # 生成 CSV 评分表
+        try:
+            csv_path = self._generate_score_csv(parsed, result.get("aes_score"), input_data)
+            if csv_path:
+                result["score_csv_path"] = csv_path
+                logger.info(f"评分表已生成: {csv_path}")
+        except Exception as e:
+            logger.warning(f"生成评分表失败: {e}")
+
         return result
+
+    def _generate_score_csv(
+        self,
+        llm_review: Dict[str, Any],
+        aes_score: Optional[Dict[str, Any]],
+        input_data: Dict[str, Any]
+    ) -> Optional[str]:
+        """
+        生成简洁的 CSV 评分表（只包含8个核心指标）
+
+        Args:
+            llm_review: LLM 评审结果
+            aes_score: AES 评分结果
+            input_data: 输入数据
+
+        Returns:
+            CSV 文件路径
+        """
+        # 创建输出目录
+        output_dir = Path("output/research/scores")
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        csv_path = output_dir / f"review_scores_{timestamp}.csv"
+
+        rows = []
+
+        # 表头
+        rows.append(["序号", "评分指标", "得分", "权重", "加权得分", "说明"])
+
+        # 8个AES指标
+        aes_indicators = [
+            ("citation_coverage", "引用覆盖率", "论文中引用是否充分覆盖claims"),
+            ("causal_relevance", "因果相关性", "evidence与claim的语义相关程度"),
+            ("support_strength", "支持强度", "evidence对claim的NLI支持程度"),
+            ("contradiction_penalty", "矛盾惩罚", "证据间矛盾程度（越高越好）"),
+            ("evidence_sufficiency", "证据充分性", "每个claim是否有足够的证据支持"),
+            ("endogeneity_quality", "内生性处理质量", "从LLM评审提取"),
+            ("methodology_rigor", "方法论严谨性", "从LLM评审提取"),
+            ("academic_standards", "学术规范性", "从LLM评审提取"),
+        ]
+
+        if aes_score:
+            indicator_scores = aes_score.get("indicator_scores", {})
+            weights = aes_score.get("weights", {})
+
+            for i, (key, name, desc) in enumerate(aes_indicators, 1):
+                score = indicator_scores.get(key, 0)
+                weight = weights.get(key, 0)
+                rows.append([
+                    i,
+                    name,
+                    f"{score:.4f}",
+                    f"{weight:.0%}",
+                    f"{score * weight:.4f}",
+                    desc
+                ])
+
+        else:
+            # 如果没有 AES 评分，使用默认值
+            for i, (key, name, desc) in enumerate(aes_indicators, 1):
+                rows.append([i, name, "N/A", "N/A", "N/A", desc])
+
+        # 写入 CSV
+        with open(csv_path, 'w', newline='', encoding='utf-8-sig') as f:
+            writer = csv.writer(f)
+            writer.writerows(rows)
+
+        return str(csv_path)

@@ -66,10 +66,27 @@ class ToolAgent(BaseAgent):
             if not self.tools:
                 return super().run(input_data)
 
+            # 添加 JSON 格式要求（与 BaseAgent 保持一致）
+            import json
+            output_schema = self.get_output_schema()
+            json_instruction = f"""
+
+# 输出格式要求
+
+【重要】完成工具调用和文献整理后，你必须按照以下JSON格式输出最终结果。
+不要输出Markdown表格或纯文本，必须输出有效的JSON对象。
+
+输出JSON Schema:
+{json.dumps(output_schema, ensure_ascii=False, indent=2)}
+
+请直接输出符合上述schema的JSON对象，不要用```json```包裹。
+"""
+            full_task_prompt = task_prompt + json_instruction
+
             # 有工具时，使用 agent loop
             messages = [
                 SystemMessage(content=system_prompt),
-                HumanMessage(content=task_prompt)
+                HumanMessage(content=full_task_prompt)
             ]
 
             # Agent loop：最多迭代 10 次
