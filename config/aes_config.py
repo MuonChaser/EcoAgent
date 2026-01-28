@@ -70,6 +70,7 @@ AES_CONFIG = {
         "claim_evidence_similarity": 0.3,  # Claim-Evidence 绑定阈值
         "contradiction_threshold": 0.5,     # 矛盾检测阈值
         "support_threshold": 0.5,           # 支持强度阈值
+        "neutral_support_score": 0.6,       # neutral 标签的支持分数（0-1，建议0.5-0.7）
     },
 
     # 文本处理参数

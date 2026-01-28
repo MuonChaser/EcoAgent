@@ -529,23 +529,39 @@ class AESScorer:
                     results = self.nli_pipeline(batch)
 
                     # 处理批量结果
+                    # 评分逻辑：entailment=1.0, neutral=0.6, contradiction=0.0
+                    # 学术论文中的证据往往是间接支持关系，不是严格的文本蕴含
+                    # neutral 表示"不矛盾"，在学术语境下也是一种支持
+                    neutral_score = self.config.get("thresholds", {}).get("neutral_support_score", 0.6)
+
                     if isinstance(results, list) and len(results) > 0:
                         # 如果返回的是列表的列表（每个输入返回多个结果）
                         if isinstance(results[0], list):
                             for result_list in results:
                                 support_prob = 0.0
                                 for item in result_list:
-                                    if 'entailment' in item.get('label', '').lower():
-                                        support_prob = item.get('score', 0.0)
+                                    label = item.get('label', '').lower()
+                                    score = item.get('score', 0.0)
+                                    if 'entail' in label:
+                                        support_prob = score
+                                        break
+                                    elif 'neutral' in label:
+                                        support_prob = neutral_score * score
                                         break
                                 support_scores.append(support_prob)
                         # 如果返回的是单层列表（每个输入一个结果）
                         else:
                             for item in results:
-                                if 'entailment' in item.get('label', '').lower():
-                                    support_scores.append(item.get('score', 0.0))
-                                else:
+                                label = item.get('label', '').lower()
+                                score = item.get('score', 0.0)
+                                if 'entail' in label:
+                                    support_scores.append(score)
+                                elif 'neutral' in label:
+                                    support_scores.append(neutral_score * score)
+                                elif 'contradict' in label:
                                     support_scores.append(0.0)
+                                else:
+                                    support_scores.append(0.3)
 
                 except Exception as e:
                     logger.warning(f"  批量 NLI 计算失败: {e}，跳过该批次")
@@ -704,7 +720,11 @@ class AESScorer:
 
     def _extract_llm_qualitative_scores(self, llm_review: Dict[str, Any]) -> Dict[str, float]:
         """
-        从 LLM 评审结果中提取定性指标（转换为 0/0.5/1 的量化值）
+        从 LLM 评审结果中提取定性指标（转换为 0-1 的量化值）
+
+        支持两种数据结构：
+        1. Pydantic 模型结构: qualitative_analysis.endogeneity_rating, quantitative_analysis.dimension_scores
+        2. 简化结构: quantitative_analysis.endogeneity_assessment, quantitative_analysis.model_design
 
         Args:
             llm_review: LLM 评审结果字典
@@ -719,12 +739,32 @@ class AESScorer:
         }
 
         try:
-            # 提取定性分析
             qualitative = llm_review.get("qualitative_analysis", {})
             quantitative = llm_review.get("quantitative_analysis", {})
 
-            # 指标6: 内生性处理质量 (从 endogeneity_rating 转换)
-            endogeneity_rating = qualitative.get("endogeneity_rating", "")
+            # ========== 指标6: 内生性处理质量 ==========
+            # 尝试多种路径获取 endogeneity_rating
+            endogeneity_rating = None
+
+            # 路径1: qualitative_analysis.endogeneity_rating
+            if qualitative:
+                endogeneity_rating = qualitative.get("endogeneity_rating", "")
+
+            # 路径2: quantitative_analysis.endogeneity_assessment.overall_rating
+            if not endogeneity_rating and quantitative:
+                endo_assess = quantitative.get("endogeneity_assessment", {})
+                if isinstance(endo_assess, dict):
+                    endogeneity_rating = endo_assess.get("overall_rating", "")
+                    # 也可能直接是分数
+                    if not endogeneity_rating and "score" in endo_assess:
+                        endo_score = endo_assess.get("score", 0)
+                        if endo_score >= 70:
+                            endogeneity_rating = "good"
+                        elif endo_score >= 40:
+                            endogeneity_rating = "average"
+                        else:
+                            endogeneity_rating = "poor"
+
             if isinstance(endogeneity_rating, str):
                 endogeneity_rating = endogeneity_rating.lower()
                 if endogeneity_rating == "good":
@@ -734,34 +774,63 @@ class AESScorer:
                 elif endogeneity_rating == "poor":
                     scores["endogeneity_quality"] = 0.0
 
-            # 指标7: 方法论严谨性 (从维度3模型设计得分转换，满分10分)
-            # 8-10分 -> 1.0, 5-7分 -> 0.5, <5分 -> 0.0
+            # ========== 指标7: 方法论严谨性 ==========
+            model_score = None
+
+            # 路径1: quantitative_analysis.dimension_scores 列表
             dimension_scores = quantitative.get("dimension_scores", [])
-            for dim in dimension_scores:
-                if isinstance(dim, dict) and "模型设计" in dim.get("dimension", ""):
-                    model_score = dim.get("total_score", 0)
-                    if model_score >= 8:
-                        scores["methodology_rigor"] = 1.0
-                    elif model_score >= 5:
-                        scores["methodology_rigor"] = 0.5
-                    else:
-                        scores["methodology_rigor"] = 0.0
-                    break
+            if isinstance(dimension_scores, list):
+                for dim in dimension_scores:
+                    if isinstance(dim, dict) and "模型设计" in dim.get("dimension", ""):
+                        model_score = dim.get("total_score", 0)
+                        break
 
-            # 指标8: 学术规范性 (从维度5论文质量得分转换，满分10分)
-            # 8-10分 -> 1.0, 5-7分 -> 0.5, <5分 -> 0.0
-            for dim in dimension_scores:
-                if isinstance(dim, dict) and "论文质量" in dim.get("dimension", ""):
-                    quality_score = dim.get("total_score", 0)
-                    if quality_score >= 8:
-                        scores["academic_standards"] = 1.0
-                    elif quality_score >= 5:
-                        scores["academic_standards"] = 0.5
-                    else:
-                        scores["academic_standards"] = 0.0
-                    break
+            # 路径2: quantitative_analysis.model_design.score
+            if model_score is None:
+                model_design = quantitative.get("model_design", {})
+                if isinstance(model_design, dict):
+                    model_score = model_design.get("score", 0)
 
-            logger.debug(f"LLM 定性指标提取完成: {scores}")
+            if model_score is not None:
+                # 转换为0-1分数（假设满分100）
+                if model_score > 10:  # 满分100的情况
+                    model_score = model_score / 10
+                if model_score >= 8:
+                    scores["methodology_rigor"] = 1.0
+                elif model_score >= 5:
+                    scores["methodology_rigor"] = 0.5
+                else:
+                    scores["methodology_rigor"] = model_score / 10  # 更细粒度
+
+            # ========== 指标8: 学术规范性 ==========
+            quality_score = None
+
+            # 路径1: quantitative_analysis.dimension_scores 列表
+            if isinstance(dimension_scores, list):
+                for dim in dimension_scores:
+                    if isinstance(dim, dict) and "论文质量" in dim.get("dimension", ""):
+                        quality_score = dim.get("total_score", 0)
+                        break
+
+            # 路径2: quantitative_analysis.paper_quality.score
+            if quality_score is None:
+                paper_quality = quantitative.get("paper_quality", {})
+                if isinstance(paper_quality, dict):
+                    quality_score = paper_quality.get("score", 0)
+
+            if quality_score is not None:
+                # 转换为0-1分数
+                if quality_score > 10:
+                    quality_score = quality_score / 10
+                if quality_score >= 8:
+                    scores["academic_standards"] = 1.0
+                elif quality_score >= 5:
+                    scores["academic_standards"] = 0.5
+                else:
+                    scores["academic_standards"] = quality_score / 10
+
+            logger.info(f"  LLM定性指标提取: 内生性={scores['endogeneity_quality']:.2f}, "
+                       f"方法论={scores['methodology_rigor']:.2f}, 学术规范={scores['academic_standards']:.2f}")
 
         except Exception as e:
             logger.warning(f"提取 LLM 定性指标失败: {e}")
