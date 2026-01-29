@@ -17,10 +17,15 @@ import sys
 from pathlib import Path
 
 # 添加项目根目录到路径
-sys.path.insert(0, str(Path(__file__).parent.parent))
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 from tools.literature_storage import LiteratureStorageTool
 from loguru import logger
+from config.logging_config import setup_logger
+
+# 配置日志
+LOG_FILE = setup_logger("import_papers")
 
 
 def import_csv(storage, csv_path, project, batch_size):

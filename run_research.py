@@ -7,9 +7,19 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+import sys
+from pathlib import Path
+
+# 添加项目根目录到路径
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root))
+
 from orchestrator import ResearchOrchestrator
 from loguru import logger
-import sys
+from config.logging_config import setup_logger
+
+# 配置日志
+LOG_FILE = setup_logger("run_research")
 
 
 def main():

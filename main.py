@@ -5,16 +5,18 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-from loguru import logger
 import sys
 from pathlib import Path
 
-# 配置日志
-from config.config import LOG_FILE, LOG_LEVEL
+# 添加项目根目录到路径
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root))
 
-logger.remove()
-logger.add(sys.stderr, level=LOG_LEVEL)
-logger.add(LOG_FILE, rotation="10 MB", level=LOG_LEVEL)
+from loguru import logger
+from config.logging_config import setup_logger
+
+# 配置日志
+LOG_FILE = setup_logger("main")
 
 from orchestrator import ResearchOrchestrator, SimplifiedOrchestrator
 

@@ -36,16 +36,12 @@ sys.path.insert(0, str(project_root))
 from loguru import logger
 from tools.data_storage import DataStorageTool, get_data_storage
 from config.config import DATA_STORAGE_CONFIG, RAW_DATA_DIR
+from config.logging_config import setup_logger as setup_unified_logger
 
 
 def setup_logging():
     """配置日志"""
-    logger.remove()
-    logger.add(
-        sys.stderr,
-        format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>",
-        level="INFO"
-    )
+    setup_unified_logger("import_data")
 
 
 def import_directory(storage: DataStorageTool, directory: str, recursive: bool = True):

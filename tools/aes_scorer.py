@@ -417,17 +417,35 @@ class AESScorer:
 
     def _calc_citation_coverage(self, claims: List[Claim]) -> float:
         """
-        指标1: 引用覆盖率
-        至少有1个evi的claim数量 / claim总数量
+        指标1: 引用覆盖率（更严格版本）
+
+        两种计算模式：
+        1. 加权覆盖率：考虑每个 claim 的 evidence 数量
+        2. 阈值覆盖率：claim 需要达到最低 evidence 数量才算覆盖
         """
         if not claims:
             return 0.0
 
-        claims_with_evi = sum(1 for c in claims if len(c.evidences) > 0)
-        coverage = claims_with_evi / len(claims)
+        # 获取配置
+        coverage_config = self.config.get("citation_coverage", {})
+        min_evi = coverage_config.get("min_evidences_per_claim", 2)
+        use_weighted = coverage_config.get("use_weighted_coverage", True)
 
-        logger.debug(f"引用覆盖率: {claims_with_evi}/{len(claims)} = {coverage:.4f}")
-        return coverage
+        if use_weighted:
+            # 加权覆盖率：每个 claim 的得分 = min(1.0, evidence_count / min_evi)
+            scores = []
+            for c in claims:
+                evi_count = len(c.evidences)
+                score = min(1.0, evi_count / min_evi) if min_evi > 0 else (1.0 if evi_count > 0 else 0.0)
+                scores.append(score)
+            coverage = np.mean(scores) if scores else 0.0
+        else:
+            # 阈值覆盖率：只有达到 min_evi 才算覆盖
+            claims_with_enough_evi = sum(1 for c in claims if len(c.evidences) >= min_evi)
+            coverage = claims_with_enough_evi / len(claims)
+
+        logger.debug(f"引用覆盖率: {coverage:.4f} (min_evi={min_evi}, weighted={use_weighted})")
+        return float(coverage)
 
     def _calc_causal_relevance(self, claims: List[Claim]) -> float:
         """

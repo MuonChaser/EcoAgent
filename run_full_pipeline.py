@@ -33,19 +33,14 @@ from pathlib import Path
 
 from loguru import logger
 
+# 添加项目根目录到路径
+project_root = Path(__file__).parent
+sys.path.insert(0, str(project_root))
+
+from config.logging_config import setup_logger
+
 # 配置日志
-logger.remove()
-logger.add(
-    sys.stderr,
-    format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | {message}",
-    level="INFO"
-)
-logger.add(
-    "logs/pipeline_{time:YYYYMMDD}.log",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
-    level="DEBUG",
-    rotation="1 day"
-)
+LOG_FILE = setup_logger("run_full_pipeline")
 
 
 def run_full_pipeline(

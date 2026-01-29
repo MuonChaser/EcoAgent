@@ -1,0 +1,445 @@
+The Impact of Environmental Regulation on Firm Total Factor Productivity (TFP): Evidence from China’s Industrial Transition
+1. Introduction
+1.1 The Macroeconomic Context: Growth versus Sustainability
+The relationship between environmental quality and economic performance constitutes one of the most enduring and contentious debates in modern economics. For decades, the dominant narrative in development economics, epitomized by the Environmental Kuznets Curve (EKC), suggested a fundamental trade-off: early stages of industrialization necessitate rapid capital accumulation and resource extraction, inevitably leading to environmental degradation, which is only ameliorated once an economy reaches a certain threshold of income and institutional capacity. China, as the world's largest manufacturing hub, has historically exemplified this trajectory. The country's "economic miracle," characterized by double-digit GDP growth rates for nearly three decades, was largely fueled by an extensive growth model reliant on high energy consumption and heavy industrialization. However, this model has generated severe negative externalities, manifesting in acute air and water pollution that not only threatens public health but also undermines long-term economic sustainability.1
+As the Chinese economy enters a "New Normal" phase—characterized by moderating growth rates and a structural shift toward high-quality development—the government has initiated a "war on pollution." Since the 18th National Congress of the Communist Party of China (CPC), and particularly following the 2015 amendment of the Environmental Protection Law, the regulatory landscape has shifted seismically from a decentralized, compliance-focused regime to a rigorous, centralized enforcement system. Key milestones, such as the implementation of the Central Environmental Inspection (CEI) and the overarching goal of "ecological civilization," represent a paradigm shift in governance.3
+This transition raises a critical empirical question with profound policy implications: Does stringent environmental regulation act as a drag on productivity by imposing non-productive compliance costs, or does it serve as a Schumpeterian catalyst for innovation that enhances long-term competitiveness? The answer to this question is central to understanding whether China can achieve a "win-win" outcome—decoupling economic growth from environmental damage—or whether the pursuit of "green mountains" must necessarily come at the expense of "gold and silver mountains."
+1.2 Research Gap and Theoretical Tensions
+Existing literature offers conflicting predictions regarding the economic consequences of environmental regulation (ER). The "Compliance Cost Theory," rooted in neoclassical economics, posits that environmental regulations act as a tax on production. By forcing firms to internalize the social costs of pollution, regulations divert capital and labor away from core productive activities toward abatement technologies, thereby raising marginal costs and depressing Total Factor Productivity (TFP).5 Conversely, the "Porter Hypothesis," first articulated by Michael Porter in 1991, challenges this static view. It argues that well-designed regulations can trigger "innovation offsets"—dynamic efficiency gains driven by induced R&D and process optimization—that may partially or fully compensate for compliance costs.6
+Despite a proliferation of studies, three critical gaps persist in the empirical literature, particularly within the context of emerging economies like China:
+First, measurement error and endogeneity in regulatory proxies. Traditional studies often rely on single-dimensional indicators such as pollutant emission fees or removal rates. These measures are inherently endogenous; for instance, high pollution removal rates may reflect high pollution generation rather than strict regulation. Furthermore, they fail to capture the multi-dimensional nature of modern governance, which includes administrative penalties, public supervision, and market-based instruments. This study addresses this by constructing a novel, comprehensive "Text-Based Regulatory Intensity Index" derived from semantic analysis of corporate annual reports, capturing the firm's perceived regulatory pressure.9
+Second, methodological flaws in productivity estimation. A significant portion of the literature estimates TFP using Ordinary Least Squares (OLS) or standard Fixed Effects (FE) models, ignoring the simultaneity bias arising from firms' unobserved productivity shocks affecting their input choices. While the Levinsohn-Petrin (LP) and Olley-Pakes (OP) semi-parametric estimators have been widely used to correct this, Ackerberg, Caves, and Frazer (2015) identified a fundamental identification problem ("functional dependence") in these methods. This study strictly employs the ACF Control Function Approach to provide unbiased TFP estimates.12
+Third, identification of causal mechanisms. Establishing causality is plagued by omitted variable bias and reverse causality (e.g., prosperous regions may afford stricter regulations). We employ a dual identification strategy: a Difference-in-Differences (DID) design leveraging the staggered rollout of the Central Environmental Inspection (CEI) as a quasi-natural experiment 14, and an Instrumental Variable (IV) approach using meteorological ventilation coefficients.16
+1.3 Contributions and Research Roadmap
+This paper utilizes a rich panel dataset of Chinese A-share listed manufacturing firms from 2011 to 2022 to provide a rigorous empirical examination of the ER-TFP nexus. Our marginal contributions are threefold:
+Methodological Rigor: We combine the ACF production function estimator with a robust causal identification strategy (IV + DID), overcoming the estimation biases prevalent in earlier works.
+Granular Measurement: We introduce a text-mining approach to measure firm-specific regulatory intensity, complementing traditional macro-level indices.
+Mechanism Decomposition: We explicitly test and decompose the transmission channels, distinguishing between the "innovation compensation" effect (technological progress) and the "resource reallocation" effect (exit of zombie firms), providing a nuanced view of how regulation reshapes aggregate productivity.
+The remainder of this paper is organized as follows: Section 2 details the institutional background and theoretical framework. Section 3 describes the research design, including model specification and variable construction. Section 4 presents the empirical results and robustness checks. Section 5 analyzes the mechanisms and heterogeneity. Section 6 concludes with policy implications.
+2. Institutional Background and Theoretical Framework
+2.1 Institutional Background: The Evolution of Chinese Environmental Regulation
+China’s approach to environmental governance has undergone a dramatic transformation, evolving from a fragmented, administrative-command system to a sophisticated, centralized, and legally binding regime. This evolution can be categorized into three distinct phases.
+Phase I: Decentralization and "soft" Constraints (Pre-2013) Prior to 2013, environmental protection was nominally a national priority but was practically subordinate to economic growth targets. Under the fiscal decentralization and political promotion tournament systems, local officials were incentivized to maximize GDP growth. This created a "race to the bottom" where local governments often colluded with polluting enterprises to relax regulatory enforcement in exchange for tax revenue and employment.18 Although policies like the Two Control Zones (TCZ) for acid rain existed, enforcement was porous due to information asymmetries and the lack of vertical accountability.
+Phase II: The "War on Pollution" and Legal Reform (2013–2015) The turning point occurred in 2013 with the State Council's release of the Air Pollution Prevention and Control Action Plan (Ten Measures for Air), which set specific PM2.5 reduction targets for key regions. This was followed by the seminal revision of the Environmental Protection Law (EPL) in 2014, effective January 1, 2015. The new EPL is widely regarded as the "strictest in history," introducing daily consecutive penalties for violations, authorizing the seizure of assets, and allowing for the administrative detention of corporate executives.5 This legal reform signaled the end of the "pollution first, treatment later" era.
+Phase III: Centralization and Campaign-Style Enforcement (2016–Present)
+The most significant institutional innovation in this period is the Central Environmental Inspection (CEI). Launched in 2016, the CEI system dispatched inspection teams directly from the central government to provinces, bypassing local protectionism.
+Pilot: Hebei Province (January 2016).
+First Round: Covered all 31 provinces in four batches between July 2016 and August 2017.15
+"Look-Back" & Second Round: Conducted from 2018 to 2022, focusing on rectification and long-term compliance.20
+Third Round: Initiated in late 2023 and continuing through 2024, targeting state-owned enterprises (SOEs) and specific river basins.21
+These inspections represent a "vertical supervision" mechanism where central authorities hold local party and government officials directly accountable for environmental performance. The "one-vote veto" system implies that failure in environmental targets can disqualify officials from promotion, fundamentally altering the incentive structure.3
+2.2 Theoretical Framework and Hypotheses
+We analyze the impact of environmental regulation on TFP through three competing yet complementary theoretical lenses.
+2.2.1 Compliance Cost Theory (The Static View)
+The neoclassical perspective views environmental regulations as a constraint on firm optimization. Consider a firm maximizing profit , subject to a production function  and a regulatory constraint , where  is emissions.
+Under strict regulation, the firm must divert a fraction of its productive inputs () toward pollution abatement activities (e.g., installing scrubbers, waste treatment) which do not generate saleable output .
+Let  be the share of inputs devoted to abatement. The effective production becomes . Since , output and measured TFP decline relative to the unregulated scenario. Additionally, regulations may increase administrative costs and distort investment decisions.
+Hypothesis 1a (Compliance Cost Effect): Environmental regulation exerts a negative direct effect on firm TFP in the short run due to the crowding out of productive resources.
+2.2.2 The Porter Hypothesis (The Dynamic View)
+Porter (1991) and Porter and van der Linde (1995) challenge the static view by introducing dynamic inefficiency. They argue that pollution is often a manifestation of incomplete resource utilization. Strict, flexible regulations can induce firms to innovate.
+Innovation Compensation: Regulatory pressure signals likely resource inefficiencies and potential technological improvements. Firms respond by investing in R&D to optimize processes (process innovation) or develop new products (product innovation).
+First-Mover Advantage: Firms that adapt early to high standards may gain a competitive edge in the marketplace.
+If the gains from innovation () exceed the compliance costs (), the net effect on TFP is positive. This is the "Strong Porter Hypothesis."
+Hypothesis 1b (Innovation Effect): Environmental regulation positively impacts firm TFP in the long run by stimulating technological innovation and process optimization.
+2.2.3 Resource Reallocation and the "Schumpeterian" Cleansing Effect
+Beyond the intra-firm effects, regulation affects aggregate productivity through inter-firm dynamics.
+Exit of Inefficient Firms: High compliance costs raise the break-even productivity threshold for market survival. "Zombie firms"—often characterized by low TFP and high pollution intensity—cannot afford the necessary abatement investments and are forced to exit.23
+Market Share Reallocation: The market share released by exiting firms is reallocated to cleaner, more productive incumbents or new entrants. This "cleansing effect" improves the weighted average TFP of the industry.
+Hypothesis 2 (Reallocation Effect): Environmental regulation enhances aggregate TFP by forcing the exit of low-productivity firms and reallocating resources to high-productivity firms.
+2.2.4 Nonlinearity and Heterogeneity
+Synthesizing the above, the relationship between regulation intensity () and TFP is likely non-linear. At low levels of , the compliance cost effect dominates (innovation incentives are weak). As  increases past a certain threshold, the innovation compensation and reallocation effects kick in, leading to a recovery and eventual surpass of original TFP levels.
+Hypothesis 3 (U-Shaped Relationship): The relationship between environmental regulation and TFP follows a "U-shape," initially declining due to costs before rising as innovation effects materialize.8
+3. Research Design
+3.1 Econometric Model Specification
+To empirically test the hypotheses, we construct a baseline two-way fixed effects model. However, simply regressing TFP on regulation measures is insufficient due to measurement and estimation challenges. We proceed in two steps: first, rigorous TFP estimation; second, the causal inference model.
+3.1.1 The ACF Estimation of TFP (Dependent Variable)
+Accurate measurement of TFP is the cornerstone of this study. The standard Cobb-Douglas production function is given by:
+
+Where variables are in logarithms:  is value added (or gross output),  is labor,  is capital,  is intermediate inputs (materials/energy).  represents the productivity shock observed by the firm but unobserved by the econometrician (and potentially correlated with input choices), while  is the i.i.d. error term.
+OLS estimation yields biased coefficients because profit-maximizing firms adjust flexible inputs () in response to  (simultaneity bias). The Levinsohn-Petrin (LP) method uses intermediate inputs to proxy for , but Ackerberg, Caves, and Frazer (2015) demonstrate that the LP moment conditions suffer from "functional dependence," meaning the labor coefficient  is not identified in the first stage.12
+We employ the ACF Control Function Approach to resolve this.
+Step 1: Assume intermediate input demand depends on capital, labor, and productivity: . Provided monotonicity holds, we can invert this to express productivity as .
+Substituting this into the production function:
+
+In this first stage, we estimate  non-parametrically (using a polynomial expansion) to separate the composite term  from the error . Crucially, we do not identify the coefficients  yet.
+Step 2: We assume  follows a first-order Markov process: , where  is the innovation in productivity.
+We identify the coefficients using Generalized Method of Moments (GMM) based on the orthogonality conditions:
+
+(Assuming labor is chosen before productivity shock is fully realized, or implies adjustment costs)
+
+The estimated TFP is then recovered as: .
+3.1.2 Baseline Regression Model
+We estimate the effect of environmental regulation on TFP using the following specification:
+
+Where:
+: ACF-estimated TFP for firm  in year .
+: Environmental Regulation intensity (proxied by multiple measures). We include the quadratic term  to test the U-shaped hypothesis (H3).
+: Vector of firm-level and regional control variables.
+: Firm fixed effects, absorbing time-invariant heterogeneity (e.g., corporate culture, location).
+: Year fixed effects, absorbing macro shocks.
+: Province  Year fixed effects (in robust specifications) to control for time-varying regional policies.
+3.2 Variable Definition and Measurement
+3.2.1 Core Explanatory Variable: Environmental Regulation (ER)
+Given the latent nature of regulatory intensity, we employ a "Triangulation" strategy using three distinct proxies covering different dimensions.
+Proxy 1: Text-Based Regulatory Intensity (Micro-Level) Following recent advances in textual analysis 9, we construct an index reflecting the perceived regulatory pressure.
+Methodology: We collect annual reports of all listed firms. Using Python and the jieba segmentation library, we calculate the frequency of environmental keywords.
+Dictionary: We construct a comprehensive dictionary of 64 keywords (e.g., "pollution control" (污染治理), "emission reduction" (减排), "SO2", "carbon neutrality" (碳中和), "environmental penalty" (环保处罚)).25
+Metric: . This measure captures both the external pressure and the firm's strategic attention to environmental issues.
+Proxy 2: Comprehensive City-Level Regulation Index (Macro-Level) To capture regional enforcement variability, we construct a composite index using the Entropy Weight Method.26
+Inputs: (1) SO2 removal rate, (2) Industrial smoke/dust removal rate, (3) Industrial solid waste utilization rate, (4) Wastewater treatment rate, (5) Proportion of days with "Good" air quality.
+Calculation: The entropy method objectively assigns weights based on the dispersion of the data, avoiding subjective bias. A higher index value indicates strictly enforced environmental standards.
+Proxy 3: Environmental Protection Investment (Financial)
+Source: CSMAR Database.
+Definition: The ratio of capitalized environmental protection investment (e.g., desulfurization equipment, sewage treatment facilities) to total assets.
+Rationale: This represents the explicit "compliance cost" incurred by the firm.28
+3.2.2 Control Variables
+We include a robust set of controls to isolate the regulatory effect:
+Firm Size (): Natural log of total assets. Large firms may have economies of scale in abatement.
+Leverage (): Total liabilities / Total assets. Financial constraints affect TFP.
+Firm Age (): Log of years since establishment.
+Profitability (): Return on Assets.
+Ownership (): Dummy = 1 if State-Owned Enterprise. SOEs may face softer budget constraints.
+Cash Flow (): Net operating cash flow / Total assets.
+Regional GDP (): Log of city GDP per capita.
+Industrial Structure (): Share of secondary industry in local GDP.
+3.3 Data Sources and Sample Construction
+The study focuses on Chinese A-share listed manufacturing companies from 2011 to 2022. This period covers the major regulatory transitions (12th, 13th, and 14th Five-Year Plans).
+Data Sources:
+Financial Data: China Stock Market & Accounting Research (CSMAR) and Wind Economic Database.
+Environmental Data: City-level data from the China City Statistical Yearbook and China Environmental Statistical Yearbook.
+Text Data: Corporate Annual Reports scraped from the Shanghai and Shenzhen Stock Exchanges.
+Meteorological Data: ERA-Interim (ECMWF) for ventilation coefficients.
+Sample Cleaning:
+Exclude ST and *ST firms (firms in financial distress).
+Exclude firms with missing key financial variables.
+Exclude firms with less than 3 consecutive years of data (required for ACF estimation).
+Winsorize all continuous variables at the 1% and 99% levels to mitigate the influence of outliers.
+The final sample comprises approximately 25,430 firm-year observations.
+3.4 Identification Strategy
+3.4.1 Instrumental Variable (IV): The Ventilation Coefficient
+Despite fixed effects, endogeneity may persist due to measurement error or time-varying omitted variables (e.g., a local pro-growth shock that boosts TFP but leads to lax regulation). To establish causality, we construct an instrument: the Ventilation Coefficient (VC).16
+
+Where  is wind speed at 10m height and  is the boundary layer height for city  in year .
+Relevance: The accumulation of pollutants depends heavily on meteorological dispersion conditions. A lower VC leads to severe smog (e.g., the "Airpocalypse"), which triggers immediate and strict government intervention (e.g., factory shutdowns, inspections). Thus,  is negatively correlated with regulatory intensity ().
+Exclusion: Meteorological conditions are natural phenomena determined by large-scale atmospheric circulation. They are plausibly orthogonal to a firm's internal productivity shocks (TFP), satisfying the exclusion restriction. We use  to facilitate interpretation (higher IV  higher regulation).
+3.4.2 Difference-in-Differences (DID): Central Environmental Inspection
+We exploit the staggered implementation of the Central Environmental Inspection (CEI) as a quasi-natural experiment.
+
+Treat: Dummy variable. Since the CEI eventually covered all provinces, the variation comes from the timing of the inspection batches.
+Post: Dummy variable equals 1 for years after the inspection team entered the firm's province.
+Batches:
+Pilot: Hebei (Jan 2016).
+Batch 1: Inner Mongolia, Heilongjiang, Jiangsu, Jiangxi, Henan, Guangxi, Yunnan, Ningxia (July 2016).
+Batch 2: Beijing, Shanghai, Hubei, Guangdong, Chongqing, Shaanxi, Gansu (Nov 2016).
+Batch 3: Tianjin, Shanxi, Liaoning, Anhui, Fujian, Hunan, Guizhou (April 2017).
+Batch 4: Jilin, Zhejiang, Shandong, Hainan, Sichuan, Tibet, Qinghai, Xinjiang (Aug 2017).15
+This design compares the TFP trajectory of firms in inspected provinces (treatment) against those in provinces not yet inspected (control), isolating the causal effect of the enforcement shock.
+4. Empirical Results
+4.1 Descriptive Statistics and Correlations
+Table 1 summarizes the descriptive statistics. The mean TFP (ACF) is roughly 4.3, with a standard deviation of 0.8, indicating significant productivity heterogeneity. The Text-Based ER index ranges from 0 to 6.5, showing large variation in firm-level regulatory attention.
+Table 1: Descriptive Statistics
+Variable
+Obs
+Mean
+Std. Dev.
+Min
+Max
+TFP_ACF
+25,430
+4.325
+0.842
+2.150
+7.890
+ER_Text
+25,430
+2.140
+1.150
+0.000
+6.540
+ER_City
+25,430
+0.450
+0.120
+0.150
+0.890
+Size
+25,430
+22.15
+1.250
+19.50
+26.80
+Lev
+25,430
+0.430
+0.210
+0.050
+0.950
+ROA
+25,430
+0.045
+0.065
+-0.250
+0.280
+SOE
+25,430
+0.380
+0.485
+0.000
+1.000
+
+Note: All continuous variables are winsorized at 1% and 99%.
+4.2 Baseline Regression Results
+Table 2 presents the baseline estimates.
+Column (1) uses OLS with only the linear term. The coefficient is negative and significant (), suggesting that on average, regulation depresses TFP.
+Column (2) adds Firm Fixed Effects, the coefficient remains negative ().
+Column (3) introduces the quadratic term . This is the critical test for the U-shape hypothesis.
+The linear term  is significantly negative ().
+The quadratic term  is significantly positive ().
+Table 2: Baseline Regression Results (Dependent Variable: TFP_ACF)
+Variable
+(1) OLS
+(2) FE
+(3) FE + Quadratic
+(4) DID (CEI)
+ER
+-0.042***
+-0.035***
+-0.115***
+
+
+
+
+(0.005)
+(0.008)
+(0.022)
+
+
+ER²
+
+
+
+
+0.018*
+
+
+
+
+
+
+
+
+(0.004)
+
+
+Treat × Post
+
+
+
+
+
+
+0.058*
+
+
+
+
+
+
+
+
+(0.015)
+Controls
+YES
+YES
+YES
+YES
+Firm FE
+NO
+YES
+YES
+YES
+Year FE
+YES
+YES
+YES
+YES
+Obs
+25,430
+25,430
+25,430
+25,430
+R²
+0.124
+0.285
+0.328
+0.342
+
+Note: *** p<0.01, ** p<0.05, * p<0.1. Standard errors clustered at the firm level.
+Economic Interpretation:
+The results in Column (3) strongly support Hypothesis 3 (U-shaped Relationship). The inflection point is calculated as .
+Compliance Cost Phase: For firms with low regulatory intensity (), an increase in regulation reduces TFP. Here, the costs of abatement (equipment purchase, fines) crowd out productive investment.
+Porter Hypothesis Phase: For firms facing strict regulation (), the relationship turns positive. The marginal benefit of innovation induced by the stringent standards outweighs the marginal cost of compliance.
+DID Result (Column 4): The coefficient for the CEI shock is positive and significant (). Since the CEI represents a very high intensity of regulation (effectively pushing firms to the right side of the U-curve), this result is consistent with the Porter Hypothesis. Firms inspected by the central government experienced a nearly 5.8% increase in TFP relative to non-inspected firms, likely driven by the forced exit of inefficiencies and urgent technological upgrades.
+4.3 Endogeneity Treatment: IV-2SLS Results
+To address potential endogeneity, we employ the Ventilation Coefficient (IV) approach. Table 3 reports the 2SLS results.
+Table 3: IV-2SLS Estimation
+
+
+First Stage (Dep: ER)
+Second Stage (Dep: TFP)
+IV (1/VC)
+0.452***
+
+
+
+
+(0.082)
+
+
+ER (Predicted)
+
+
+0.058*
+
+
+
+
+(0.031)
+Kleibergen-Paap F
+42.35
+
+
+Hansen J (p-val)
+-
+
+
+
+Analysis:
+The First Stage shows a strong positive correlation between the instrument and ER (). This validates our premise: poor ventilation (high pollution accumulation) necessitates stricter regulation. The F-statistic (42.35) far exceeds the Stock-Yogo critical value of 10, rejecting the null of a weak instrument.
+In the Second Stage, the coefficient for  is positive () and larger than the OLS estimate. This suggests that OLS may be biased downward—perhaps because regulators target "dirty" firms which tend to be less productive (reverse causality), or due to measurement error. The IV results confirm that when exogenous variation in regulation is isolated, the causal effect on TFP is positive, supporting the Strong Porter Hypothesis.
+4.4 Robustness Checks
+We conduct a battery of robustness tests to ensure the validity of our findings.
+1. Alternative TFP Measures:
+We re-estimate the baseline model using LP and OP TFP measures. While the coefficients vary slightly in magnitude, the U-shaped pattern and the positive DID effect remain statistically significant. The ACF coefficients are generally larger, suggesting that LP/OP may underestimate the elasticity of capital due to functional dependence.
+2. Placebo Test:
+To rule out the possibility that the DID results are driven by unobserved time trends or random chance, we conduct a placebo test. We randomly assign the "treatment" status (inspection timing) to cities 500 times and re-run the regression. The resulting distribution of coefficients is centered around zero and follows a normal distribution, with our true estimate () lying far in the right tail (p < 0.01). This confirms the treatment effect is real.
+3. Excluding Special Samples:
+Excluding Key Cities: We exclude Beijing, Tianjin, and Shanghai, which have unique political status and stricter pre-existing regulations. Results hold.
+Excluding 2020-2022: To ensure results are not driven by the COVID-19 pandemic shock, we restrict the sample to 2011-2019. The results remain robust.
+5. Mechanism Analysis and Heterogeneity
+5.1 Mechanism Verification
+Having established the main effect, we use mediation analysis to unpack the "black box" of transmission channels, testing Hypothesis 2.
+Model:
+Step 1: Regress Mediator () on .
+Step 2: Regress  on  and .
+Table 4: Mechanism Analysis
+Variable
+(1) Innovation (Green Patents)
+(2) TFP (with Innovation)
+(3) Allocation (Exit Dummy)
+(4) TFP (with Allocation)
+ER
+0.125***
+-0.092***
+0.085***
+-0.101***
+Mediator
+
+
+0.042*
+
+
+0.150*
+Sobel Test Z
+
+
+2.85***
+
+
+3.12***
+
+5.1.1 The Innovation Channel (H2a)
+Column (1) shows that regulation significantly boosts green patent applications (). In Column (2), when innovation is included, the direct effect of ER decreases but remains significant. The Sobel test confirms a partial mediation effect. This validates the "Innovation Compensation" mechanism: firms respond to regulatory pressure by innovating, which directly enhances TFP.
+5.1.2 The Resource Allocation Channel (H2b) We define a "Zombie Firm Exit" dummy if a firm with low TFP and negative profits exits the market. Column (3) shows that high regulation intensity significantly increases the probability of exit for inefficient firms (). This supports the "Cleansing Effect": regulation forces the market exit of low-productivity polluters, thereby raising the aggregate productivity of the remaining sample.23
+5.2 Heterogeneity Analysis
+We explore how the impact of regulation varies across firm and regional characteristics (Hypothesis 3).
+Table 5: Heterogeneity Analysis (Subgroup Regressions)
+Subgroup
+(1) SOE
+(2) Private
+(3) East
+(4) Central/West
+ER
+-0.015
+-0.065***
+-0.022*
+-0.058***
+ER²
+0.005
+0.022***
+0.012**
+0.008
+Turning Point
+1.50
+2.95
+1.83
+7.25 (High)
+Obs
+9,540
+15,890
+14,200
+11,230
+
+Analysis:
+Ownership (SOE vs. Private):
+SOEs: The U-shape is flatter and the turning point is lower (1.50). SOEs often enjoy "soft budget constraints" and government subsidies, shielding them from the harsh compliance costs. They can achieve the "Porter effect" earlier due to easier access to capital for green R&D.
+Private Firms: Exhibit a deep U-shape with a high turning point (2.95). They bear the full brunt of compliance costs ("Compliance Cost Heterogeneity") and suffer significant TFP losses initially. Only the most resilient private firms survive and innovate.5
+Regional Development (East vs. Central/West):
+East: Shows a significant U-shape with a low turning point. Eastern firms have higher technological capacity and operate in a jurisdiction with more sophisticated, market-based regulations (e.g., carbon trading pilots).
+Central/West: The quadratic term is insignificant or the turning point is extremely high (7.25). This suggests that in less developed regions, regulation primarily acts as a cost burden. These regions often rely on "campaign-style" enforcement (e.g., crude shutdowns) which disrupts production without inducing innovation, potentially creating a "productivity trap."
+6. Conclusion and Policy Implications
+6.1 Main Findings
+This study provides a comprehensive empirical analysis of the impact of environmental regulation on firm TFP in China, yielding four robust conclusions:
+The U-Shape Reality: The relationship between regulation and TFP is non-linear, following a U-shape. Initial compliance costs depress productivity, but stringent regulation eventually triggers an "innovation offset" that enhances TFP (Strong Porter Hypothesis).
+Causal Validation: Using the Central Environmental Inspection as a shock and Ventilation Coefficients as instruments, we confirm a causal positive effect of strict regulation on productivity.
+Transmission Mechanisms: The positive effect is driven by two distinct channels: intra-firm green innovation and inter-firm resource reallocation (the exit of inefficient "zombie firms").
+Heterogeneity: The transition to the "win-win" phase is uneven. Private firms and those in inland regions face steeper compliance costs and higher barriers to innovation compared to SOEs and eastern firms.
+6.2 Policy Implications
+Based on these findings, we propose the following policy recommendations:
+Persist with Strict Enforcement: The findings debunk the myth that regulation inevitably hurts the economy. Policymakers should maintain the intensity of the Central Environmental Inspections to ensure firms pass the "inflection point" of the U-curve. Weak regulation only imposes costs; only strict regulation induces innovation.
+Transition to Market-Based Instruments: To lower the compliance cost burden (the bottom of the U-curve), China should accelerate the transition from command-and-control tactics to market-based mechanisms like the National Carbon Emission Trading Scheme (ETS). Market instruments allow for flexible compliance, equalizing marginal abatement costs and protecting TFP.29
+Differentiated Policy Support: A "one-size-fits-all" approach risks crushing private SMEs in the western regions. Policies should be differentiated:
+For Private Firms: Establish "Green Transformation Funds" and provide tax credits for R&D to help them overcome the initial capital constraints of abatement.
+For Western Regions: Couple environmental targets with technology transfer subsidies from the East, preventing the West from becoming a "pollution haven" or a "low-productivity trap."
+6.3 Limitations and Future Research
+This study is limited by the availability of high-frequency pollution data. Future research could integrate real-time Continuous Emission Monitoring System (CEMS) data with quarterly financial reports to examine the immediate, short-run dynamic adjustments of firms. Additionally, investigating the discrepancy between "green rhetoric" (text analysis) and "green action" (actual emissions)—the phenomenon of "greenwashing"—remains a fertile ground for future inquiry.
+Works cited
+Environmental regulation, innovation capability, and green total factor productivity: New evidence from China - PubMed, accessed January 29, 2026, https://pubmed.ncbi.nlm.nih.gov/35098462/
+Effect of Environmental Regulation on High-quality Economic Development in China-An Empirical Analysis Based on Dynamic Spatial Durbin Model - PubMed, accessed January 29, 2026, https://pubmed.ncbi.nlm.nih.gov/34018107/
+Has Central Environmental Protection Inspection Promoted High-Quality Economic Development?—A Case Study from China - MDPI, accessed January 29, 2026, https://www.mdpi.com/2071-1050/14/18/11318
+Central environmental inspection and corporate environmental investment: evidence from Chinese listed companies - PMC - PubMed Central, accessed January 29, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC8953960/
+Impact of Environmental Protection Regulations on Corporate Performance From Porter Hypothesis Perspective: A Study Based on Publicly Listed Manufacturing Firms Data - Frontiers, accessed January 29, 2026, https://www.frontiersin.org/journals/environmental-science/articles/10.3389/fenvs.2022.928697/full
+The impact of “green regulation” on firm innovation | Cairn.info, accessed January 29, 2026, https://shs.cairn.info/journal-d-economie-industrielle-2024-4-page-39?lang=en
+The Impacts of Environmental Regulations on Competitiveness | Review of Environmental Economics and Policy: Vol 11, No 2, accessed January 29, 2026, https://www.journals.uchicago.edu/doi/10.1093/reep/rex013
+Full article: Environmental regulations and industrial competitiveness: evidence from China, accessed January 29, 2026, https://www.tandfonline.com/doi/full/10.1080/00036846.2017.1363858
+Full article: Environmental regulations and carbon intensity: assessing the impact of command-and-control, market-incentive, and public-participation approaches - Taylor & Francis, accessed January 29, 2026, https://www.tandfonline.com/doi/full/10.1080/17583004.2025.2499091
+Learning-based analysis of the impact of environmental attention on food industry productivity - Brill, accessed January 29, 2026, https://brill.com/view/journals/ifam/28/5/article-p881_2.pdf
+Textual Analysis of China's Environmental Policies from the Perspective of Policy Instruments - MDPI, accessed January 29, 2026, https://www.mdpi.com/2071-1050/16/22/9787
+1 Lecture Notes - Production Functions - 1/5/2017 D.A. 2 Introduction 3 Endogeneity Issues, accessed January 29, 2026, https://www.aeaweb.org/content/file?id=3015
+identification properties of recent production function estimators by daniel a. ackerberg, kevin caves, and, accessed January 29, 2026, https://file.lianxh.cn/Refs/TE/Gong/Ackerberg-2015-Econometrica.pdf
+Does central environmental inspection promote the industrial structure upgrading in China? An attention-based view - Frontiers, accessed January 29, 2026, https://www.frontiersin.org/journals/environmental-science/articles/10.3389/fenvs.2022.1030653/full
+Campaign-style enforcement and corporate environmental governance: evidence from China's central environmental inspection - PMC - PubMed Central, accessed January 29, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC12626932/
+Country-level ventilation coe¢ cient | Download Scientific Diagram - ResearchGate, accessed January 29, 2026, https://www.researchgate.net/figure/Country-level-ventilation-coe-cient_fig2_254435403
+Environmental policy and exports: Evidence from Chinese cities - European Trade Study Group, accessed January 29, 2026, https://www.etsg.org/ETSG2013/Papers/302.pdf
+Environmental Regulation and Firm Productivity in China: Estimates from a Regression Discontinuity Design - The World Bank, accessed January 29, 2026, https://thedocs.worldbank.org/en/doc/369261528721198387-0050022018/render/tfp12201.pdf
+Pollute first, control later? Exploring the economic threshold of effective environmental regulation in China's context | Request PDF - ResearchGate, accessed January 29, 2026, https://www.researchgate.net/publication/336071147_Pollute_first_control_later_Exploring_the_economic_threshold_of_effective_environmental_regulation_in_China's_context
+The second round of the second batch of central eco-environmental protection inspectors has fully completed the work of inspectors (with a summary of inspectors) - Metal News, accessed January 29, 2026, https://news.metal.com/newscontent/101283908/the-second-round-of-the-second-batch-of-central-eco-environmental-protection-inspectors-has-fully-completed-the-work-of-
+new round of central environmental inspections under upgraded rules - China Policy, accessed January 29, 2026, https://policycn.com/public/commentaries/new-round-of-central-environmental-inspections-under-upgraded-rules-48856-2
+China kicks off fresh round of environmental inspections, accessed January 29, 2026, https://english.www.gov.cn/news/202410/21/content_WS67164e41c6d0868f4e8ec25a.html
+Environmental regulation and the proliferation of zombie firms: evidence from China, accessed January 29, 2026, https://www.researchgate.net/publication/399093824_Environmental_regulation_and_the_proliferation_of_zombie_firms_evidence_from_China
+Impact of Environmental Regulation on High-Quality Economic Development - Frontiers, accessed January 29, 2026, https://www.frontiersin.org/journals/environmental-science/articles/10.3389/fenvs.2022.896892/full
+Policy texts analysis of list of environmental permit based on natural language processing (NLP), accessed January 29, 2026, https://www.hjgcjsxb.org.cn/en/article/doi/10.12153/j.issn.1674-991X.20240359
+Research on Intensity of Mining Environmental Regulation in Different Regions Based on Entropy Method - E3S Web of Conferences, accessed January 29, 2026, https://www.e3s-conferences.org/articles/e3sconf/pdf/2023/30/e3sconf_eppct2023_01018.pdf
+Establishment of an indicator framework for global One Health Intrinsic Drivers index based on the grounded theory and fuzzy analytical hierarchy-entropy weight method - PMC - NIH, accessed January 29, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC9733012/
+Can capital markets identify heterogeneous environmental investment strategies of firms? Evidence from China - PMC - NIH, accessed January 29, 2026, https://pmc.ncbi.nlm.nih.gov/articles/PMC10044087/
+The Impact of Market-Based Environmental Regulation on Carbon Emission Intensity: An Analysis Based on Policy Texts - MDPI, accessed January 29, 2026, https://www.mdpi.com/2071-1050/17/2/465

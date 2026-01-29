@@ -30,17 +30,13 @@ sys.path.insert(0, str(project_root))
 from loguru import logger
 from tools.aes_scorer import get_aes_scorer
 from config.aes_config import get_aes_config
+from config.logging_config import setup_logger as setup_unified_logger
 
 
 def setup_logger(verbose: bool = False):
     """配置日志"""
-    logger.remove()
     level = "DEBUG" if verbose else "INFO"
-    logger.add(
-        sys.stderr,
-        format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | {message}",
-        level=level
-    )
+    setup_unified_logger("score_paper", level=level, file_level="DEBUG")
 
 
 def score_paper(file_path: str) -> dict:

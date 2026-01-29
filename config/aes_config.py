@@ -34,13 +34,19 @@ AES_CONFIG = {
         "academic_standards": 0.06,     # 学术规范性（论文质量得分转换）
     },
 
-    # 不同类型 claim 的证据需求数量
+    # 不同类型 claim 的证据需求数量（提高要求使评分更严格）
     "evidence_needs": {
-        "background": 0,      # 背景陈述不需要证据
-        "general": 1,         # 一般陈述需要1条证据
-        "hypothesis": 3,      # 假设需要3条证据
-        "conclusion": 3,      # 结论需要3条证据
-        "mechanism": 2,       # 机制分析需要2条证据
+        "background": 1,      # 背景陈述需要1条证据
+        "general": 2,         # 一般陈述需要2条证据
+        "hypothesis": 5,      # 假设需要5条证据
+        "conclusion": 5,      # 结论需要5条证据
+        "mechanism": 4,       # 机制分析需要4条证据
+    },
+
+    # 引用覆盖率参数
+    "citation_coverage": {
+        "min_evidences_per_claim": 2,  # 每个 claim 至少需要多少 evidence 才算覆盖
+        "use_weighted_coverage": True,  # 使用加权覆盖率（考虑 evidence 数量）
     },
 
     # Claim 分类关键词

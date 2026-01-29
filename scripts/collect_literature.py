@@ -40,7 +40,11 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from loguru import logger
 
 from config.config import API_KEY, API_BASE, DEFAULT_MODEL, DATA_DIR
+from config.logging_config import setup_logger
 from tools.methodology_graph import MethodologyKnowledgeGraph
+
+# 配置日志
+LOG_FILE = setup_logger("collect_literature")
 
 
 # 搜索关键词扩展的系统提示

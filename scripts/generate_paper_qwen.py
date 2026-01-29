@@ -30,14 +30,10 @@ load_dotenv()
 
 from openai import OpenAI
 from loguru import logger
+from config.logging_config import setup_logger
 
 # 配置日志
-logger.remove()
-logger.add(
-    sys.stderr,
-    format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | {message}",
-    level="INFO"
-)
+LOG_FILE = setup_logger("generate_paper")
 
 # 完整的英文提示词
 SYSTEM_PROMPT = """You are a senior economist with extensive publication experience in top economics journals (AER, QJE, JPE, Econometrica, Journal of Political Economy) and leading Chinese journals (Economic Research Journal, Management World). Your task is to generate a complete, publication-ready academic paper.
@@ -442,6 +438,7 @@ def generate_paper(
         f.write(content)
 
     logger.info(f"论文已保存到: {output_path}")
+    logger.info(f"日志已保存到: {LOG_FILE}")
 
     return content
 
