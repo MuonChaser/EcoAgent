@@ -27,6 +27,16 @@ except ImportError:
     DATA_TOOLS_AVAILABLE = False
     logger.warning("数据工具不可用，数据分析功能将受限")
 
+# 导入知识图谱工具
+try:
+    from tools.methodology_graph import get_methodology_graph, MethodologyKnowledgeGraph
+    from config.config import KNOWLEDGE_GRAPH_CONFIG
+    KNOWLEDGE_GRAPH_AVAILABLE = True
+except ImportError:
+    KNOWLEDGE_GRAPH_AVAILABLE = False
+    KNOWLEDGE_GRAPH_CONFIG = {"enabled": False}
+    logger.warning("知识图谱工具不可用，方法推荐功能将受限")
+
 
 class ResearchOrchestrator:
     """
@@ -48,7 +58,8 @@ class ResearchOrchestrator:
         self,
         output_dir: str = "output",
         data_storage_dir: str = "data/datasets",
-        literature_storage_dir: str = "data/literature"
+        literature_storage_dir: str = "data/literature",
+        knowledge_graph_dir: str = None,
     ):
         """
         初始化编排器
@@ -57,6 +68,7 @@ class ResearchOrchestrator:
             output_dir: 输出目录
             data_storage_dir: 数据存储目录
             literature_storage_dir: 文献存储目录
+            knowledge_graph_dir: 知识图谱存储目录（如果为None则使用配置文件中的默认值）
         """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -86,6 +98,20 @@ class ResearchOrchestrator:
             except Exception as e:
                 logger.warning(f"数据存储初始化失败: {e}")
 
+        # 初始化知识图谱
+        self.knowledge_graph = None
+        self.knowledge_graph_enabled = KNOWLEDGE_GRAPH_CONFIG.get("enabled", False) and KNOWLEDGE_GRAPH_AVAILABLE
+        if self.knowledge_graph_enabled:
+            try:
+                kg_dir = knowledge_graph_dir or KNOWLEDGE_GRAPH_CONFIG.get("storage_dir", "data/methodology_graph")
+                self.knowledge_graph = get_methodology_graph(storage_dir=kg_dir)
+                node_count = len(self.knowledge_graph.nodes)
+                edge_count = len(self.knowledge_graph.edges)
+                logger.info(f"知识图谱初始化完成，已有 {node_count} 个节点, {edge_count} 条边")
+            except Exception as e:
+                logger.warning(f"知识图谱初始化失败: {e}")
+                self.knowledge_graph_enabled = False
+
         # 初始化报告生成器
         self.report_generator = ReportGenerator(str(output_dir))
 
@@ -103,6 +129,7 @@ class ResearchOrchestrator:
         word_count: int = 8000,
         enable_steps: Optional[List[str]] = None,
         enable_review: bool = True,
+        enable_knowledge_graph: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """
         运行完整的研究流程
@@ -121,6 +148,7 @@ class ResearchOrchestrator:
             enable_steps: 启用的步骤列表，如果为None则运行所有步骤
                          可选值: ["input_parse", "literature", "variable", "theory", "model", "analysis", "report"]
             enable_review: 是否启用审稿人评审（默认启用，在论文完成后进行）
+            enable_knowledge_graph: 是否启用知识图谱进行方法推荐（None表示使用默认配置）
 
         Returns:
             包含所有结果的字典
@@ -270,16 +298,61 @@ class ResearchOrchestrator:
                 logger.info("步骤4/7: 计量模型设计")
                 logger.info("=" * 50)
 
-                model_result = self.model_designer.run({
+                # 准备模型设计输入
+                model_input = {
                     "research_topic": research_topic,
                     "variable_system": results.get("variable_system", ""),
                     "theory_framework": results.get("theory_framework", ""),
-                })
+                }
+
+                # 使用知识图谱推荐方法
+                use_kg = enable_knowledge_graph if enable_knowledge_graph is not None else self.knowledge_graph_enabled
+                if use_kg and self.knowledge_graph:
+                    try:
+                        # 从变量信息中提取X和Y
+                        x_query = ""
+                        y_query = ""
+                        if "variable_x" in results:
+                            x_query = results["variable_x"].get("name", "")
+                        if "variable_y" in results:
+                            y_query = results["variable_y"].get("name", "")
+
+                        # 如果没有明确的X/Y，尝试从研究主题中提取
+                        if not x_query or not y_query:
+                            x_query = x_query or research_topic
+                            y_query = y_query or research_topic
+
+                        logger.info(f"使用知识图谱推荐方法 (X: {x_query}, Y: {y_query})")
+
+                        # 获取方法推荐
+                        kg_config = KNOWLEDGE_GRAPH_CONFIG if KNOWLEDGE_GRAPH_AVAILABLE else {}
+                        recommendations = self.knowledge_graph.recommend_methods(
+                            x_query, y_query,
+                            top_k=kg_config.get("top_k", 5)
+                        )
+
+                        if recommendations:
+                            # 格式化推荐结果
+                            method_recommendations = []
+                            for rec in recommendations:
+                                method_recommendations.append(
+                                    f"- {rec['method']} (使用频次: {rec['frequency']}次, 参考论文: {', '.join(rec['example_papers'][:2])})"
+                                )
+                            model_input["knowledge_graph_recommendations"] = "\n".join(method_recommendations)
+                            results["kg_method_recommendations"] = recommendations
+                            logger.info(f"知识图谱推荐了 {len(recommendations)} 个计量方法")
+                        else:
+                            logger.info("知识图谱未找到相关方法推荐")
+                    except Exception as e:
+                        logger.warning(f"知识图谱方法推荐失败: {e}")
+
+                model_result = self.model_designer.run(model_input)
 
                 # 从结构化输出中提取数据
                 parsed_data = model_result.get("parsed_data", {})
                 results["model_design"] = model_result.get("model_design", "")
                 results["model_design_data"] = parsed_data
+                results["knowledge_graph_enabled"] = use_kg and self.knowledge_graph is not None
 
                 # 保存阶段性结果
                 self._save_stage_result(results, "4_model")

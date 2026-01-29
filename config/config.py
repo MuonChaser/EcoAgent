@@ -131,6 +131,16 @@ MODEL_CONFIG = {
     "robustness_checks": 3,
 }
 
+# 知识图谱配置
+KNOWLEDGE_GRAPH_CONFIG = {
+    "enabled": os.getenv("ENABLE_KNOWLEDGE_GRAPH", "true").lower() == "true",  # 是否启用知识图谱
+    "storage_dir": str(DATA_DIR / "methodology_graph"),  # 存储目录
+    "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",  # 嵌入模型
+    "top_k": 5,  # 检索相似节点数量
+    "k_hops": 1,  # 邻域扩展跳数
+    "similarity_threshold": 0.3,  # 相似度阈值
+}
+
 # LangChain Callbacks 配置
 ENABLE_TRACING = os.getenv("LANGCHAIN_TRACING_V2", "false").lower() == "true"
 LANGCHAIN_PROJECT = os.getenv("LANGCHAIN_PROJECT", "econometrics-research")
