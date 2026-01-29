@@ -26,6 +26,8 @@ import os
 import sys
 import json
 import argparse
+import requests
+import time
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 
@@ -41,21 +43,46 @@ from config.config import API_KEY, API_BASE, DEFAULT_MODEL, DATA_DIR
 from tools.methodology_graph import MethodologyKnowledgeGraph
 
 
-# 论文生成的系统提示
+# 搜索关键词扩展的系统提示
+QUERY_EXPANSION_PROMPT = """你是一位学术文献搜索专家，擅长将研究主题转换为有效的学术搜索关键词。
+
+你的任务是根据用户提供的研究主题，生成多个搜索查询词，以便在学术数据库（如Arxiv、Crossref）中搜索相关论文。
+
+请生成以下内容：
+1. 英文翻译：将研究主题准确翻译成学术英文
+2. 核心关键词：提取3-5个核心英文关键词
+3. 搜索变体：生成3-5个不同角度的英文搜索短语
+4. 相关领域词：2-3个相关学科/方法的英文术语
+
+输出格式要求（JSON）：
+{
+    "english_translation": "研究主题的英文翻译",
+    "core_keywords": ["keyword1", "keyword2", "keyword3"],
+    "search_variants": [
+        "search phrase 1",
+        "search phrase 2",
+        "search phrase 3"
+    ],
+    "related_terms": ["term1", "term2"]
+}
+
+请只输出JSON，不要包含其他文本。"""
+
+# 论文提取的系统提示
 SYSTEM_PROMPT = """你是一位经济学研究专家，专注于实证研究方法论。
 
-你的任务是根据给定的研究主题，生成一批相关的实证论文信息。每篇论文信息需要包含：
-1. 论文标题（中文或英文）
+你的任务是根据提供的真实论文信息（标题和摘要），提取其核心研究设计。每篇论文信息需要包含：
+1. 论文标题
 2. 核心研究问题
 3. X（自变量）：影响因素或解释变量
 4. Y（因变量）：被影响的结果变量
 5. 计量方法：使用的实证分析方法
 
 请确保：
-- 生成的论文主题与给定研究方向相关
-- 变量设置合理，符合经济学研究规范
-- 计量方法适合研究问题
-- 可以包含真实存在的论文，也可以基于研究领域特点生成合理的研究设计
+- 基于提供的论文标题和摘要进行提取
+- 如果摘要中未明确提及某些信息，请基于标题和经济学常识进行合理推断，并在研究问题中注明"（推断）"
+- 变量提取要简洁规范
+- 计量方法应识别出具体的实证方法（如OLS、DID、IV、Fixed Effects等）
 
 输出格式要求：
 请以JSON数组格式输出，每个元素包含以下字段：
@@ -69,16 +96,9 @@ SYSTEM_PROMPT = """你是一位经济学研究专家，专注于实证研究方�
 
 请只输出JSON数组，不要包含其他文本。"""
 
-USER_PROMPT_TEMPLATE = """请为以下研究主题生成 {count} 篇相关实证论文的信息：
+USER_PROMPT_TEMPLATE = """请为以下搜集到的真实论文提取研究设计信息：
 
-研究主题：{topic}
-{domain_info}
-
-要求：
-1. 论文应覆盖该研究领域的不同角度和方法
-2. 自变量和因变量的选择应具有学术代表性
-3. 计量方法应包括常见的实证方法（如OLS、固定效应、DID、IV、PSM-DID、RDD等）
-4. 优先生成在顶级经济学期刊发表过的经典研究设计
+{papers_info}
 
 请以JSON数组格式输出。"""
 
@@ -117,34 +137,219 @@ class LiteratureCollector:
 
         logger.info(f"文献搜集器初始化完成，模型: {self.model}")
 
+    def _expand_query(self, topic: str, domain: str = None) -> Dict[str, Any]:
+        """
+        使用大模型扩展搜索关键词
+
+        Args:
+            topic: 原始研究主题
+            domain: 研究领域（可选）
+
+        Returns:
+            扩展后的查询信息
+        """
+        logger.info(f"正在扩展搜索关键词: {topic}")
+
+        domain_hint = f"\n研究领域: {domain}" if domain else ""
+        user_prompt = f"研究主题: {topic}{domain_hint}"
+
+        messages = [
+            SystemMessage(content=QUERY_EXPANSION_PROMPT),
+            HumanMessage(content=user_prompt)
+        ]
+
+        try:
+            response = self.llm.invoke(messages)
+            content = response.content.strip()
+
+            # 处理markdown代码块
+            if content.startswith("```"):
+                lines = content.split("\n")
+                content = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+
+            result = json.loads(content)
+            logger.info(f"关键词扩展成功: {result.get('english_translation', 'N/A')}")
+            logger.info(f"  核心关键词: {result.get('core_keywords', [])}")
+            logger.info(f"  搜索变体: {result.get('search_variants', [])}")
+
+            return result
+
+        except json.JSONDecodeError as e:
+            logger.warning(f"解析关键词扩展结果失败: {e}")
+            # 降级：直接使用原始主题
+            return {
+                "english_translation": topic,
+                "core_keywords": [topic],
+                "search_variants": [topic],
+                "related_terms": []
+            }
+        except Exception as e:
+            logger.warning(f"关键词扩展失败: {e}")
+            return {
+                "english_translation": topic,
+                "core_keywords": [topic],
+                "search_variants": [topic],
+                "related_terms": []
+            }
+
+    def _search_arxiv(self, query: str, max_results: int = 10) -> List[Dict[str, Any]]:
+        """搜索Arxiv"""
+        try:
+            import arxiv
+            logger.info(f"正在从Arxiv搜索: {query}")
+            client = arxiv.Client()
+            search = arxiv.Search(
+                query=query,
+                max_results=max_results,
+                sort_by=arxiv.SortCriterion.Relevance
+            )
+            
+            results = []
+            for r in client.results(search):
+                results.append({
+                    "title": r.title,
+                    "abstract": r.summary.replace("\n", " "),
+                    "source": "arxiv"
+                })
+            logger.info(f"Arxiv返回 {len(results)} 条结果")
+            return results
+        except ImportError:
+            logger.warning("未安装arxiv库，跳过Arxiv搜索")
+            return []
+        except Exception as e:
+            logger.error(f"Arxiv搜索失败: {e}")
+            return []
+
+    def _search_crossref(self, query: str, max_results: int = 10) -> List[Dict[str, Any]]:
+        """搜索Crossref"""
+        try:
+            logger.info(f"正在从Crossref搜索: {query}")
+            url = "https://api.crossref.org/works"
+            params = {
+                "query": query,
+                "rows": max_results,
+                "select": "title,abstract,DOI,author,published-print"
+            }
+            response = requests.get(url, params=params, timeout=30)
+            
+            results = []
+            if response.status_code == 200:
+                data = response.json()
+                items = data.get('message', {}).get('items', [])
+                for item in items:
+                    title_list = item.get('title', [])
+                    if not title_list:
+                        continue
+                    title = title_list[0]
+                    abstract = item.get('abstract', '')
+                    # 清理abstract中的XML标签（如果有）
+                    if abstract and '<' in abstract:
+                        # 简单去除标签，实际可以用BS4
+                        abstract = abstract.replace('<jats:p>', '').replace('</jats:p>', '').replace('<jats:title>', '').replace('</jats:title>', '')
+                    
+                    results.append({
+                        "title": title,
+                        "abstract": abstract if abstract else "Abstract not available.",
+                        "source": "crossref"
+                    })
+            logger.info(f"Crossref返回 {len(results)} 条结果")
+            return results
+        except Exception as e:
+            logger.error(f"Crossref搜索失败: {e}")
+            return []
+
     def collect_papers(
         self,
         topic: str,
         count: int = 5,
-        domain: str = None
+        domain: str = None,
+        expand_query: bool = True
     ) -> List[Dict[str, Any]]:
         """
-        使用大模型搜集相关论文信息
+        搜集真实论文并提取信息
 
         Args:
             topic: 研究主题
             count: 生成论文数量
             domain: 研究领域（可选）
+            expand_query: 是否使用大模型扩展搜索关键词（默认True）
 
         Returns:
             论文信息列表
         """
-        logger.info(f"开始搜集文献，主题: {topic}, 数量: {count}")
+        logger.info(f"开始搜集文献，主题: {topic}, 目标数量: {count}")
 
-        # 构建提示
-        domain_info = f"研究领域：{domain}" if domain else ""
-        user_prompt = USER_PROMPT_TEMPLATE.format(
-            topic=topic,
-            count=count,
-            domain_info=domain_info
-        )
+        # 1. 扩展搜索关键词
+        search_queries = [topic]  # 默认使用原始主题
 
-        # 调用LLM
+        if expand_query:
+            expanded = self._expand_query(topic, domain)
+
+            # 构建多个搜索查询
+            search_queries = []
+
+            # 添加英文翻译作为主查询
+            if expanded.get("english_translation"):
+                search_queries.append(expanded["english_translation"])
+
+            # 添加搜索变体
+            search_queries.extend(expanded.get("search_variants", []))
+
+            # 添加核心关键词组合
+            keywords = expanded.get("core_keywords", [])
+            if len(keywords) >= 2:
+                search_queries.append(" ".join(keywords[:3]))
+
+            # 去重
+            search_queries = list(dict.fromkeys(search_queries))
+            logger.info(f"将使用 {len(search_queries)} 个搜索查询")
+
+        # 2. 联网搜索
+        # 为了保证有足够的结果，多搜索一些
+        search_count_per_query = max(count, 5)
+        raw_papers = []
+        seen_titles = set()
+
+        for query in search_queries:
+            if len(raw_papers) >= count * 3:
+                break  # 已经有足够的候选论文
+
+            # 搜索Arxiv
+            arxiv_results = self._search_arxiv(query, max_results=search_count_per_query)
+            for p in arxiv_results:
+                if p['title'] not in seen_titles:
+                    seen_titles.add(p['title'])
+                    raw_papers.append(p)
+
+            # 搜索Crossref
+            crossref_results = self._search_crossref(query, max_results=search_count_per_query)
+            for p in crossref_results:
+                if p['title'] not in seen_titles:
+                    seen_titles.add(p['title'])
+                    raw_papers.append(p)
+
+            # 避免请求过快
+            time.sleep(0.5)
+
+        logger.info(f"共搜索到 {len(raw_papers)} 篇不重复论文")
+
+        # 截取所需数量
+        target_papers = raw_papers[:count]
+        
+        if not target_papers:
+            logger.warning("未能搜索到任何相关论文")
+            return []
+
+        logger.info(f"共获取 {len(target_papers)} 篇真实论文，开始提取信息...")
+
+        # 2. 构建提示文本
+        papers_info_text = ""
+        for i, p in enumerate(target_papers, 1):
+            papers_info_text += f"\n[{i}] 标题: {p['title']}\n    摘要: {p['abstract'][:500]}...\n"
+
+        user_prompt = USER_PROMPT_TEMPLATE.format(papers_info=papers_info_text)
+
+        # 3. 调用LLM提取信息
         messages = [
             SystemMessage(content=SYSTEM_PROMPT),
             HumanMessage(content=user_prompt)
@@ -155,19 +360,20 @@ class LiteratureCollector:
             content = response.content.strip()
 
             # 尝试解析JSON
-            # 处理可能的markdown代码块
             if content.startswith("```"):
-                # 移除markdown代码块标记
                 lines = content.split("\n")
                 content = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
 
-            papers = json.loads(content)
+            extracted_papers = json.loads(content)
 
-            if not isinstance(papers, list):
-                papers = [papers]
+            if not isinstance(extracted_papers, list):
+                extracted_papers = [extracted_papers]
 
-            logger.info(f"成功生成 {len(papers)} 篇论文信息")
-            return papers
+            # 确保提取的标题与搜索的标题对应（LLM可能会修改标题）
+            # 这里简单信任LLM的提取，或者可以做后处理匹配
+            
+            logger.info(f"成功提取 {len(extracted_papers)} 篇论文信息")
+            return extracted_papers
 
         except json.JSONDecodeError as e:
             logger.error(f"解析LLM输出失败: {e}")
@@ -265,40 +471,67 @@ class LiteratureCollector:
         self,
         topic: str,
         count: int = 5,
-        domain: str = None
+        domain: str = None,
+        batch_size: int = 10,
+        expand_query: bool = True
     ) -> Dict[str, Any]:
         """
-        搜集文献并添加到知识图谱
+        搜集文献并添加到知识图谱 (分批处理)
 
         Args:
             topic: 研究主题
             count: 生成论文数量
             domain: 研究领域
+            batch_size: 每批生成的数量
+            expand_query: 是否使用大模型扩展搜索关键词
 
         Returns:
             执行结果
         """
-        # 搜集论文
-        papers = self.collect_papers(topic, count, domain)
+        all_papers = []
+        total_added = 0
+        total_skipped = 0
 
-        if not papers:
-            return {
-                "success": False,
-                "message": "未能生成论文信息",
-                "papers": []
-            }
+        remaining = count
+        batch_num = 1
 
-        # 添加到图谱
-        stats = self.add_papers_to_graph(papers)
+        logger.info(f"开始分批搜集文献，总数: {count}, 批次大小: {batch_size}")
+
+        while remaining > 0:
+            current_batch_size = min(remaining, batch_size)
+            logger.info(f"正在处理第 {batch_num} 批，数量: {current_batch_size}")
+
+            # 搜集论文（只在第一批扩展关键词，后续批次复用）
+            papers = self.collect_papers(
+                topic, current_batch_size, domain,
+                expand_query=(expand_query and batch_num == 1)
+            )
+            
+            if papers:
+                all_papers.extend(papers)
+                
+                # 添加到图谱
+                stats = self.add_papers_to_graph(papers)
+                total_added += stats['added']
+                total_skipped += stats['skipped']
+            else:
+                logger.warning(f"第 {batch_num} 批未能生成论文信息")
+            
+            remaining -= current_batch_size
+            batch_num += 1
 
         # 获取更新后的统计
         graph_stats = self.kg.get_statistics()
 
         return {
             "success": True,
-            "message": f"成功添加 {stats['added']} 篇论文到知识图谱",
-            "papers": papers,
-            "add_stats": stats,
+            "message": f"成功添加 {total_added} 篇论文到知识图谱 (总目标 {count})",
+            "papers": all_papers,
+            "add_stats": {
+                "total": len(all_papers),
+                "added": total_added,
+                "skipped": total_skipped
+            },
             "graph_stats": graph_stats
         }
 
@@ -316,7 +549,7 @@ def main():
     python scripts/collect_literature.py --topic "环境规制与绿色创新" --count 10
 
     # 手动添加单篇论文
-    python scripts/collect_literature.py --add --title "数字化转型与企业绩效" \\
+    python scripts/collect_literature.py --add --title "数字化转型与企业绩效" \
         --x "数字化水平,数字技术采纳" --y "企业绩效,全要素生产率" --method "DID,固定效应"
         """
     )
@@ -340,6 +573,7 @@ def main():
     parser.add_argument("--temperature", type=float, default=0.7, help="生成温度")
     parser.add_argument("--dry-run", action="store_true", help="只生成不添加到图谱")
     parser.add_argument("--stats", action="store_true", help="显示图谱统计信息")
+    parser.add_argument("--no-expand", action="store_true", help="禁用搜索关键词扩展（不使用大模型扩写）")
 
     args = parser.parse_args()
 
@@ -397,16 +631,19 @@ def main():
         print("\n错误: 搜集模式需要提供 --topic 参数")
         sys.exit(1)
 
+    expand_query = not args.no_expand
+
     print(f"\n开始搜集文献...")
     print(f"  主题: {args.topic}")
     print(f"  数量: {args.count}")
     if args.domain:
         print(f"  领域: {args.domain}")
+    print(f"  关键词扩展: {'启用' if expand_query else '禁用'}")
     print()
 
     if args.dry_run:
         # 只生成不添加
-        papers = collector.collect_papers(args.topic, args.count, args.domain)
+        papers = collector.collect_papers(args.topic, args.count, args.domain, expand_query=expand_query)
         if papers:
             print("=== 生成的论文信息 ===")
             for i, paper in enumerate(papers, 1):
@@ -418,7 +655,7 @@ def main():
             print(f"\n共生成 {len(papers)} 篇论文信息（dry-run模式，未添加到图谱）")
     else:
         # 搜集并添加
-        result = collector.collect_and_add(args.topic, args.count, args.domain)
+        result = collector.collect_and_add(args.topic, args.count, args.domain, expand_query=expand_query)
 
         if result["success"]:
             print("=== 生成的论文信息 ===")
