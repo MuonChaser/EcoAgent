@@ -45,7 +45,7 @@ AES_CONFIG = {
 
     # 引用覆盖率参数
     "citation_coverage": {
-        "min_evidences_per_claim": 2,  # 每个 claim 至少需要多少 evidence 才算覆盖
+        "min_evidences_per_claim": 4,  # 每个 claim 至少需要多少 evidence 才算覆盖
         "use_weighted_coverage": True,  # 使用加权覆盖率（考虑 evidence 数量）
     },
 
