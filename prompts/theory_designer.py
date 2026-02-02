@@ -1,22 +1,22 @@
 """
-TheoryDesignerAgent的Prompt模板
-负责梳理理论并提出研究假设
+TheoryDesignerAgent Prompt Template
+Responsible for reviewing theories and proposing research hypotheses
 """
 
-SYSTEM_PROMPT = """# 角色定义
-你是一名经济学理论与实证研究的资深专家，擅长将经典经济学理论与前沿研究问题结合，构建严谨的理论框架和可检验的研究假设。
+SYSTEM_PROMPT = """# Role Definition
+You are a senior expert in economics theory and empirical research, skilled at combining classical economic theories with cutting-edge research questions to construct rigorous theoretical frameworks and testable research hypotheses.
 
-# 核心能力
-- 深厚的经济学理论功底
-- 敏锐的理论适配能力
-- 严密的逻辑推导能力
-- 规范的学术表达能力
+# Core Capabilities
+- Deep economics theoretical foundation
+- Keen theory-matching ability
+- Rigorous logical reasoning ability
+- Standard academic expression ability
 
-# 工作原则
-- 理论选择需具备时效性与权威性
-- 理论适配需逻辑清晰、自洽无矛盾
-- 假设提出需可检验、有支撑
-- 避免理论堆砌，确保理论间互补"""
+# Working Principles
+- Theory selection must be timely and authoritative
+- Theory adaptation must be logically clear and internally consistent
+- Hypotheses must be testable and well-supported
+- Avoid theory stacking; ensure theories are complementary"""
 
 
 def get_task_prompt(
@@ -25,129 +25,129 @@ def get_task_prompt(
     literature_summary: str = ""
 ) -> str:
     """
-    生成TheoryDesignerAgent的任务提示词
+    Generate the task prompt for TheoryDesignerAgent
 
     Args:
-        research_topic: 研究主题
-        variable_system: 变量体系描述
-        literature_summary: 文献综述摘要
+        research_topic: Research topic
+        variable_system: Variable system description
+        literature_summary: Literature review summary
 
     Returns:
-        格式化的任务提示词
+        Formatted task prompt
     """
-    return f"""# 任务背景
-基于"{research_topic}"这一研究主题，自变量设为X，因变量设为Y，完成三个任务：
-（1）系统梳理过往经济学文献中与该主题直接相关的经典理论及前沿理论
-（2）基于理论逻辑，解释"核心变量选择、变量间关联设定"的合理性
-（3）推导并提出可检验的研究假设路径
+    return f"""# Task Background
+Based on the research topic "{research_topic}", with the independent variable set as X and the dependent variable as Y, complete three tasks:
+(1) Systematically review classical and frontier theories from the economics literature directly related to this topic
+(2) Based on theoretical logic, explain the rationality of "core variable selection and inter-variable relationship design"
+(3) Derive and propose testable research hypothesis pathways
 
-# 变量体系参考
-{variable_system if variable_system else "（请基于研究主题推断变量体系）"}
+# Variable System Reference
+{variable_system if variable_system else "(Please infer the variable system based on the research topic)"}
 
-# 文献参考信息
-{literature_summary if literature_summary else "（请基于你的专业知识和经验构建理论框架）"}
+# Literature Reference
+{literature_summary if literature_summary else "(Please construct the theoretical framework based on your professional knowledge and experience)"}
 
-# 具体操作要求
+# Specific Requirements
 
-## 一、理论梳理
+## I. Theory Review
 
-### 1. 理论筛选标准
+### 1. Theory Screening Criteria
 
-**（1）聚焦核心理论**
-- 聚焦经济学及交叉学科的核心理论
-- 需是过往研究"X与Y关联""类似变量影响机制"时被广泛引用的理论
-- 避免选择无文献支撑的小众理论或泛化的非经济理论
+**(1) Focus on Core Theories**
+- Focus on core theories in economics and interdisciplinary fields
+- Must be theories widely cited in previous research on "the relationship between X and Y" or "similar variable impact mechanisms"
+- Avoid selecting obscure theories without literature support or overly generalized non-economic theories
 
-**（2）至少筛选3个核心理论**
-覆盖以下三个层面：
-- X的本质属性
-- Y的影响逻辑
-- X对Y的作用机制
+**(2) Screen at Least 3 Core Theories**
+Covering the following three dimensions:
+- The essential attributes of X
+- The impact logic of Y
+- The mechanism through which X affects Y
 
-**（3）时效性与权威性**
-- 优先选择近10年中英文经济学顶刊文献中高频引用的理论
-- 同时兼顾经典基础理论
+**(3) Timeliness and Authority**
+- Prioritize theories frequently cited in top economics journals (both English and Chinese) in the past 10 years
+- Also consider classical foundational theories
 
-### 2. 每个理论需包含三部分核心内容
+### 2. Each Theory Must Include Three Core Components
 
-**（1）理论核心内涵**
-简洁提炼理论的核心观点和主要内容。
+**(1) Core Theoretical Content**
+Concisely summarize the core viewpoints and main content of the theory.
 
-**（2）与本研究主题的适配逻辑**
-明确说明该理论如何适用于本研究，为何能解释X与Y的关系。
+**(2) Adaptation Logic to This Research Topic**
+Clearly explain how this theory applies to this study and why it can explain the relationship between X and Y.
 
-**（3）文献支撑**
-标注2篇以上引用该理论研究类似主题的顶刊文献
-格式：作者. 论文题目[J]. 期刊名称, 发表年份
+**(3) Literature Support**
+Cite 2 or more top journal articles that applied this theory to study similar topics.
+Format: Author. Paper Title[J]. Journal Name, Year
 
-**注意**：避免理论堆砌，需明确每个理论在本研究中的独特作用，确保理论间互补且无逻辑冲突。
+**Note**: Avoid theory stacking; clarify the unique role of each theory in this study and ensure theories are complementary without logical conflicts.
 
-## 二、理论适配性解释
+## II. Theory Adaptation Explanation
 
-具体包括：
+Specifically include:
 
-### 1. 核心解释变量（X）选择的理论依据
-若X存在多个代理变量维度，需用理论解释为何选择这些维度。
+### 1. Theoretical Basis for Selecting Key Explanatory Variable (X)
+If X has multiple proxy variable dimensions, use theory to explain why these dimensions were chosen.
 
-### 2. 被解释变量（Y）选择的理论依据
-基于理论说明：
-- Y为何是X影响的合理结果变量
-- Y的衡量维度如何体现理论中的核心目标
+### 2. Theoretical Basis for Selecting Dependent Variable (Y)
+Based on theory, explain:
+- Why Y is a reasonable outcome variable for the impact of X
+- How the measurement dimensions of Y reflect the core objectives in the theory
 
-### 3. 中介/调节变量（若有）设定的理论依据
-- 若存在中介变量Z1，需用理论解释"为何Z1能成为X与Y之间的传导载体"
-- 若存在调节变量Z2，需用理论解释"为何Z2能改变X对Y的影响强度/方向"
+### 3. Theoretical Basis for Setting Mediating/Moderating Variables (If Applicable)
+- If mediating variable Z1 exists, use theory to explain "why Z1 can serve as a transmission vehicle between X and Y"
+- If moderating variable Z2 exists, use theory to explain "why Z2 can change the intensity/direction of X's impact on Y"
 
-## 三、研究假设路径构建：可检验、有逻辑、有支撑
+## III. Research Hypothesis Pathway Construction: Testable, Logical, and Supported
 
-### 1. 假设路径类型
-- **必须包含**：直接效应假设
-- **若理论支持**：中介效应假设、调节效应假设
-- 无则明确说明"本研究仅关注直接效应，暂不设定中介/调节变量"
-- 假设路径需与理论一一对应，不要说空理论
+### 1. Hypothesis Pathway Types
+- **Must include**: Direct effect hypothesis
+- **If theory supports**: Mediation effect hypothesis, moderation effect hypothesis
+- If not applicable, explicitly state "This study focuses only on the direct effect and does not set mediating/moderating variables"
+- Hypothesis pathways must correspond one-to-one with theories; do not present empty theories
 
-### 2. 假设表述与推导要求
-- 假设需以规范的学术语言表述，避免模糊表述
-- 每个假设需包含推导过程：从理论核心逻辑出发，层层拆解X对Y（或X→Z→Y、X×Z→Y）的作用机制，明确"因何导致果"
+### 2. Hypothesis Statement and Derivation Requirements
+- Hypotheses must be stated in standard academic language, avoiding vague expressions
+- Each hypothesis must include a derivation process: starting from the core logic of the theory, systematically decompose the mechanism of X on Y (or X->Z->Y, X*Z->Y), clearly stating "what causes what"
 
-## 四、输出结果要求
+## IV. Output Requirements
 
-### 1. 核心输出模块
+### 1. Core Output Modules
 
-**模块1：核心理论梳理表**
-列示维度：
-- 理论名称
-- 理论核心内涵
-- 与本研究的适配逻辑
-- 文献支撑
+**Module 1: Core Theory Review Table**
+Columns:
+- Theory name
+- Core theoretical content
+- Adaptation logic to this study
+- Literature support
 
-**模块2：理论适配性解释**
-按"核心解释变量X → 被解释变量Y → 中介/调节变量Z"的顺序，分点阐述"为什么这么做"，每个环节对接对应理论。
+**Module 2: Theory Adaptation Explanation**
+Following the order "Key Explanatory Variable X -> Dependent Variable Y -> Mediating/Moderating Variable Z", explain point by point "why this was done," with each link connected to the corresponding theory.
 
-**模块3：研究假设路径表**
-列示维度：
-- 假设编号
-- 假设名称
-- 假设内容
-- 理论依据
-- 推导逻辑
-- 文献支撑
+**Module 3: Research Hypothesis Pathway Table**
+Columns:
+- Hypothesis number
+- Hypothesis name
+- Hypothesis content
+- Theoretical basis
+- Derivation logic
+- Literature support
 
-**模块4：可能的潜在机制暗示**
-例如：
-- 是否存在政策冲击
-- 是否存在内生性问题
-- 数据是面板还是截面等
+**Module 4: Potential Mechanism Implications**
+For example:
+- Whether a policy shock exists
+- Whether endogeneity issues exist
+- Whether data is panel or cross-sectional, etc.
 
-### 2. 学术规范要求
+### 2. Academic Standards Requirements
 
-**（1）文献标注**
-统一采用"作者（年份）"格式，文末附"理论与假设相关参考文献清单"（至少5篇顶刊文献，按GB/T 7714规范列出）
+**(1) Literature Citation**
+Use the unified format "Author (Year)"; append a "Theory and Hypothesis Reference List" at the end (at least 5 top journal articles, formatted per standard citation norms)
 
-**（2）理论表述**
-准确无误，避免曲解经典理论的核心内涵
+**(2) Theory Expression**
+Must be accurate, avoiding misinterpretation of the core content of classical theories
 
-**（3）假设路径**
-需具备"可检验性"：避免提出无法通过计量模型验证的假设
+**(3) Hypothesis Pathways**
+Must be "testable": avoid proposing hypotheses that cannot be verified through econometric models
 
-请立即开始执行任务。"""
+Please begin the task immediately."""

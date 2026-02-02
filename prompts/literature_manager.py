@@ -1,47 +1,46 @@
 """
-文献管理智能体提示词
 Literature Manager Agent Prompts
 """
 
-SYSTEM_PROMPT = """# 角色定义
+SYSTEM_PROMPT = """# Role Definition
 
-你是一名专业的学术文献管理专家，精通经济学、金融学和管理学领域的学术文献。你的职责是帮助研究人员管理、组织和检索学术文献。
+You are a professional academic literature management expert, well-versed in the fields of economics, finance, and management. Your responsibility is to help researchers manage, organize, and retrieve academic literature.
 
-## 核心能力
+## Core Capabilities
 
-1. **文献解析**: 能够从各种格式（文本、BibTeX、RIS等）中提取文献信息
-2. **文献规范化**: 将文献信息标准化为统一格式
-3. **关键词提取**: 从文献摘要和标题中提取关键研究主题
-4. **文献分类**: 根据研究主题、方法论、数据类型等维度对文献进行分类
-5. **文献推荐**: 基于研究主题推荐相关文献
+1. **Literature Parsing**: Ability to extract literature information from various formats (text, BibTeX, RIS, etc.)
+2. **Literature Standardization**: Standardize literature information into a unified format
+3. **Keyword Extraction**: Extract key research themes from literature abstracts and titles
+4. **Literature Classification**: Classify literature by research topic, methodology, data type, and other dimensions
+5. **Literature Recommendation**: Recommend related literature based on research topics
 
-## 工作原则
+## Working Principles
 
-1. **准确性**: 确保文献信息的准确性，不要猜测或编造信息
-2. **完整性**: 尽可能提取完整的文献元数据
-3. **规范性**: 遵循学术规范，使用标准的引用格式
-4. **实用性**: 提取对研究有价值的信息（理论机制、识别策略等）
+1. **Accuracy**: Ensure the accuracy of literature information; do not guess or fabricate information
+2. **Completeness**: Extract complete literature metadata as much as possible
+3. **Standardization**: Follow academic norms and use standard citation formats
+4. **Utility**: Extract information valuable for research (theoretical mechanisms, identification strategies, etc.)
 
-## 支持的操作
+## Supported Operations
 
-- `add`: 添加新文献
-- `search`: 搜索文献
-- `parse`: 解析文献文本
-- `recommend`: 推荐相关文献
-- `summarize`: 总结文献集合
+- `add`: Add new literature
+- `search`: Search literature
+- `parse`: Parse literature text
+- `recommend`: Recommend related literature
+- `summarize`: Summarize literature collection
 """
 
 
 def get_task_prompt(operation: str, **kwargs) -> str:
     """
-    获取任务提示词
+    Get task prompt
 
     Args:
-        operation: 操作类型
-        **kwargs: 操作相关参数
+        operation: Operation type
+        **kwargs: Operation-related parameters
 
     Returns:
-        任务提示词
+        Task prompt
     """
     if operation == "parse":
         return _get_parse_prompt(**kwargs)
@@ -58,117 +57,116 @@ def get_task_prompt(operation: str, **kwargs) -> str:
 
 
 def _get_parse_prompt(raw_text: str = "", **kwargs) -> str:
-    """解析文献文本的提示词"""
-    return f"""# 文献解析任务
+    """Prompt for parsing literature text"""
+    return f"""# Literature Parsing Task
 
-请从以下文本中提取文献信息。如果某些字段无法确定，请使用null或空列表。
+Please extract literature information from the following text. If certain fields cannot be determined, use null or empty lists.
 
-## 输入文本
+## Input Text
 
 {raw_text}
 
-## 提取要求
+## Extraction Requirements
 
-请提取以下信息：
-1. 基本信息：作者、年份、标题、期刊、DOI、URL
-2. 内容信息：摘要、关键词
-3. 研究信息（如适用）：
-   - 解释变量(X)的定义和衡量方式
-   - 被解释变量(Y)的定义和衡量方式
-   - 核心结论（尽量量化）
-   - 理论机制
-   - 数据来源
-   - 识别策略
-   - 异质性维度
-   - 研究局限
+Please extract the following information:
+1. Basic Information: authors, year, title, journal, DOI, URL
+2. Content Information: abstract, keywords
+3. Research Information (if applicable):
+   - Explanatory variable (X) definition and measurement
+   - Dependent variable (Y) definition and measurement
+   - Core conclusion (quantified if possible)
+   - Theoretical mechanism
+   - Data source
+   - Identification strategy
+   - Heterogeneity dimensions
+   - Research limitations
 
-## 输出格式
+## Output Format
 
-请以JSON格式输出，包含以下字段：
+Please output in JSON format with the following fields:
 ```json
 {{
-  "authors": "作者（格式：姓名1, 姓名2, & 姓名3）",
-  "year": 年份数字,
-  "title": "论文标题",
-  "journal": "期刊名称",
-  "abstract": "摘要",
-  "keywords": ["关键词1", "关键词2"],
-  "doi": "DOI（如有）",
-  "url": "URL（如有）",
-  "variable_x_definition": "X变量定义",
-  "variable_x_measurement": "X变量衡量方式",
-  "variable_y_definition": "Y变量定义",
-  "variable_y_measurement": "Y变量衡量方式",
-  "core_conclusion": "核心结论",
-  "theoretical_mechanism": ["机制1", "机制2"],
-  "data_source": "数据来源",
-  "identification_strategy": "识别策略",
-  "heterogeneity_dimensions": ["维度1", "维度2"],
-  "limitations": ["局限1", "局限2"],
-  "tags": ["建议标签1", "建议标签2"]
+  "authors": "Authors (format: Name1, Name2, & Name3)",
+  "year": year_number,
+  "title": "Paper title",
+  "journal": "Journal name",
+  "abstract": "Abstract",
+  "keywords": ["keyword1", "keyword2"],
+  "doi": "DOI (if available)",
+  "url": "URL (if available)",
+  "variable_x_definition": "X variable definition",
+  "variable_x_measurement": "X variable measurement",
+  "variable_y_definition": "Y variable definition",
+  "variable_y_measurement": "Y variable measurement",
+  "core_conclusion": "Core conclusion",
+  "theoretical_mechanism": ["mechanism1", "mechanism2"],
+  "data_source": "Data source",
+  "identification_strategy": "Identification strategy",
+  "heterogeneity_dimensions": ["dimension1", "dimension2"],
+  "limitations": ["limitation1", "limitation2"],
+  "tags": ["suggested_tag1", "suggested_tag2"]
 }}
 ```
 """
 
 
 def _get_add_prompt(literature_info: dict = None, **kwargs) -> str:
-    """添加文献的提示词"""
+    """Prompt for adding literature"""
     info_str = str(literature_info) if literature_info else "{}"
-    return f"""# 文献添加任务
+    return f"""# Literature Addition Task
 
-请验证并规范化以下文献信息，确保格式正确且信息完整。
+Please verify and standardize the following literature information, ensuring format correctness and information completeness.
 
-## 输入信息
+## Input Information
 
 {info_str}
 
-## 规范化要求
+## Standardization Requirements
 
-1. **作者格式**: 使用"姓名1, 姓名2, & 姓名3"格式
-2. **年份**: 确保为4位数字
-3. **标题**: 首字母大写，去除多余空格
-4. **期刊**: 使用规范的期刊全称
-5. **关键词**: 小写，去重
+1. **Author format**: Use "Name1, Name2, & Name3" format
+2. **Year**: Ensure 4-digit number
+3. **Title**: Title case, remove extra spaces
+4. **Journal**: Use standard full journal name
+5. **Keywords**: Lowercase, deduplicated
 
-## 输出格式
+## Output Format
 
-请以JSON格式输出规范化后的文献信息，与输入格式相同。如发现任何问题，请在"notes"字段中说明。
+Please output standardized literature information in JSON format, same structure as input. If any issues are found, note them in the "notes" field.
 """
 
 
 def _get_search_prompt(query: str = "", context: str = "", **kwargs) -> str:
-    """搜索文献的提示词"""
-    return f"""# 文献搜索任务
+    """Prompt for searching literature"""
+    return f"""# Literature Search Task
 
-用户正在搜索相关文献。
+The user is searching for related literature.
 
-## 搜索查询
+## Search Query
 
 {query}
 
-## 现有文献库上下文
+## Existing Literature Database Context
 
 {context}
 
-## 任务要求
+## Task Requirements
 
-1. 分析用户的搜索意图
-2. 提取关键搜索词（中英文）
-3. 建议搜索策略
-4. 如果提供了文献库上下文，评估匹配程度
+1. Analyze the user's search intent
+2. Extract key search terms (English)
+3. Suggest search strategy
+4. If literature database context is provided, assess match quality
 
-## 输出格式
+## Output Format
 
 ```json
 {{
-  "search_intent": "用户搜索意图分析",
-  "keywords_chinese": ["中文关键词1", "中文关键词2"],
+  "search_intent": "Analysis of user search intent",
   "keywords_english": ["English keyword 1", "English keyword 2"],
-  "search_strategy": "建议的搜索策略",
+  "search_strategy": "Suggested search strategy",
   "recommended_filters": {{
-    "year_range": [起始年份, 结束年份],
-    "journals": ["推荐期刊1", "推荐期刊2"],
-    "methods": ["推荐方法1"]
+    "year_range": [start_year, end_year],
+    "journals": ["Recommended journal 1", "Recommended journal 2"],
+    "methods": ["Recommended method 1"]
   }}
 }}
 ```
@@ -176,108 +174,108 @@ def _get_search_prompt(query: str = "", context: str = "", **kwargs) -> str:
 
 
 def _get_recommend_prompt(topic: str = "", existing_literature: list = None, **kwargs) -> str:
-    """推荐文献的提示词"""
+    """Prompt for recommending literature"""
     existing_str = str(existing_literature) if existing_literature else "[]"
-    return f"""# 文献推荐任务
+    return f"""# Literature Recommendation Task
 
-基于当前研究主题，推荐相关的学术文献。
+Recommend related academic literature based on the current research topic.
 
-## 研究主题
+## Research Topic
 
 {topic}
 
-## 已有文献
+## Existing Literature
 
 {existing_str}
 
-## 推荐要求
+## Recommendation Requirements
 
-1. 推荐与主题高度相关的经典文献
-2. 推荐近5年的重要新进展
-3. 考虑方法论互补性
-4. 避免与已有文献重复
+1. Recommend classic literature highly relevant to the topic
+2. Recommend important new developments from the past 5 years
+3. Consider methodological complementarity
+4. Avoid duplication with existing literature
 
-## 输出格式
+## Output Format
 
 ```json
 {{
   "recommendations": [
     {{
-      "authors": "作者",
-      "year": 年份,
-      "title": "论文标题",
-      "journal": "期刊",
-      "relevance_reason": "推荐理由",
-      "relevance_score": 相关度评分(1-10)
+      "authors": "Authors",
+      "year": year,
+      "title": "Paper title",
+      "journal": "Journal",
+      "relevance_reason": "Reason for recommendation",
+      "relevance_score": relevance_score(1-10)
     }}
   ],
-  "research_gaps": ["研究空白1", "研究空白2"],
-  "suggested_directions": ["建议方向1", "建议方向2"]
+  "research_gaps": ["Research gap 1", "Research gap 2"],
+  "suggested_directions": ["Suggested direction 1", "Suggested direction 2"]
 }}
 ```
 """
 
 
 def _get_summarize_prompt(literature_list: list = None, focus: str = "", **kwargs) -> str:
-    """总结文献的提示词"""
+    """Prompt for summarizing literature"""
     lit_str = str(literature_list) if literature_list else "[]"
-    return f"""# 文献总结任务
+    return f"""# Literature Summary Task
 
-请对以下文献进行系统性总结。
+Please provide a systematic summary of the following literature.
 
-## 文献列表
+## Literature List
 
 {lit_str}
 
-## 关注焦点
+## Focus Area
 
-{focus if focus else "综合总结"}
+{focus if focus else "Comprehensive summary"}
 
-## 总结要求
+## Summary Requirements
 
-1. **主要发现**: 归纳文献的核心结论
-2. **方法论综述**: 总结使用的主要研究方法
-3. **理论贡献**: 梳理主要的理论框架和机制
-4. **数据特征**: 总结数据来源和样本特征
-5. **研究趋势**: 识别研究发展趋势
-6. **研究空白**: 指出现有研究的不足
+1. **Main Findings**: Synthesize core conclusions from the literature
+2. **Methodological Review**: Summarize main research methods used
+3. **Theoretical Contributions**: Organize main theoretical frameworks and mechanisms
+4. **Data Characteristics**: Summarize data sources and sample characteristics
+5. **Research Trends**: Identify research development trends
+6. **Research Gaps**: Identify shortcomings in existing research
 
-## 输出格式
+## Output Format
 
 ```json
 {{
   "main_findings": [
     {{
-      "finding": "发现内容",
+      "finding": "Finding content",
       "supporting_papers": ["Paper1", "Paper2"]
     }}
   ],
   "methodological_summary": {{
-    "common_methods": ["方法1", "方法2"],
-    "identification_strategies": ["策略1", "策略2"],
-    "data_sources": ["数据源1", "数据源2"]
+    "common_methods": ["Method 1", "Method 2"],
+    "identification_strategies": ["Strategy 1", "Strategy 2"],
+    "data_sources": ["Data source 1", "Data source 2"]
   }},
   "theoretical_contributions": [
     {{
-      "theory": "理论名称",
-      "application": "应用方式"
+      "theory": "Theory name",
+      "application": "Application method"
     }}
   ],
-  "research_trends": ["趋势1", "趋势2"],
-  "research_gaps": ["空白1", "空白2"],
-  "future_directions": ["方向1", "方向2"]
+  "research_trends": ["Trend 1", "Trend 2"],
+  "research_gaps": ["Gap 1", "Gap 2"],
+  "future_directions": ["Direction 1", "Direction 2"]
 }}
 ```
 """
 
 
 def _get_default_prompt(**kwargs) -> str:
-    """默认提示词"""
-    return """# 文献管理任务
+    """Default prompt"""
+    return """# Literature Management Task
 
-请根据用户的需求处理文献相关事务。
+Please handle literature-related tasks based on the user's needs.
 
-## 输出格式
+## Output Format
 
-请以JSON格式输出处理结果。
+Please output processing results in JSON format.
 """

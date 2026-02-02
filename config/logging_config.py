@@ -1,16 +1,16 @@
 """
-统一的日志配置模块
+Unified Logging Configuration Module
 
-每次运行生成独立的日志文件，文件名包含脚本名和时间戳。
+Generates an independent log file for each run, with filenames including script name and timestamp.
 
-使用方法:
+Usage:
     from config.logging_config import setup_logger
 
-    # 在脚本开头调用
-    setup_logger("my_script")  # 生成 logs/my_script_20240129_143052.log
+    # Call at the beginning of a script
+    setup_logger("my_script")  # Generates logs/my_script_20240129_143052.log
 
-    # 或者自动使用调用者的脚本名
-    setup_logger()  # 自动检测脚本名
+    # Or auto-detect the caller's script name
+    setup_logger()  # Auto-detect script name
 """
 
 import sys
@@ -19,10 +19,10 @@ from pathlib import Path
 from datetime import datetime
 from loguru import logger
 
-# 项目根目录
+# Project root directory
 PROJECT_ROOT = Path(__file__).parent.parent
 
-# 日志目录
+# Log directory
 LOG_DIR = PROJECT_ROOT / "logs"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -34,33 +34,33 @@ def setup_logger(
     console: bool = True
 ) -> Path:
     """
-    配置日志系统，每次运行生成独立的日志文件
+    Configure logging system, generating an independent log file for each run
 
     Args:
-        script_name: 脚本名称，用于日志文件命名。如果为 None，自动检测
-        level: 控制台日志级别
-        file_level: 文件日志级别
-        console: 是否输出到控制台
+        script_name: Script name for log file naming. If None, auto-detect
+        level: Console log level
+        file_level: File log level
+        console: Whether to output to console
 
     Returns:
-        日志文件路径
+        Log file path
     """
-    # 自动检测脚本名
+    # Auto-detect script name
     if script_name is None:
-        # 获取调用者的脚本名
+        # Get caller's script name
         import inspect
         frame = inspect.stack()[1]
         caller_file = frame.filename
         script_name = Path(caller_file).stem
 
-    # 生成带时间戳的日志文件名
+    # Generate timestamped log filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_file = LOG_DIR / f"{script_name}_{timestamp}.log"
 
-    # 移除默认处理器
+    # Remove default handlers
     logger.remove()
 
-    # 添加控制台处理器
+    # Add console handler
     if console:
         logger.add(
             sys.stderr,
@@ -68,32 +68,32 @@ def setup_logger(
             level=level
         )
 
-    # 添加文件处理器
+    # Add file handler
     logger.add(
         log_file,
         format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} | {message}",
         level=file_level,
         encoding="utf-8",
-        rotation=None,  # 不轮转，每次运行一个新文件
+        rotation=None,  # No rotation, one new file per run
     )
 
-    logger.info(f"日志文件: {log_file}")
+    logger.info(f"Log file: {log_file}")
 
     return log_file
 
 
 def get_logger():
-    """获取 logger 实例"""
+    """Get logger instance"""
     return logger
 
 
-# 便捷变量
-LOG_FILE = None  # 会在 setup_logger 调用后设置
+# Convenience variable
+LOG_FILE = None  # Will be set after setup_logger is called
 
 
 def setup_logger_with_return(script_name: str = None, **kwargs) -> tuple:
     """
-    配置日志并返回 logger 和日志文件路径
+    Configure logging and return logger and log file path
 
     Returns:
         (logger, log_file_path)

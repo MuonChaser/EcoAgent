@@ -1,7 +1,7 @@
 """
-主协调器 - 编排和管理多个智能体的工作流程
+Main Orchestrator - Orchestrate and manage multi-agent workflows
 
-完整流程: 先完成研究论文，再进行审稿人评审
+Full pipeline: Complete research paper first, then conduct reviewer assessment
 """
 from typing import Dict, Any, List, Optional
 from pathlib import Path
@@ -19,15 +19,15 @@ from agents import (
 )
 from tools import ReportGenerator
 
-# 导入数据工具
+# Import data tools
 try:
     from tools.data_storage import get_data_storage
     DATA_TOOLS_AVAILABLE = True
 except ImportError:
     DATA_TOOLS_AVAILABLE = False
-    logger.warning("数据工具不可用，数据分析功能将受限")
+    logger.warning("Data tools unavailable, data analysis functionality will be limited")
 
-# 导入知识图谱工具
+# Import knowledge graph tools
 try:
     from tools.methodology_graph import get_methodology_graph, MethodologyKnowledgeGraph
     from config.config import KNOWLEDGE_GRAPH_CONFIG
@@ -35,23 +35,23 @@ try:
 except ImportError:
     KNOWLEDGE_GRAPH_AVAILABLE = False
     KNOWLEDGE_GRAPH_CONFIG = {"enabled": False}
-    logger.warning("知识图谱工具不可用，方法推荐功能将受限")
+    logger.warning("Knowledge graph tools unavailable, method recommendation functionality will be limited")
 
 
 class ResearchOrchestrator:
     """
-    研究编排器
-    负责协调各个智能体完成完整的研究流程
+    Research Orchestrator
+    Responsible for coordinating agents to complete the full research pipeline
 
-    完整流程:
-    1. 输入解析 (可选)
-    2. 文献搜集
-    3. 变量设计
-    4. 理论设计
-    5. 模型设计
-    6. 数据分析 (支持自动搜索本地数据)
-    7. 报告撰写
-    8. 审稿人评审 (最后进行评分)
+    Full pipeline:
+    1. Input parsing (optional)
+    2. Literature collection
+    3. Variable design
+    4. Theory design
+    5. Model design
+    6. Data analysis (supports automatic local data search)
+    7. Report writing
+    8. Reviewer assessment (scoring at the end)
     """
 
     def __init__(
@@ -62,13 +62,13 @@ class ResearchOrchestrator:
         knowledge_graph_dir: str = None,
     ):
         """
-        初始化编排器
+        Initialize orchestrator
 
         Args:
-            output_dir: 输出目录
-            data_storage_dir: 数据存储目录
-            literature_storage_dir: 文献存储目录
-            knowledge_graph_dir: 知识图谱存储目录（如果为None则使用配置文件中的默认值）
+            output_dir: Output directory
+            data_storage_dir: Data storage directory
+            literature_storage_dir: Literature storage directory
+            knowledge_graph_dir: Knowledge graph storage directory (uses config default if None)
         """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -76,7 +76,7 @@ class ResearchOrchestrator:
         self.data_storage_dir = data_storage_dir
         self.literature_storage_dir = literature_storage_dir
 
-        # 初始化所有智能体
+        # Initialize all agents
         self.input_parser = InputParserAgent()
         self.literature_collector = LiteratureCollectorAgent(
             literature_storage_dir=literature_storage_dir
@@ -88,17 +88,17 @@ class ResearchOrchestrator:
         self.report_writer = ReportWriterAgent()
         self.reviewer = ReviewerAgent()
 
-        # 初始化数据存储
+        # Initialize data storage
         self.data_storage = None
         if DATA_TOOLS_AVAILABLE:
             try:
                 self.data_storage = get_data_storage(data_storage_dir)
                 datasets_count = len(self.data_storage.index.get("items", {}))
-                logger.info(f"数据存储初始化完成，已有 {datasets_count} 个数据集")
+                logger.info(f"Data storage initialized, {datasets_count} datasets available")
             except Exception as e:
-                logger.warning(f"数据存储初始化失败: {e}")
+                logger.warning(f"Data storage initialization failed: {e}")
 
-        # 初始化知识图谱
+        # Initialize knowledge graph
         self.knowledge_graph = None
         self.knowledge_graph_enabled = KNOWLEDGE_GRAPH_CONFIG.get("enabled", False) and KNOWLEDGE_GRAPH_AVAILABLE
         if self.knowledge_graph_enabled:
@@ -107,15 +107,15 @@ class ResearchOrchestrator:
                 self.knowledge_graph = get_methodology_graph(storage_dir=kg_dir)
                 node_count = len(self.knowledge_graph.nodes)
                 edge_count = len(self.knowledge_graph.edges)
-                logger.info(f"知识图谱初始化完成，已有 {node_count} 个节点, {edge_count} 条边")
+                logger.info(f"Knowledge graph initialized, {node_count} nodes, {edge_count} edges")
             except Exception as e:
-                logger.warning(f"知识图谱初始化失败: {e}")
+                logger.warning(f"Knowledge graph initialization failed: {e}")
                 self.knowledge_graph_enabled = False
 
-        # 初始化报告生成器
+        # Initialize report generator
         self.report_generator = ReportGenerator(str(output_dir))
 
-        logger.info("研究编排器初始化完成")
+        logger.info("Research orchestrator initialized")
 
     def run_full_pipeline(
         self,
@@ -132,64 +132,64 @@ class ResearchOrchestrator:
         enable_knowledge_graph: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """
-        运行完整的研究流程
+        Run the full research pipeline
 
-        流程: 先完成研究论文 -> 再进行审稿人评审
+        Pipeline: Complete research paper first -> then conduct reviewer assessment
 
         Args:
-            research_topic: 研究主题（如果提供了user_input，可以为None）
-            user_input: 用户的自然语言输入（如"我想研究X对Y的影响"）
-            keyword_group_a: 关键词组A（如果提供了user_input，可以为None）
-            keyword_group_b: 关键词组B（如果提供了user_input，可以为None）
-            min_papers: 最少文献数量
-            data_info: 数据信息（可选）
-            data_file: 指定的数据文件路径（可选，如果提供将自动获取数据信息）
-            word_count: 报告字数
-            enable_steps: 启用的步骤列表，如果为None则运行所有步骤
-                         可选值: ["input_parse", "literature", "variable", "theory", "model", "analysis", "report"]
-            enable_review: 是否启用审稿人评审（默认启用，在论文完成后进行）
-            enable_knowledge_graph: 是否启用知识图谱进行方法推荐（None表示使用默认配置）
+            research_topic: Research topic (can be None if user_input is provided)
+            user_input: User's natural language input (e.g. "I want to study the effect of X on Y")
+            keyword_group_a: Keyword group A (can be None if user_input is provided)
+            keyword_group_b: Keyword group B (can be None if user_input is provided)
+            min_papers: Minimum number of papers
+            data_info: Data information (optional)
+            data_file: Specified data file path (optional, data info will be auto-extracted if provided)
+            word_count: Report word count
+            enable_steps: List of enabled steps, runs all steps if None
+                         Options: ["input_parse", "literature", "variable", "theory", "model", "analysis", "report"]
+            enable_review: Whether to enable reviewer assessment (enabled by default, runs after paper completion)
+            enable_knowledge_graph: Whether to enable knowledge graph for method recommendation (None uses default config)
 
         Returns:
-            包含所有结果的字典
+            Dictionary containing all results
         """
-        # 如果提供了user_input但没有research_topic，或者显式启用input_parse步骤
+        # If user_input is provided without research_topic, or input_parse step is explicitly enabled
         parsed_input = ""
         if (user_input and not research_topic) or (enable_steps and "input_parse" in enable_steps):
             if not user_input:
-                raise ValueError("启用input_parse步骤时必须提供user_input")
+                raise ValueError("user_input must be provided when input_parse step is enabled")
 
             logger.info("=" * 50)
-            logger.info("步骤0/7: 输入解析")
+            logger.info("Step 0/7: Input Parsing")
             logger.info("=" * 50)
 
             input_result = self.input_parser.run({
                 "user_input": user_input,
             })
 
-            # 从结构化输出中提取数据
+            # Extract data from structured output
             parsed_data = input_result.get("parsed_data", {})
             parsed_input = input_result.get("parsed_input", "")
 
-            # 从parsed_data中提取信息
+            # Extract information from parsed_data
             if not research_topic and parsed_data:
                 research_topic = parsed_data.get("research_topic", user_input)
 
-            # 提取变量信息用于后续步骤
+            # Extract variable info for subsequent steps
             variable_x = parsed_data.get("variable_x", {})
             variable_y = parsed_data.get("variable_y", {})
             keywords = parsed_data.get("keywords", {})
 
-            # 如果没有提供关键词，尝试从解析结果中获取
+            # If keywords not provided, try to extract from parsed results
             if not keyword_group_a and keywords:
                 keyword_group_a = keywords.get("group_a", {}).get("chinese", [])
             if not keyword_group_b and keywords:
                 keyword_group_b = keywords.get("group_b", {}).get("chinese", [])
 
         if not research_topic:
-            raise ValueError("必须提供research_topic或user_input")
+            raise ValueError("Must provide research_topic or user_input")
 
-        logger.info(f"开始研究流程: {research_topic}")
+        logger.info(f"Starting research pipeline: {research_topic}")
 
         # 显示可用数据集信息
         if self.data_storage:

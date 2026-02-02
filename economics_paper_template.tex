@@ -1,217 +1,215 @@
 \documentclass[12pt,a4paper]{article}
 
-% ========== 宏包导入 ==========
-\usepackage[UTF8]{ctex}  % 中文支持
+% ========== Package Imports ==========
 \usepackage{geometry}
 \geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
-\usepackage{amsmath,amssymb,amsthm}  % 数学公式
-\usepackage{graphicx}  % 图片
-\usepackage{booktabs}  % 三线表
-\usepackage{multirow}  % 表格合并
-\usepackage{longtable}  % 长表格
-\usepackage{caption}  % 图表标题
-\usepackage{subcaption}  % 子图
-\usepackage{hyperref}  % 超链接
-\usepackage{natbib}  % 文献引用
-\usepackage{setspace}  % 行距
-\usepackage{enumerate}  % 列表
-\usepackage{appendix}  % 附录
-\usepackage{threeparttable}  % 表格注释
-\usepackage{dcolumn}  % 对齐小数点
+\usepackage{amsmath,amssymb,amsthm}  % Math formulas
+\usepackage{graphicx}  % Graphics
+\usepackage{booktabs}  % Three-line tables
+\usepackage{multirow}  % Table merging
+\usepackage{longtable}  % Long tables
+\usepackage{caption}  % Figure/table captions
+\usepackage{subcaption}  % Sub-figures
+\usepackage{hyperref}  % Hyperlinks
+\usepackage{natbib}  % Bibliography
+\usepackage{setspace}  % Line spacing
+\usepackage{enumerate}  % Lists
+\usepackage{appendix}  % Appendix
+\usepackage{threeparttable}  % Table notes
+\usepackage{dcolumn}  % Decimal alignment
 \usepackage{array}
-\usepackage{tikz}  % 绘图（用于机制路径图）
+\usepackage{tikz}  % Drawing (for mechanism pathway diagrams)
 \usetikzlibrary{shapes,arrows,positioning}
 
-% ========== 格式设置 ==========
-\setlength{\parindent}{2em}  % 段落缩进
-\onehalfspacing  % 1.5倍行距
-\captionsetup{font={small},labelfont=bf}  % 图表标题格式
+% ========== Format Settings ==========
+\setlength{\parindent}{2em}  % Paragraph indentation
+\onehalfspacing  % 1.5x line spacing
+\captionsetup{font={small},labelfont=bf}  % Caption format
 
-% ========== 自定义命令 ==========
-\newcolumntype{d}[1]{D{.}{.}{#1}}  % 小数点对齐
-\newcommand{\sym}[1]{\ensuremath{^{#1}}}  % 显著性星号上标
+% ========== Custom Commands ==========
+\newcolumntype{d}[1]{D{.}{.}{#1}}  % Decimal alignment
+\newcommand{\sym}[1]{\ensuremath{^{#1}}}  % Significance asterisk superscript
 
-% ========== 文档开始 ==========
+% ========== Document Start ==========
 \begin{document}
 
-% ========== 标题页 ==========
-\title{\textbf{论文标题：XX对XX的影响研究\\——基于XX的实证分析}\thanks{基金项目：国家自然科学基金项目（项目编号：XXXXXXXX）；国家社会科学基金项目（项目编号：XXXXXXXX）。}}
+% ========== Title Page ==========
+\title{\textbf{Paper Title: The Impact of XX on XX\\---An Empirical Analysis Based on XX}\thanks{Funding: National Natural Science Foundation of China (Grant No.: XXXXXXXX); National Social Science Foundation of China (Grant No.: XXXXXXXX).}}
 
 \author{
-    作者一\thanks{作者单位，邮箱：author1@university.edu.cn} \quad
-    作者二\thanks{作者单位，邮箱：author2@university.edu.cn}
+    Ecoresearch\thanks{Affiliation, Email: ecoresearch@university.edu}
 }
 
 \date{\today}
 
 \maketitle
 
-% ========== 摘要与关键词 ==========
+% ========== Abstract and Keywords ==========
 \begin{abstract}
-\noindent \textbf{摘要：}本文基于XXXX-XXXX年的面板数据，采用XX方法系统考察了XX对XX的影响及其作用机制。研究发现：（1）XX显著促进（抑制）了XX，该效应在经过一系列稳健性检验后依然成立；（2）机制分析表明，XX主要通过XX和XX两条路径发挥作用；（3）异质性分析显示，XX的影响在XX特征的样本中更为显著。本研究的政策启示在于：应当XX，同时注重XX，以实现XX的政策目标。本文的边际贡献在于：首次将XX与XX纳入统一分析框架，丰富了XX领域的研究文献；采用XX方法有效缓解了内生性问题，为因果识别提供了更为可靠的证据；揭示了XX的作用机制，为理解XX提供了微观基础。
+\noindent \textbf{Abstract:} Based on panel data from XXXX to XXXX, this paper employs the XX method to systematically examine the impact of XX on XX and the underlying mechanisms. The findings are as follows: (1) XX significantly promotes (inhibits) XX, and this effect remains robust after a series of robustness tests; (2) mechanism analysis reveals that XX primarily operates through two channels: XX and XX; (3) heterogeneity analysis indicates that the impact of XX is more pronounced in samples with XX characteristics. The policy implications of this study are: XX should be pursued while focusing on XX to achieve the policy objective of XX. The marginal contributions of this paper are: it is the first to incorporate XX and XX into a unified analytical framework, enriching the research literature in the field of XX; the use of XX effectively mitigates endogeneity issues, providing more reliable evidence for causal identification; and it reveals the mechanism through which XX operates, offering a micro-foundation for understanding XX.
 
 \vspace{0.5em}
-\noindent \textbf{关键词：}关键词1；关键词2；关键词3；关键词4；关键词5
+\noindent \textbf{Keywords:} Keyword 1; Keyword 2; Keyword 3; Keyword 4; Keyword 5
 
 \vspace{0.5em}
-\noindent \textbf{JEL分类号：}C23；O13；Q42；Q48
+\noindent \textbf{JEL Classification:} C23; O13; Q42; Q48
 \end{abstract}
 
 \newpage
 
-% ========== 目录 ==========
+% ========== Table of Contents ==========
 \tableofcontents
 \newpage
 
-% ========== 一、引言 ==========
-\section{引言}
+% ========== 1. Introduction ==========
+\section{Introduction}
 
-\subsection{研究背景与问题提出}
+\subsection{Research Background and Problem Statement}
 
-【第一段：宏观背景切入】当前，全球经济正经历深刻变革，XX已成为各国竞相布局的战略制高点。在中国，随着"双碳"目标的提出和XX战略的深入推进，XX产业迎来历史性发展机遇。2020年，中国向世界庄严承诺力争2030年前实现碳达峰、2060年前实现碳中和，这一目标的实现离不开XX的大规模应用和技术创新\citep{reference1}。然而，在XX快速发展的同时，XX问题日益凸显，成为制约产业可持续发展的关键瓶颈。
+[Paragraph 1: Macro-level Background] Currently, the global economy is undergoing profound transformation, and XX has become a strategic priority for nations worldwide. In China, with the proposal of the ``dual carbon'' goals and the deepening of the XX strategy, the XX industry is experiencing a historic development opportunity. In 2020, China solemnly pledged to the world to achieve carbon peaking before 2030 and carbon neutrality before 2060, goals that require the large-scale application and technological innovation of XX \citep{reference1}. However, alongside the rapid development of XX, the issue of XX has become increasingly prominent, constituting a key bottleneck constraining the sustainable development of the industry.
 
-【第二段：具体政策与现象】近年来，中国政府出台了一系列支持XX发展的政策措施。2021年，XX政策正式实施，旨在通过XX机制引导资源向XX领域配置。该政策实施以来，XX领域投资规模显著增长，从2020年的XX亿元增加至2023年的XX亿元，年均增长率达XX\%。与此同时，XX指标也呈现快速增长态势，XX从XX提升至XX。这一现象引发了学术界和政策制定者的广泛关注：XX政策是否有效促进了XX？其作用机制是什么？不同类型的XX是否存在异质性影响？这些问题的回答对于优化政策设计、推动XX高质量发展具有重要的理论价值和现实意义。
+[Paragraph 2: Specific Policies and Phenomena] In recent years, the Chinese government has introduced a series of policy measures to support the development of XX. In 2021, the XX policy was officially implemented, aiming to guide resource allocation toward the XX sector through the XX mechanism. Since its implementation, investment in the XX sector has grown significantly, increasing from XX billion yuan in 2020 to XX billion yuan in 2023, with an average annual growth rate of XX\%. Meanwhile, the XX indicator has also shown rapid growth, rising from XX to XX. This phenomenon has attracted widespread attention from both academia and policymakers: Has the XX policy effectively promoted XX? What are the underlying mechanisms? Do different types of XX have heterogeneous effects? Answering these questions has important theoretical value and practical significance for optimizing policy design and promoting high-quality development of XX.
 
-【第三段：问题的重要性与研究必要性】深入研究XX对XX的影响不仅具有重要的学术价值，更具有紧迫的现实意义。从理论层面看，XX是XX理论在XX领域的重要应用，探讨其作用机制有助于丰富XX理论体系，为理解XX提供微观基础。从实践层面看，准确评估XX政策效果是优化政策设计、提升政策效率的前提。当前，XX政策在实施过程中面临XX、XX等挑战，亟需通过科学的实证研究为政策调整提供依据。此外，XX的发展不仅关系到XX，还涉及XX、XX等多重目标，具有显著的正外部性和战略价值。因此，系统考察XX对XX的影响，揭示其内在机制和异质性特征，对于推动XX高质量发展、实现XX具有重要意义。
+[Paragraph 3: Importance and Research Necessity] In-depth research on the impact of XX on XX has not only significant academic value but also pressing practical relevance. From a theoretical perspective, XX represents an important application of XX theory in the XX field, and exploring its mechanisms helps enrich the XX theoretical system and provides a micro-foundation for understanding XX. From a practical perspective, accurately evaluating the effectiveness of XX policies is a prerequisite for optimizing policy design and improving policy efficiency. Currently, XX policies face challenges such as XX and XX during implementation, urgently requiring scientific empirical research to provide a basis for policy adjustment. Moreover, the development of XX is related not only to XX but also involves multiple objectives such as XX and XX, possessing significant positive externalities and strategic value. Therefore, systematically examining the impact of XX on XX and revealing its internal mechanisms and heterogeneous characteristics is of great significance for promoting high-quality development of XX and achieving XX.
 
-\subsection{文献综述与研究缺口}
+\subsection{Literature Review and Research Gaps}
 
-【第一部分：XX的相关研究】现有文献主要从以下几个角度展开研究。第一，XX对XX的影响。\citet{reference2}利用XX数据研究发现，XX显著促进了XX，该效应在XX样本中更为显著。\citet{reference3}则指出，XX对XX的影响呈现非线性特征，存在XX的门槛效应。第二，XX的影响因素。\citet{reference4}从XX视角分析了XX对XX的影响，发现XX通过XX机制作用于XX。\citet{reference5}强调了XX在XX过程中的调节作用。第三，XX的经济效应。\citet{reference6}评估了XX政策的经济效应，发现XX政策显著提升了XX，但对XX的影响存在异质性。
+[Part 1: Research Related to XX] The existing literature has mainly explored the following perspectives. First, the impact of XX on XX. \citet{reference2} used XX data and found that XX significantly promotes XX, with this effect being more pronounced in XX samples. \citet{reference3} pointed out that the impact of XX on XX exhibits nonlinear characteristics, with a threshold effect of XX. Second, the determinants of XX. \citet{reference4} analyzed the impact of XX on XX from the XX perspective and found that XX operates on XX through the XX mechanism. \citet{reference5} emphasized the moderating role of XX in the XX process. Third, the economic effects of XX. \citet{reference6} evaluated the economic effects of XX policies, finding that XX policies significantly enhanced XX, but their impact on XX exhibits heterogeneity.
 
-【第二部分：XX的相关研究】关于XX的研究主要集中在以下方面。一是XX的测度与评价。\citet{reference7}构建了XX评价指标体系，采用XX方法测算了中国XX的发展水平。二是XX的驱动因素。\citet{reference8}研究发现，XX、XX和XX是影响XX的关键因素。\citet{reference9}则强调了XX在推动XX中的重要作用。三是XX的经济社会效应。\citet{reference10}研究表明，XX不仅带来XX，还产生显著的XX。
+[Part 2: Research Related to XX] Research on XX has mainly focused on the following aspects. First, the measurement and evaluation of XX. \citet{reference7} constructed an XX evaluation indicator system and used the XX method to measure China's XX development level. Second, the drivers of XX. \citet{reference8} found that XX, XX, and XX are key factors affecting XX. \citet{reference9} emphasized the important role of XX in promoting XX. Third, the economic and social effects of XX. \citet{reference10} showed that XX not only generates XX but also produces significant XX.
 
-【第三部分：XX与XX的交叉研究】少数文献开始关注XX与XX的关系。\citet{reference11}初步探讨了XX对XX的影响，但其研究主要基于XX层面的数据，缺乏微观机制分析。\citet{reference12}利用XX方法研究了XX政策对XX的影响，但未能充分考虑内生性问题。总体而言，现有研究在以下几个方面存在不足：（1）缺乏将XX与XX纳入统一分析框架的系统性研究，尤其是在XX背景下的交叉分析；（2）对XX与XX之间的因果关系识别不够充分，多数研究未能有效处理内生性问题；（3）对XX影响XX的作用机制和传导路径缺乏深入剖析，特别是XX和XX两条路径的实证检验不足；（4）对异质性特征的分析不够细致，未能充分考虑XX、XX、XX等维度的差异。
+[Part 3: Cross-cutting Research on XX and XX] A small number of studies have begun to examine the relationship between XX and XX. \citet{reference11} provided a preliminary exploration of the impact of XX on XX, but their study was mainly based on XX-level data and lacked micro-level mechanism analysis. \citet{reference12} used the XX method to study the impact of XX policy on XX, but failed to adequately address endogeneity issues. Overall, the existing research has the following shortcomings: (1) a lack of systematic studies incorporating XX and XX into a unified analytical framework, especially cross-cutting analysis in the context of XX; (2) insufficient identification of the causal relationship between XX and XX, with most studies failing to effectively address endogeneity issues; (3) insufficient in-depth analysis of the mechanisms and transmission pathways through which XX affects XX, particularly the lack of empirical testing of the XX and XX channels; (4) inadequately detailed heterogeneity analysis, failing to fully consider differences along dimensions such as XX, XX, and XX.
 
-\subsection{边际贡献与研究框架}
+\subsection{Marginal Contributions and Research Framework}
 
-【边际贡献】基于上述文献缺口，本文的边际贡献主要体现在以下四个方面：
+[Marginal Contributions] Based on the aforementioned literature gaps, the marginal contributions of this paper are mainly reflected in the following four aspects:
 
-第一，\textbf{研究视角的创新}。本文首次将XX与XX纳入统一的分析框架，从XX视角系统考察XX对XX的影响。相较于现有文献多聚焦于单一维度的分析，本研究构建了"XX—XX—XX"的完整链条，揭示了XX在XX过程中的关键作用，丰富了XX领域的研究文献。
+First, \textbf{Innovation in Research Perspective}. This paper is the first to incorporate XX and XX into a unified analytical framework, systematically examining the impact of XX on XX from the XX perspective. Compared with the predominantly single-dimensional analyses in the existing literature, this study constructs a complete chain of ``XX---XX---XX,'' revealing the key role of XX in the XX process and enriching the research literature in the XX field.
 
-第二，\textbf{因果识别策略的改进}。针对XX与XX之间可能存在的内生性问题（包括遗漏变量偏误、反向因果和测量误差），本文采用XX方法进行因果识别。具体而言，本文利用XX作为工具变量，该变量满足相关性和外生性假定（详见第三部分"因果识别策略"的论证）。同时，本文还通过XX、XX等多种稳健性检验策略，确保研究结论的可靠性。这一识别策略为XX与XX的因果关系提供了更为严谨的实证证据。
+Second, \textbf{Improvement in Causal Identification Strategy}. To address potential endogeneity issues between XX and XX (including omitted variable bias, reverse causality, and measurement error), this paper employs the XX method for causal identification. Specifically, the paper uses XX as an instrumental variable, which satisfies the relevance and exogeneity assumptions (detailed justification in Section 3, ``Causal Identification Strategy''). Additionally, this paper conducts multiple robustness checks including XX and XX to ensure the reliability of the findings. This identification strategy provides more rigorous empirical evidence for the causal relationship between XX and XX.
 
-第三，\textbf{机制分析的深化}。本文不仅关注XX对XX的总体效应，更深入剖析其作用机制。基于XX理论，本文提出并检验了XX和XX两条传导路径，采用中介效应模型量化了各机制的贡献度。这一分析为理解XX影响XX的微观基础提供了新的证据，对于政策制定者准确把握政策作用点具有重要参考价值。
+Third, \textbf{Deepening of Mechanism Analysis}. This paper not only examines the overall effect of XX on XX but also provides an in-depth analysis of the underlying mechanisms. Based on XX theory, the paper proposes and tests two transmission pathways---XX and XX---using a mediation effect model to quantify the contribution of each mechanism. This analysis provides new evidence for understanding the micro-foundation through which XX affects XX and offers important reference for policymakers to accurately identify policy leverage points.
 
-第四，\textbf{异质性分析的细化}。本文从XX、XX、XX三个维度展开异质性分析，揭示了XX影响效应的差异化特征。这一分析不仅丰富了对XX作用条件的认识，也为差异化政策设计提供了实证依据。
+Fourth, \textbf{Refinement of Heterogeneity Analysis}. This paper conducts heterogeneity analysis along three dimensions---XX, XX, and XX---revealing the differentiated characteristics of the impact effects of XX. This analysis not only enriches the understanding of the conditions under which XX operates but also provides empirical basis for differentiated policy design.
 
-【研究框架】本文的研究框架如下：第二部分阐述制度背景并提出理论假说；第三部分介绍研究设计，包括计量模型、变量定义、数据来源和因果识别策略；第四部分报告实证结果，包括基准回归和稳健性检验；第五部分进行机制分析和异质性讨论；第六部分总结研究结论并提出政策启示。
+[Research Framework] The research framework of this paper is as follows: Section 2 describes the institutional background and develops theoretical hypotheses; Section 3 introduces the research design, including the econometric model, variable definitions, data sources, and causal identification strategy; Section 4 reports the empirical results, including baseline regression and robustness checks; Section 5 conducts mechanism analysis and heterogeneity discussion; Section 6 summarizes the research conclusions and proposes policy implications.
 
-% ========== 二、制度背景与理论假说 ==========
-\section{制度背景与理论假说}
+% ========== 2. Institutional Background and Theoretical Hypotheses ==========
+\section{Institutional Background and Theoretical Hypotheses}
 
-\subsection{制度背景}
+\subsection{Institutional Background}
 
-【政策演进】中国XX政策经历了从XX到XX的演进过程。2015年，XX政策首次提出，旨在XX。2018年，XX政策进一步完善，明确了XX的目标和路径。2020年"双碳"目标提出后，XX政策被赋予更加重要的战略地位，2021年XX文件将XX作为实现碳中和目标的关键举措。政策的持续优化为XX发展创造了良好的制度环境。
+[Policy Evolution] China's XX policy has evolved from XX to XX. In 2015, the XX policy was first proposed, aiming to XX. In 2018, the XX policy was further refined, clarifying the goals and pathways for XX. After the ``dual carbon'' goals were proposed in 2020, the XX policy was assigned greater strategic importance, and the 2021 XX document designated XX as a key measure for achieving carbon neutrality. The continued optimization of policies has created a favorable institutional environment for the development of XX.
 
-【政策机制】XX政策主要通过以下机制发挥作用：一是XX机制，通过XX引导资源向XX领域配置；二是XX机制，通过XX降低XX成本；三是XX机制，通过XX激励XX投入。这些机制共同作用，形成了促进XX发展的政策合力。
+[Policy Mechanisms] The XX policy primarily operates through the following mechanisms: first, the XX mechanism, which guides resource allocation toward the XX sector through XX; second, the XX mechanism, which reduces XX costs through XX; third, the XX mechanism, which incentivizes XX investment through XX. These mechanisms work together to form a policy synergy that promotes the development of XX.
 
-【政策实施效果】根据XX部门统计数据，XX政策实施以来取得显著成效。截至2023年，XX规模达到XX，较2020年增长XX\%；XX指标从XX提升至XX；XX数量从XX增加至XX。然而，政策实施也面临一些挑战，如XX、XX等问题仍需进一步解决。
+[Policy Implementation Effects] According to statistical data from the XX department, the XX policy has achieved significant results since its implementation. As of 2023, the XX scale has reached XX, an increase of XX\% compared to 2020; the XX indicator has risen from XX to XX; the number of XX has increased from XX to XX. However, policy implementation also faces some challenges, such as XX and XX, which still require further resolution.
 
-\subsection{理论分析与研究假说}
+\subsection{Theoretical Analysis and Research Hypotheses}
 
-基于上述制度背景和理论分析，本文提出以下研究假说：
+Based on the above institutional background and theoretical analysis, this paper proposes the following research hypotheses:
 
-\textbf{假说1（总效应假说）：}XX对XX具有显著的促进（抑制）作用。
+\textbf{Hypothesis 1 (Overall Effect Hypothesis):} XX has a significant promoting (inhibiting) effect on XX.
 
-\textit{理论推演：}根据XX理论，XX通过降低XX成本、提高XX收益，改变了XX的成本收益结构，从而激励XX增加（减少）XX投入。具体而言，XX政策的实施增强了XX的预期收益，使得原本由于XX而无法开展的XX项目变得可行，进而促进XX的提升。同时，XX机制的建立降低了XX的不确定性，减少了XX的投资风险，进一步强化了XX对XX的促进作用。从XX视角看，XX作为一种XX，通过XX效应和XX效应，能够有效引导XX向XX领域流动，推动XX的发展。
+\textit{Theoretical Derivation:} According to XX theory, XX changes the cost-benefit structure of XX by reducing XX costs and increasing XX returns, thereby incentivizing XX to increase (decrease) XX investment. Specifically, the implementation of XX policy enhances the expected returns of XX, making previously infeasible XX projects viable due to XX, thereby promoting the improvement of XX. Meanwhile, the establishment of the XX mechanism reduces the uncertainty of XX, decreases investment risk in XX, and further strengthens the promoting effect of XX on XX. From the XX perspective, XX, as a type of XX, can effectively guide XX to flow toward the XX sector through XX effects and XX effects, driving the development of XX.
 
-\textbf{假说2（机制假说1——XX路径）：}XX通过促进XX的方式影响XX。
+\textbf{Hypothesis 2 (Mechanism Hypothesis 1---XX Pathway):} XX affects XX by promoting XX.
 
-\textit{理论推演：}XX是连接XX与XX的重要中间变量。一方面，XX政策通过XX机制直接激励XX的XX行为，例如XX补贴降低了XX的资金成本，XX优惠减少了XX的税收负担。另一方面，XX的提升能够XX，产生XX效应，进而推动XX的增长。实证研究表明\citep{reference13}，XX每提高1\%，XX将增加XX\%。因此，XX构成了XX影响XX的重要传导路径。
+\textit{Theoretical Derivation:} XX is an important intermediate variable connecting XX and XX. On one hand, XX policy directly incentivizes XX behavior through the XX mechanism---for example, XX subsidies reduce the capital cost of XX, and XX preferences reduce the tax burden of XX. On the other hand, the improvement of XX can generate XX, producing XX effects, which in turn drives the growth of XX. Empirical research shows \citep{reference13} that for every 1\% increase in XX, XX increases by XX\%. Therefore, XX constitutes an important transmission pathway through which XX affects XX.
 
-\textbf{假说3（机制假说2——XX路径）：}XX通过改善XX的方式影响XX。
+\textbf{Hypothesis 3 (Mechanism Hypothesis 2---XX Pathway):} XX affects XX by improving XX.
 
-\textit{理论推演：}XX是影响XX的另一关键机制。XX政策的实施改变了XX的竞争格局，通过XX效应促使XX企业加大XX投入以维持竞争优势。同时，XX标准的提高形成了XX效应，倒逼XX企业通过XX提升XX。此外，XX政策还通过XX机制促进了XX的扩散和应用，加速了XX的XX进程。已有研究证实\citep{reference14}，XX与XX之间存在显著的正相关关系，XX每提升一个标准差，XX将增加XX个百分点。
+\textit{Theoretical Derivation:} XX is another key mechanism affecting XX. The implementation of XX policy changes the competitive landscape of XX, and through XX effects, it compels XX firms to increase XX investment to maintain their competitive advantage. Meanwhile, the raising of XX standards creates XX effects, forcing XX firms to improve XX through XX. Additionally, XX policy promotes the diffusion and application of XX through the XX mechanism, accelerating the XX process. Existing research confirms \citep{reference14} that there is a significant positive correlation between XX and XX: for every one standard deviation increase in XX, XX increases by XX percentage points.
 
-\textbf{假说4（异质性假说）：}XX对XX的影响在不同XX特征的样本中存在显著差异。
+\textbf{Hypothesis 4 (Heterogeneity Hypothesis):} The impact of XX on XX varies significantly across samples with different XX characteristics.
 
-\textit{理论推演：}基于XX理论，XX的影响效应可能受到XX特征的调节。具体而言：（1）从XX维度看，XX企业由于XX，对XX政策的响应更为敏感，因此XX对其XX的影响更为显著；（2）从XX维度看，XX地区由于XX，XX政策的实施条件更加成熟，政策效果更为明显；（3）从XX维度看，XX行业因XX，更容易受到XX政策的影响。这些异质性特征的存在提示，在政策设计时需要充分考虑XX的差异，实施差异化的政策措施。
+\textit{Theoretical Derivation:} Based on XX theory, the impact effects of XX may be moderated by XX characteristics. Specifically: (1) From the XX dimension, XX firms are more sensitive to XX policy due to XX, so the impact of XX on their XX is more pronounced; (2) From the XX dimension, XX regions have more mature conditions for XX policy implementation due to XX, making the policy effects more evident; (3) From the XX dimension, XX industries are more susceptible to the influence of XX policy because of XX. The existence of these heterogeneous characteristics suggests that policy design should fully consider differences in XX, implementing differentiated policy measures.
 
-% ========== 三、研究设计 ==========
-\section{研究设计}
+% ========== 3. Research Design ==========
+\section{Research Design}
 
-\subsection{计量模型设定}
+\subsection{Econometric Model Specification}
 
-为检验XX对XX的影响，本文构建如下基准回归模型：
+To test the impact of XX on XX, this paper constructs the following baseline regression model:
 
 \begin{equation}
 Y_{it} = \alpha + \beta_1 X_{it} + \gamma \mathbf{Controls}_{it} + \mu_i + \lambda_t + \varepsilon_{it}
 \label{eq:baseline}
 \end{equation}
 
-其中，下标$i$表示XX（如企业、地区），$t$表示年份；$Y_{it}$为被解释变量，表示XX；$X_{it}$为核心解释变量，表示XX；$\mathbf{Controls}_{it}$为控制变量向量，包括可能影响XX的其他因素；$\mu_i$为XX固定效应，用于控制不随时间变化的XX特征；$\lambda_t$为时间固定效应，用于控制所有XX共同面临的时间趋势；$\varepsilon_{it}$为随机扰动项。核心关注的参数是$\beta_1$，它反映了XX对XX的平均处理效应。
+where the subscript $i$ denotes XX (e.g., firm, region), and $t$ denotes year; $Y_{it}$ is the dependent variable representing XX; $X_{it}$ is the key explanatory variable representing XX; $\mathbf{Controls}_{it}$ is a vector of control variables including other factors that may affect XX; $\mu_i$ represents XX fixed effects, controlling for time-invariant XX characteristics; $\lambda_t$ represents time fixed effects, controlling for common time trends faced by all XX; and $\varepsilon_{it}$ is the error term. The parameter of primary interest is $\beta_1$, which captures the average treatment effect of XX on XX.
 
-为检验非线性关系，本文进一步设定二次项模型：
+To test for nonlinear relationships, this paper further specifies a quadratic model:
 
 \begin{equation}
 Y_{it} = \alpha + \beta_1 X_{it} + \beta_2 X_{it}^2 + \gamma \mathbf{Controls}_{it} + \mu_i + \lambda_t + \varepsilon_{it}
 \label{eq:nonlinear}
 \end{equation}
 
-若$\beta_2$显著，则表明XX对XX的影响存在边际递减（$\beta_2 < 0$）或边际递增（$\beta_2 > 0$）效应。
+If $\beta_2$ is significant, it indicates that the impact of XX on XX exhibits diminishing marginal effects ($\beta_2 < 0$) or increasing marginal effects ($\beta_2 > 0$).
 
-\subsection{变量定义与数据来源}
+\subsection{Variable Definitions and Data Sources}
 
-\subsubsection{被解释变量（$Y$）}
+\subsubsection{Dependent Variable ($Y$)}
 
-\textbf{XX（主要指标）}：采用XX方法测度，具体计算公式为：
+\textbf{XX (Primary Indicator)}: Measured using the XX method, with the specific formula:
 \begin{equation}
 Y_{it} = \frac{XX_{it}}{XX_{it}} \times 100\%
 \label{eq:y_main}
 \end{equation}
-其中，$XX_{it}$表示XX，$XX_{it}$表示XX。该指标越大，表明XX水平越高。该测度方法已被广泛应用于XX领域的研究\citep{reference15}，具有较好的理论基础和实践可操作性。
+where $XX_{it}$ represents XX, and $XX_{it}$ represents XX. A higher value of this indicator indicates a higher level of XX. This measurement approach has been widely applied in research in the XX field \citep{reference15} and has a solid theoretical foundation and practical operability.
 
-\textbf{XX（替代指标）}：为检验结果稳健性，本文还采用XX作为被解释变量的替代测度。该指标直接反映了XX的绝对水平，计算方式为XX，单位为XX。
+\textbf{XX (Alternative Indicator)}: To check the robustness of results, this paper also uses XX as an alternative measure of the dependent variable. This indicator directly reflects the absolute level of XX, calculated as XX, with units of XX.
 
-\subsubsection{核心解释变量（$X$）}
+\subsubsection{Key Explanatory Variable ($X$)}
 
-\textbf{XX（主要指标）}：采用XX表示，具体为XX。数据来源于XX数据库，经过以下处理：首先，对原始数据进行XX处理以剔除异常值；其次，采用XX方法进行标准化处理，使不同年份的数据具有可比性；最后，取自然对数以缓解异方差问题和量纲影响。
+\textbf{XX (Primary Indicator)}: Measured by XX, specifically XX. Data are sourced from the XX database and processed as follows: first, the raw data undergo XX processing to remove outliers; second, the XX method is used for standardization to make data across different years comparable; finally, the natural logarithm is taken to mitigate heteroskedasticity and unit effects.
 
-\textbf{XX（替代指标）}：使用XX作为核心解释变量的替代指标。该指标从XX维度刻画了XX，计算方法为XX。
+\textbf{XX (Alternative Indicator)}: XX is used as an alternative measure of the key explanatory variable. This indicator captures XX from the XX dimension, calculated as XX.
 
-\subsubsection{中介变量}
+\subsubsection{Mediating Variables}
 
-\textbf{XX（$Z_1$）}：采用XX衡量，计算公式为：
+\textbf{XX ($Z_1$)}: Measured by XX, with the formula:
 \begin{equation}
 Z_{1,it} = \frac{XX_{it}}{XX_{it}} \times 100\%
 \label{eq:mediator1}
 \end{equation}
 
-\textbf{XX（$Z_2$）}：采用XX衡量，具体为XX。参考\citet{reference16}的方法，本文采用XX进行测度。
+\textbf{XX ($Z_2$)}: Measured by XX, specifically XX. Following the approach of \citet{reference16}, this paper uses XX for measurement.
 
-\subsubsection{控制变量（$\mathbf{Controls}$）}
+\subsubsection{Control Variables ($\mathbf{Controls}$)}
 
-为缓解遗漏变量偏误，本文控制了以下变量：
+To mitigate omitted variable bias, this paper controls for the following variables:
 
 \begin{enumerate}[(1)]
-    \item \textbf{XX（$Control_1$）}：用XX表示，反映XX。预期符号为正（负）。
-    \item \textbf{XX（$Control_2$）}：用XX表示，控制XX的影响。取自然对数处理。
-    \item \textbf{XX（$Control_3$）}：用XX表示，衡量XX。该变量可能对XX产生XX影响。
-    \item \textbf{XX（$Control_4$）}：采用XX衡量，控制XX因素。
-    \item \textbf{XX（$Control_5$）}：用XX表示，反映XX。
-    \item \textbf{XX（$Control_6$）}：采用XX计算，控制XX的影响。
+    \item \textbf{XX ($Control_1$)}: Measured by XX, reflecting XX. Expected sign: positive (negative).
+    \item \textbf{XX ($Control_2$)}: Measured by XX, controlling for the influence of XX. Natural logarithm applied.
+    \item \textbf{XX ($Control_3$)}: Measured by XX, capturing XX. This variable may have a XX impact on XX.
+    \item \textbf{XX ($Control_4$)}: Measured by XX, controlling for XX factors.
+    \item \textbf{XX ($Control_5$)}: Measured by XX, reflecting XX.
+    \item \textbf{XX ($Control_6$)}: Calculated using XX, controlling for the influence of XX.
 \end{enumerate}
 
-所有连续型变量均在1\%和99\%分位数水平进行Winsorize处理，以降低极端值的影响。
+All continuous variables are winsorized at the 1st and 99th percentiles to reduce the influence of extreme values.
 
-\subsubsection{数据来源与样本说明}
+\subsubsection{Data Sources and Sample Description}
 
-本文使用XXXX-XXXX年的XX面板数据。数据主要来源于：（1）XX数据来自XX数据库；（2）XX数据来自XX统计年鉴；（3）XX数据来自XX；（4）XX数据通过手工收集整理自XX。
+This paper uses panel data from XXXX to XXXX at the XX level. Data are primarily sourced from: (1) XX data from the XX database; (2) XX data from the XX statistical yearbook; (3) XX data from XX; (4) XX data manually collected from XX.
 
-样本筛选遵循以下原则：（1）剔除数据缺失严重的样本；（2）剔除XX的样本；（3）剔除XX的样本。最终得到XX个观测值，涵盖XX个XX。
+Sample selection follows these criteria: (1) observations with extensive missing data are excluded; (2) XX observations are excluded; (3) XX observations are excluded. The final sample contains XX observations covering XX units.
 
-\subsection{描述性统计}
+\subsection{Descriptive Statistics}
 
-表\ref{tab:summary}报告了主要变量的描述性统计结果。从表中可以看出：（1）被解释变量$Y$的均值为XX，标准差为XX，最小值为XX，最大值为XX，表明不同XX的XX存在较大差异；（2）核心解释变量$X$的均值为XX，中位数为XX，说明XX；（3）各控制变量的统计特征符合预期，标准差相对较小，表明数据质量较好。
+Table \ref{tab:summary} reports the descriptive statistics for the main variables. As shown in the table: (1) The dependent variable $Y$ has a mean of XX, standard deviation of XX, minimum of XX, and maximum of XX, indicating substantial variation in XX across different XX; (2) The key explanatory variable $X$ has a mean of XX and median of XX, suggesting that XX; (3) The statistical characteristics of all control variables are consistent with expectations, with relatively small standard deviations, indicating good data quality.
 
 \begin{table}[htbp]
 \centering
-\caption{主要变量描述性统计}
+\caption{Descriptive Statistics for Main Variables}
 \label{tab:summary}
 \begin{threeparttable}
 \begin{tabular}{lccccccc}
 \toprule
-\textbf{变量} & \textbf{符号} & \textbf{样本量} & \textbf{均值} & \textbf{标准差} & \textbf{最小值} & \textbf{中位数} & \textbf{最大值} \\
+\textbf{Variable} & \textbf{Symbol} & \textbf{N} & \textbf{Mean} & \textbf{Std. Dev.} & \textbf{Min} & \textbf{Median} & \textbf{Max} \\
 \midrule
 XX & $Y$ & XXXX & X.XXX & X.XXX & X.XXX & X.XXX & X.XXX \\
 XX & $X$ & XXXX & X.XXX & X.XXX & X.XXX & X.XXX & X.XXX \\
@@ -227,100 +225,100 @@ XX & $Control_6$ & XXXX & X.XXX & X.XXX & X.XXX & X.XXX & X.XXX \\
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：所有连续型变量均已在1\%和99\%分位数水平进行Winsorize处理。
+\item Note: All continuous variables are winsorized at the 1st and 99th percentiles.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\subsection{因果识别策略与内生性讨论}
+\subsection{Causal Identification Strategy and Endogeneity Discussion}
 
-\subsubsection{内生性来源分析}
+\subsubsection{Sources of Endogeneity}
 
-在估计XX对XX的影响时，可能面临以下三类内生性问题：
+When estimating the impact of XX on XX, the following three types of endogeneity issues may arise:
 
-\textbf{（1）遗漏变量偏误（Omitted Variable Bias）}
+\textbf{(1) Omitted Variable Bias}
 
-某些不可观测的因素可能同时影响XX和XX。例如，XX的XX能力既可能影响其对XX政策的响应程度（即$X$），也可能直接影响其XX水平（即$Y$）。虽然本文已经控制了一系列可观测变量并加入了XX固定效应和时间固定效应，但仍可能存在遗漏的时变不可观测因素，导致估计系数$\hat{\beta}_1$有偏。
+Certain unobservable factors may simultaneously affect both XX and XX. For example, the XX capability of XX may affect both its response to XX policy (i.e., $X$) and its XX level (i.e., $Y$). Although this paper has controlled for a series of observable variables and included XX fixed effects and time fixed effects, there may still be omitted time-varying unobservable factors, leading to biased estimates of $\hat{\beta}_1$.
 
-\textbf{（2）反向因果（Reverse Causality）}
+\textbf{(2) Reverse Causality}
 
-XX与XX之间可能存在反向因果关系。一方面，XX可能促进XX（这是本文关注的因果方向）；另一方面，XX水平较高的XX可能更容易获得XX政策支持或更积极响应XX政策，从而提高$X$的水平。这种双向因果关系使得OLS估计难以识别XX对XX的真实因果效应。
+There may be reverse causality between XX and XX. On one hand, XX may promote XX (the causal direction of interest in this paper); on the other hand, XX with higher XX levels may be more likely to receive XX policy support or more actively respond to XX policy, thereby increasing the level of $X$. This bidirectional causal relationship makes it difficult for OLS estimation to identify the true causal effect of XX on XX.
 
-\textbf{（3）测量误差（Measurement Error）}
+\textbf{(3) Measurement Error}
 
-核心解释变量$X$的测度可能存在误差。例如，XX数据的统计口径在不同年份可能存在差异，或者XX的实际水平与统计数据存在偏差。若测量误差与真实值相关（非经典测量误差），将导致估计系数的不一致性。
+The measurement of the key explanatory variable $X$ may contain errors. For example, the statistical scope of XX data may vary across years, or there may be discrepancies between the actual level of XX and the statistical data. If measurement error is correlated with the true value (non-classical measurement error), it will lead to inconsistent coefficient estimates.
 
-\subsubsection{因果识别策略}
+\subsubsection{Causal Identification Strategy}
 
-为解决上述内生性问题，本文采用\textbf{工具变量法（Instrumental Variable, IV）}进行因果识别。具体而言，本文选择XX作为XX的工具变量，采用两阶段最小二乘法（2SLS）进行估计。
+To address the above endogeneity issues, this paper employs the \textbf{Instrumental Variable (IV)} approach for causal identification. Specifically, XX is selected as the instrument for XX, and Two-Stage Least Squares (2SLS) estimation is conducted.
 
-\textbf{工具变量的选择与论证}
+\textbf{Selection and Justification of the Instrumental Variable}
 
-理想的工具变量需要同时满足两个条件：相关性（Relevance）和外生性（Exogeneity）。
+An ideal instrumental variable must satisfy two conditions simultaneously: relevance and exogeneity.
 
-\textit{相关性条件：}$Cov(IV, X) \neq 0$
+\textit{Relevance Condition:} $Cov(IV, X) \neq 0$
 
-XX与XX之间存在显著相关关系。理论上，XX通过以下机制影响XX：（详细论证）。实证上，第一阶段回归结果显示，$IV$对$X$的影响系数显著为正（负），F统计量为XX，远大于经验法则的临界值10，表明不存在弱工具变量问题。
+There is a significant correlation between XX and XX. Theoretically, XX affects XX through the following mechanism: (detailed justification). Empirically, the first-stage regression results show that $IV$ has a significantly positive (negative) effect on $X$, with an F-statistic of XX, well above the rule-of-thumb critical value of 10, indicating no weak instrument problem.
 
-\textit{外生性条件：}$Cov(IV, \varepsilon) = 0$
+\textit{Exogeneity Condition:} $Cov(IV, \varepsilon) = 0$
 
-XX满足外生性假定，即$IV$仅通过$X$影响$Y$，不直接影响$Y$或与遗漏变量相关。论证如下：（1）从XX的性质看，XX主要由XX决定，与XX的XX行为无关，因此不存在反向因果问题；（2）XX在时间和空间上的分布具有XX特征，与可能影响XX的其他因素不相关；（3）在控制了XX和XX固定效应后，XX的时空变异主要来源于XX，而非XX的内生选择。虽然外生性假定无法直接检验，但上述论证和后续的过度识别检验为其提供了有力支持。
+XX satisfies the exogeneity assumption, meaning that $IV$ affects $Y$ only through $X$ and does not directly affect $Y$ or correlate with omitted variables. The justification is as follows: (1) By the nature of XX, XX is primarily determined by XX and is unrelated to the XX behavior of XX, thus ruling out reverse causality; (2) The temporal and spatial distribution of XX exhibits XX characteristics and is uncorrelated with other factors that may affect XX; (3) After controlling for XX and XX fixed effects, the temporal-spatial variation in XX primarily stems from XX rather than the endogenous choices of XX. While the exogeneity assumption cannot be directly tested, the above arguments and subsequent over-identification tests provide strong support.
 
-\textbf{两阶段回归模型}
+\textbf{Two-Stage Regression Model}
 
-第一阶段回归（First Stage）：
+First Stage:
 \begin{equation}
 X_{it} = \pi_0 + \pi_1 IV_{it} + \pi_2 \mathbf{Controls}_{it} + \mu_i + \lambda_t + u_{it}
 \label{eq:first_stage}
 \end{equation}
 
-第二阶段回归（Second Stage）：
+Second Stage:
 \begin{equation}
 Y_{it} = \alpha + \beta_1 \hat{X}_{it} + \gamma \mathbf{Controls}_{it} + \mu_i + \lambda_t + \varepsilon_{it}
 \label{eq:second_stage}
 \end{equation}
 
-其中，$\hat{X}_{it}$为第一阶段回归得到的$X_{it}$的拟合值。在第二阶段回归中，$\beta_1$的估计值即为XX对XX的因果效应。
+where $\hat{X}_{it}$ is the fitted value of $X_{it}$ obtained from the first-stage regression. In the second-stage regression, the estimate of $\beta_1$ represents the causal effect of XX on XX.
 
-\subsubsection{识别假定的讨论}
+\subsubsection{Discussion of Identification Assumptions}
 
-除了工具变量策略，本文还依赖以下识别假定：
+In addition to the IV strategy, this paper also relies on the following identification assumptions:
 
-\textbf{（1）平行趋势假定（Parallel Trends Assumption）}
+\textbf{(1) Parallel Trends Assumption}
 
-若采用XX方法进行分析，需满足平行趋势假定，即在XX政策实施前，处理组与对照组的XX趋势应保持一致。本文通过事件研究法（Event Study）对该假定进行检验，结果显示在政策实施前各期的动态效应不显著，支持平行趋势假定。
+If the XX method is employed for analysis, the parallel trends assumption must hold, i.e., the trends in XX for the treatment and control groups should be consistent before the implementation of the XX policy. This paper tests this assumption using an event study approach, and the results show that the dynamic effects in pre-policy periods are not significant, supporting the parallel trends assumption.
 
-\textbf{（2）稳定单元处理值假定（SUTVA）}
+\textbf{(2) Stable Unit Treatment Value Assumption (SUTVA)}
 
-假定一个XX的XX水平仅受其自身XX的影响，不受其他XX的XX影响（即不存在溢出效应）。考虑到XX可能存在空间溢出，本文在稳健性检验中采用空间计量模型进行检验。
+This assumes that the XX level of one unit is affected only by its own XX and not by the XX of other units (i.e., no spillover effects). Given that XX may exhibit spatial spillovers, this paper employs a spatial econometric model in the robustness checks.
 
-\textbf{（3）外生性假定的进一步讨论}
+\textbf{(3) Further Discussion of the Exogeneity Assumption}
 
-虽然本文已采取多种措施缓解内生性问题，但仍需承认因果识别的局限性。例如，若存在某些未观测到的时变混淆因素同时影响$IV$和$Y$，则工具变量的外生性可能受到威胁。为此，本文在稳健性检验部分进行了一系列敏感性分析，包括更换工具变量、改变样本范围等，结果表明核心结论稳健。
+Although this paper has taken multiple measures to mitigate endogeneity issues, it must be acknowledged that there are limitations to causal identification. For example, if certain unobserved time-varying confounders simultaneously affect $IV$ and $Y$, the exogeneity of the instrument may be threatened. To address this, the robustness checks section conducts a series of sensitivity analyses, including changing the instrument and altering the sample range, and the results indicate that the core conclusions are robust.
 
-\subsubsection{缓解内生性的其他措施}
+\subsubsection{Additional Measures to Mitigate Endogeneity}
 
-除工具变量法外，本文还采取以下措施缓解内生性问题：
+In addition to the IV approach, this paper also employs the following measures to mitigate endogeneity:
 
 \begin{enumerate}[(1)]
-    \item \textbf{固定效应控制}：加入XX固定效应$\mu_i$和时间固定效应$\lambda_t$，控制不随时间变化的XX特征和所有XX共同面临的时间趋势。
-    \item \textbf{滞后变量}：将核心解释变量滞后一期（$X_{i,t-1}$），缓解反向因果问题。
-    \item \textbf{动态面板模型}：采用差分GMM或系统GMM方法，利用变量的滞后项作为工具变量，同时控制动态效应和内生性。
-    \item \textbf{倾向得分匹配（PSM）}：通过匹配处理组和对照组的可观测特征，构造反事实，缓解选择性偏误。
+    \item \textbf{Fixed Effects Control}: Including XX fixed effects $\mu_i$ and time fixed effects $\lambda_t$ to control for time-invariant XX characteristics and common time trends faced by all XX.
+    \item \textbf{Lagged Variables}: Lagging the key explanatory variable by one period ($X_{i,t-1}$) to mitigate reverse causality.
+    \item \textbf{Dynamic Panel Model}: Employing difference GMM or system GMM methods, using lagged values of variables as instruments while controlling for dynamic effects and endogeneity.
+    \item \textbf{Propensity Score Matching (PSM)}: Matching treatment and control groups on observable characteristics to construct counterfactuals and mitigate selection bias.
 \end{enumerate}
 
-综上所述，本文通过多种因果识别策略和稳健性检验，力求为XX对XX的因果效应提供可靠的实证证据。然而，必须承认任何实证研究都难以完全消除内生性问题，本文的结论应在识别假定成立的前提下进行解释。
+In summary, through multiple causal identification strategies and robustness checks, this paper strives to provide reliable empirical evidence for the causal effect of XX on XX. However, it must be acknowledged that no empirical study can completely eliminate endogeneity issues, and the conclusions of this paper should be interpreted under the premise that the identification assumptions hold.
 
-% ========== 四、实证结果与分析 ==========
-\section{实证结果与分析}
+% ========== 4. Empirical Results and Analysis ==========
+\section{Empirical Results and Analysis}
 
-\subsection{基准回归结果}
+\subsection{Baseline Regression Results}
 
-表\ref{tab:baseline}报告了XX对XX影响的基准回归结果。列(1)仅包含核心解释变量$X$和固定效应，列(2)至列(4)依次加入控制变量，列(5)为完整模型的估计结果。
+Table \ref{tab:baseline} reports the baseline regression results of the impact of XX on XX. Column (1) includes only the key explanatory variable $X$ and fixed effects, columns (2) through (4) progressively add control variables, and column (5) presents the full model estimation results.
 
 \begin{table}[htbp]
 \centering
-\caption{基准回归结果}
+\caption{Baseline Regression Results}
 \label{tab:baseline}
 \begin{threeparttable}
 \begin{tabular}{lccccc}
@@ -336,266 +334,266 @@ $Control_2$ &  &  & $-$0.XXX\sym{**} & $-$0.XXX\sym{**} & $-$0.XXX\sym{**} \\
  &  &  & (0.XXX) & (0.XXX) & (0.XXX) \\
 $Control_3$ &  &  &  & 0.XXX\sym{***} & 0.XXX\sym{***} \\
  &  &  &  & (0.XXX) & (0.XXX) \\
-其他控制变量 & 否 & 否 & 否 & 是 & 是 \\
-XX固定效应 & 是 & 是 & 是 & 是 & 是 \\
-时间固定效应 & 是 & 是 & 是 & 是 & 是 \\
+Other Controls & No & No & No & Yes & Yes \\
+XX Fixed Effects & Yes & Yes & Yes & Yes & Yes \\
+Time Fixed Effects & Yes & Yes & Yes & Yes & Yes \\
 \midrule
-观测值 & XXXX & XXXX & XXXX & XXXX & XXXX \\
+Observations & XXXX & XXXX & XXXX & XXXX & XXXX \\
 $R^2$ & 0.XXX & 0.XXX & 0.XXX & 0.XXX & 0.XXX \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：括号内为聚类到XX层面的稳健标准误；\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。所有回归均控制了XX固定效应和时间固定效应。
+\item Note: Robust standard errors clustered at the XX level are reported in parentheses; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively. All regressions include XX fixed effects and time fixed effects.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\textbf{结果解读：}
+\textbf{Interpretation of Results:}
 
-从表\ref{tab:baseline}可以看出，核心解释变量$X$的估计系数在所有列中均显著为正（负），且在逐步加入控制变量后保持稳定，表明XX对XX具有稳健的促进（抑制）作用。以列(5)的完整模型为准，$X$的系数为0.XXX，在5\%水平上显著，这意味着XX每提高1个单位，XX将平均增加（减少）0.XXX个单位。
+As shown in Table \ref{tab:baseline}, the estimated coefficient on the key explanatory variable $X$ is significantly positive (negative) across all columns and remains stable as control variables are progressively added, indicating that XX has a robust promoting (inhibiting) effect on XX. Based on the full model in column (5), the coefficient on $X$ is 0.XXX, significant at the 5\% level, implying that a one-unit increase in XX is associated with an average increase (decrease) of 0.XXX units in XX.
 
-\textbf{经济意义解释：}
+\textbf{Economic Significance:}
 
-为更直观地理解上述估计结果的经济含义，我们进行以下换算：根据样本数据，$X$的标准差为X.XXX，$Y$的标准差为X.XXX。因此，$X$每增加一个标准差，$Y$将增加（减少）$0.XXX \times X.XXX = X.XXX$个单位，相当于$Y$标准差的XX\%（$X.XXX / X.XXX \times 100\% = XX\%$）。换言之，XX从25分位数（X.XXX）提升至75分位数（X.XXX），XX将平均提高XX个百分点，这一效应在经济上具有重要意义。
+To provide a more intuitive understanding of the economic implications, we perform the following calculation: Based on the sample data, the standard deviation of $X$ is X.XXX, and the standard deviation of $Y$ is X.XXX. Therefore, a one standard deviation increase in $X$ leads to an increase (decrease) of $0.XXX \times X.XXX = X.XXX$ units in $Y$, equivalent to XX\% of the standard deviation of $Y$ ($X.XXX / X.XXX \times 100\% = XX\%$). In other words, an increase in XX from the 25th percentile (X.XXX) to the 75th percentile (X.XXX) would raise XX by an average of XX percentage points, an effect that is economically significant.
 
-考虑到样本中$Y$的均值为X.XXX，0.XXX的系数意味着$X$每提高1\%，$Y$将增加X.XXX个百分点，相当于均值的XX\%。以XX行业为例，若该行业的XX从样本均值水平（XX）提升10\%，则其XX将增加XX，带来约XX亿元的XX收益。这一估算表明，XX政策通过影响XX，对XX产生了实质性的经济影响。
+Given that the sample mean of $Y$ is X.XXX, a coefficient of 0.XXX implies that a 1\% increase in $X$ leads to a X.XXX percentage point increase in $Y$, equivalent to XX\% of the mean. Using the XX industry as an example, if XX in this industry increases by 10\% from the sample mean level (XX), then XX would increase by XX, generating approximately XX billion yuan in XX benefits. This calculation demonstrates that XX policy has a substantive economic impact on XX through its effect on XX.
 
-\textbf{控制变量结果：}
+\textbf{Control Variable Results:}
 
-控制变量的估计结果也值得关注。$Control_1$的系数显著为正，表明XX越高，XX越高，这与XX理论预测一致。$Control_2$的系数显著为负，说明XX对XX具有抑制作用，可能的解释是XX。$Control_3$的系数显著为正，反映了XX的正向影响。其他控制变量的估计结果大致符合预期，限于篇幅不再逐一讨论。
+The estimation results for control variables are also noteworthy. The coefficient on $Control_1$ is significantly positive, indicating that higher XX is associated with higher XX, consistent with XX theory predictions. The coefficient on $Control_2$ is significantly negative, suggesting that XX has an inhibiting effect on XX, possibly because XX. The coefficient on $Control_3$ is significantly positive, reflecting the positive influence of XX. Other control variable results are largely consistent with expectations and are not discussed individually due to space constraints.
 
-\textbf{模型拟合度：}
+\textbf{Model Fit:}
 
-完整模型的$R^2$为0.XXX，表明模型能够解释XX变异的XX\%，拟合效果良好。XX固定效应和时间固定效应的引入显著提升了模型的解释力，表明不可观测的XX特征和时间趋势是影响XX的重要因素。
+The full model $R^2$ is 0.XXX, indicating that the model explains XX\% of the variation in XX, demonstrating a good fit. The inclusion of XX fixed effects and time fixed effects significantly improves the model's explanatory power, suggesting that unobservable XX characteristics and time trends are important factors affecting XX.
 
-\subsection{稳健性检验}
+\subsection{Robustness Checks}
 
-为确保基准回归结果的可靠性，本文进行了一系列稳健性检验。
+To ensure the reliability of the baseline regression results, this paper conducts a series of robustness checks.
 
-\subsubsection{替换核心解释变量}
+\subsubsection{Replacing the Key Explanatory Variable}
 
-表\ref{tab:robust_x}列(1)报告了使用替代指标$X'$（XX）替换主要指标$X$后的回归结果。可以看到，$X'$的系数为0.XXX，在1\%水平上显著，与基准回归结果方向一致，且经济意义相近。这表明研究结论不依赖于核心解释变量的特定测度方式。
+Column (1) of Table \ref{tab:robust_x} reports the regression results after replacing the primary indicator $X$ with the alternative indicator $X'$ (XX). The coefficient on $X'$ is 0.XXX, significant at the 1\% level, consistent in direction with the baseline results and similar in economic magnitude. This indicates that the findings are not dependent on the specific measurement of the key explanatory variable.
 
-\subsubsection{替换被解释变量}
+\subsubsection{Replacing the Dependent Variable}
 
-表\ref{tab:robust_y}列(2)使用替代指标$Y'$（XX）作为被解释变量。结果显示，$X$的系数为0.XXX，在5\%水平上显著，再次验证了XX对XX的促进（抑制）作用。这一检验缓解了因被解释变量测量误差导致的估计偏误。
+Column (2) of Table \ref{tab:robust_y} uses the alternative indicator $Y'$ (XX) as the dependent variable. The coefficient on $X$ is 0.XXX, significant at the 5\% level, again confirming the promoting (inhibiting) effect of XX on XX. This check mitigates potential estimation bias due to measurement error in the dependent variable.
 
-\subsubsection{调整样本区间}
+\subsubsection{Adjusting the Sample Period}
 
-考虑到样本期间可能包含特殊时期（如2020年XX事件），本文进行了以下样本调整：（1）剔除2020年样本（列3）；（2）将样本期间限定为XXXX-XXXX年（列4）；（3）剔除XX样本（列5）。表\ref{tab:robust_sample}显示，在不同样本设定下，核心解释变量的系数仍然显著为正（负），系数大小在0.XXX至0.XXX之间，与基准回归结果接近。
+Considering that the sample period may include special periods (e.g., the 2020 XX event), this paper makes the following sample adjustments: (1) excluding 2020 observations (column 3); (2) restricting the sample to XXXX--XXXX (column 4); (3) excluding XX observations (column 5). Table \ref{tab:robust_sample} shows that under different sample specifications, the coefficient on the key explanatory variable remains significantly positive (negative), ranging from 0.XXX to 0.XXX, close to the baseline regression results.
 
 \begin{table}[htbp]
 \centering
-\caption{稳健性检验：替换变量与调整样本}
+\caption{Robustness Checks: Alternative Variables and Adjusted Samples}
 \label{tab:robust_sample}
 \begin{threeparttable}
 \begin{tabular}{lccccc}
 \toprule
  & (1) & (2) & (3) & (4) & (5) \\
- & 替换$X$ & 替换$Y$ & 剔除2020 & XXXX-XXXX & 剔除XX \\
+ & Alt. $X$ & Alt. $Y$ & Excl. 2020 & XXXX--XXXX & Excl. XX \\
 \midrule
-$X$ (或 $X'$) & 0.XXX\sym{***} & 0.XXX\sym{**} & 0.XXX\sym{**} & 0.XXX\sym{**} & 0.XXX\sym{***} \\
+$X$ (or $X'$) & 0.XXX\sym{***} & 0.XXX\sym{**} & 0.XXX\sym{**} & 0.XXX\sym{**} & 0.XXX\sym{***} \\
  & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) \\
-控制变量 & 是 & 是 & 是 & 是 & 是 \\
-固定效应 & 是 & 是 & 是 & 是 & 是 \\
+Controls & Yes & Yes & Yes & Yes & Yes \\
+Fixed Effects & Yes & Yes & Yes & Yes & Yes \\
 \midrule
-观测值 & XXXX & XXXX & XXXX & XXXX & XXXX \\
+Observations & XXXX & XXXX & XXXX & XXXX & XXXX \\
 $R^2$ & 0.XXX & 0.XXX & 0.XXX & 0.XXX & 0.XXX \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：括号内为聚类稳健标准误；\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。列(1)使用$X'$作为核心解释变量；列(2)使用$Y'$作为被解释变量。
+\item Note: Clustered robust standard errors in parentheses; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively. Column (1) uses $X'$ as the key explanatory variable; column (2) uses $Y'$ as the dependent variable.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\subsubsection{安慰剂检验}
+\subsubsection{Placebo Test}
 
-为检验结果是否由随机因素驱动，本文进行了安慰剂检验（Placebo Test）。具体做法是：随机生成伪处理变量，重复回归1000次，观察伪处理变量系数的分布。图\ref{fig:placebo}展示了安慰剂检验的结果，虚线表示基准回归中真实处理变量的系数。可以看到，1000次随机模拟的系数分布集中在0附近，且绝大多数不显著，而真实系数位于分布的尾部，显著异于随机结果。这表明基准回归结果并非随机产生，而是反映了XX对XX的真实因果效应。
+To verify that the results are not driven by random factors, this paper conducts a placebo test. Specifically, pseudo-treatment variables are randomly generated, and the regression is repeated 1,000 times to observe the distribution of pseudo-treatment coefficients. Figure \ref{fig:placebo} presents the results, where the dashed line represents the coefficient of the actual treatment variable from the baseline regression. The distribution of the 1,000 simulated coefficients is centered around zero, with the vast majority being insignificant, while the actual coefficient lies in the tail of the distribution, significantly different from the random results. This indicates that the baseline results are not driven by random factors but reflect the true causal effect of XX on XX.
 
 \begin{figure}[htbp]
 \centering
 % \includegraphics[width=0.7\textwidth]{figures/placebo_test.pdf}
 \begin{tikzpicture}
-\draw[->] (0,0) -- (8,0) node[right] {系数};
-\draw[->] (0,0) -- (0,4) node[above] {频数};
+\draw[->] (0,0) -- (8,0) node[right] {Coefficient};
+\draw[->] (0,0) -- (0,4) node[above] {Frequency};
 \draw[blue, thick] plot[smooth, tension=0.8] coordinates {(1,0.5) (2,1.5) (3,2.8) (4,3.5) (5,2.8) (6,1.5) (7,0.5)};
-\draw[red, thick, dashed] (6.5,0) -- (6.5,3.5) node[above] {真实系数};
-\node at (4,-0.5) {安慰剂检验：随机系数分布};
+\draw[red, thick, dashed] (6.5,0) -- (6.5,3.5) node[above] {Actual coefficient};
+\node at (4,-0.5) {Placebo Test: Distribution of Random Coefficients};
 \end{tikzpicture}
-\caption{安慰剂检验结果}
+\caption{Placebo Test Results}
 \label{fig:placebo}
 \begin{minipage}{0.9\textwidth}
 \small
-注：图中蓝色曲线为1000次随机模拟的系数分布，红色虚线为基准回归中真实处理变量的系数。绝大多数随机系数不显著且接近0，而真实系数位于分布尾部，表明结果不由随机因素驱动。
+Note: The blue curve represents the distribution of coefficients from 1,000 random simulations, and the red dashed line represents the coefficient of the actual treatment variable from the baseline regression. The vast majority of random coefficients are insignificant and close to zero, while the actual coefficient lies in the tail of the distribution, indicating that the results are not driven by random factors.
 \end{minipage}
 \end{figure}
 
-\subsubsection{改变模型设定}
+\subsubsection{Alternative Model Specifications}
 
-\textbf{（1）工具变量法}
+\textbf{(1) Instrumental Variable Approach}
 
-为缓解内生性问题，本文采用2SLS方法，使用XX作为工具变量。表\ref{tab:iv}报告了工具变量回归结果。第一阶段回归显示，$IV$对$X$的影响显著为正，F统计量为XX.XX，远大于10，表明不存在弱工具变量问题。第二阶段回归中，$X$的系数为0.XXX，在5\%水平上显著。与OLS结果（0.XXX）相比，IV估计系数略大，这符合预期：若存在反向因果或测量误差导致OLS估计向下偏误，则IV估计将纠正该偏误。Hausman检验的p值为0.XXX，拒绝外生性假定，表明内生性确实存在，使用IV方法是必要的。
+To mitigate endogeneity, this paper employs the 2SLS method using XX as the instrumental variable. Table \ref{tab:iv} reports the IV regression results. The first-stage regression shows that $IV$ has a significantly positive effect on $X$, with an F-statistic of XX.XX, well above 10, indicating no weak instrument problem. In the second-stage regression, the coefficient on $X$ is 0.XXX, significant at the 5\% level. Compared with the OLS estimate (0.XXX), the IV estimate is somewhat larger, which is expected: if reverse causality or measurement error causes downward bias in OLS estimates, the IV estimate corrects this bias. The Hausman test p-value is 0.XXX, rejecting the exogeneity assumption, indicating that endogeneity indeed exists and the use of the IV approach is necessary.
 
 \begin{table}[htbp]
 \centering
-\caption{工具变量回归结果}
+\caption{Instrumental Variable Regression Results}
 \label{tab:iv}
 \begin{threeparttable}
 \begin{tabular}{lcc}
 \toprule
- & 第一阶段 & 第二阶段 \\
+ & First Stage & Second Stage \\
  & $X$ & $Y$ \\
 \midrule
 $IV$ & 0.XXX\sym{***} &  \\
  & (0.XXX) &  \\
 $\hat{X}$ &  & 0.XXX\sym{**} \\
  &  & (0.XXX) \\
-控制变量 & 是 & 是 \\
-固定效应 & 是 & 是 \\
+Controls & Yes & Yes \\
+Fixed Effects & Yes & Yes \\
 \midrule
-观测值 & XXXX & XXXX \\
-第一阶段F统计量 & XX.XX &  \\
-Hausman检验p值 &  & 0.XXX \\
+Observations & XXXX & XXXX \\
+First-Stage F-Statistic & XX.XX &  \\
+Hausman Test p-value &  & 0.XXX \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：括号内为聚类稳健标准误；\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。第一阶段F统计量远大于10，表明不存在弱工具变量问题。Hausman检验拒绝外生性假定，表明使用IV方法是必要的。
+\item Note: Clustered robust standard errors in parentheses; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively. The first-stage F-statistic is well above 10, indicating no weak instrument problem. The Hausman test rejects the exogeneity assumption, indicating that the IV approach is necessary.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\textbf{（2）动态面板模型}
+\textbf{(2) Dynamic Panel Model}
 
-考虑到被解释变量可能存在持续性（Persistence），本文采用系统GMM方法估计动态面板模型：
+Considering potential persistence in the dependent variable, this paper employs the system GMM method to estimate a dynamic panel model:
 \begin{equation}
 Y_{it} = \alpha + \rho Y_{i,t-1} + \beta_1 X_{it} + \gamma \mathbf{Controls}_{it} + \mu_i + \lambda_t + \varepsilon_{it}
 \end{equation}
-表\ref{tab:gmm}报告了GMM估计结果。$Y_{i,t-1}$的系数为0.XXX，显著为正，表明XX具有显著的持续性。在控制了动态效应后，$X$的系数为0.XXX，仍在5\%水平上显著。AR(2)检验的p值为0.XXX，无法拒绝二阶序列相关不存在的原假设；Sargan检验的p值为0.XXX，无法拒绝工具变量有效性的原假设。这些检验结果支持GMM估计的有效性。
+Table \ref{tab:gmm} reports the GMM estimation results. The coefficient on $Y_{i,t-1}$ is 0.XXX, significantly positive, indicating significant persistence in XX. After controlling for dynamic effects, the coefficient on $X$ is 0.XXX, still significant at the 5\% level. The AR(2) test p-value is 0.XXX, failing to reject the null of no second-order serial correlation; the Sargan test p-value is 0.XXX, failing to reject the null of instrument validity. These test results support the validity of the GMM estimates.
 
 \begin{table}[htbp]
 \centering
-\caption{动态面板GMM估计结果}
+\caption{Dynamic Panel GMM Estimation Results}
 \label{tab:gmm}
 \begin{threeparttable}
 \begin{tabular}{lc}
 \toprule
- & 系统GMM \\
+ & System GMM \\
  & $Y$ \\
 \midrule
 $Y_{i,t-1}$ & 0.XXX\sym{***} \\
  & (0.XXX) \\
 $X$ & 0.XXX\sym{**} \\
  & (0.XXX) \\
-控制变量 & 是 \\
-时间固定效应 & 是 \\
+Controls & Yes \\
+Time Fixed Effects & Yes \\
 \midrule
-观测值 & XXXX \\
-工具变量数量 & XX \\
-AR(2)检验p值 & 0.XXX \\
-Sargan检验p值 & 0.XXX \\
+Observations & XXXX \\
+Number of Instruments & XX \\
+AR(2) Test p-value & 0.XXX \\
+Sargan Test p-value & 0.XXX \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：括号内为稳健标准误；\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。AR(2)检验表明不存在二阶序列相关，Sargan检验表明工具变量有效。
+\item Note: Robust standard errors in parentheses; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively. The AR(2) test indicates no second-order serial correlation, and the Sargan test indicates instrument validity.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\subsubsection{更改标准误聚类方式}
+\subsubsection{Alternative Standard Error Clustering}
 
-基准回归采用聚类到XX层面的稳健标准误。为检验结果对标准误设定的敏感性，本文分别采用：（1）不聚类的异方差稳健标准误；（2）聚类到XX层面；（3）双向聚类（XX和时间）。表\ref{tab:robust_se}显示，在不同标准误设定下，$X$的系数始终显著，表明推断结论稳健。
+The baseline regression uses robust standard errors clustered at the XX level. To test the sensitivity of results to the standard error specification, this paper alternatively uses: (1) heteroskedasticity-robust standard errors without clustering; (2) clustering at the XX level; (3) two-way clustering (XX and time). Table \ref{tab:robust_se} shows that the coefficient on $X$ remains significant under all standard error specifications, indicating robust inference.
 
 \begin{table}[htbp]
 \centering
-\caption{稳健性检验：更改标准误聚类方式}
+\caption{Robustness Check: Alternative Standard Error Clustering}
 \label{tab:robust_se}
 \begin{threeparttable}
 \begin{tabular}{lccc}
 \toprule
  & (1) & (2) & (3) \\
- & 异方差稳健 & 聚类到XX & 双向聚类 \\
+ & HC Robust & Cluster at XX & Two-Way Cluster \\
 \midrule
 $X$ & 0.XXX\sym{**} & 0.XXX\sym{***} & 0.XXX\sym{**} \\
  & (0.XXX) & (0.XXX) & (0.XXX) \\
-控制变量 & 是 & 是 & 是 \\
-固定效应 & 是 & 是 & 是 \\
+Controls & Yes & Yes & Yes \\
+Fixed Effects & Yes & Yes & Yes \\
 \midrule
-观测值 & XXXX & XXXX & XXXX \\
+Observations & XXXX & XXXX & XXXX \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：括号内为不同类型的标准误；\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。
+\item Note: Different types of standard errors are reported in parentheses; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\textbf{小结：}综合上述稳健性检验结果，本文的核心结论——XX对XX具有显著的促进（抑制）作用——是稳健的，不依赖于变量测度方式、样本选择、模型设定或标准误计算方法。这为假说1提供了有力的实证支持。
+\textbf{Summary:} Taking the robustness check results together, the core conclusion that XX has a significant promoting (inhibiting) effect on XX is robust and does not depend on the variable measurement, sample selection, model specification, or standard error calculation method. This provides strong empirical support for Hypothesis 1.
 
-% ========== 五、机制分析与异质性讨论 ==========
-\section{机制分析与异质性讨论}
+% ========== 5. Mechanism Analysis and Heterogeneity Discussion ==========
+\section{Mechanism Analysis and Heterogeneity Discussion}
 
-\subsection{机制分析}
+\subsection{Mechanism Analysis}
 
-前文已证实XX对XX具有显著影响，但其作用机制尚不清楚。本节基于理论假说2和假说3，采用中介效应模型检验XX和XX两条传导路径。
+The preceding section has established that XX significantly affects XX, but the underlying mechanisms remain unclear. This section tests two transmission pathways---XX and XX---based on Hypotheses 2 and 3, using a mediation effect model.
 
-\subsubsection{中介效应模型设定}
+\subsubsection{Mediation Effect Model Specification}
 
-参考\citet{baron1986moderator}的经典中介效应检验方法，本文构建如下三步回归模型：
+Following the classic mediation effect testing procedure of \citet{baron1986moderator}, this paper constructs the following three-step regression model:
 
-\textbf{步骤1（总效应）：}
+\textbf{Step 1 (Total Effect):}
 \begin{equation}
 Y_{it} = c + \beta_1 X_{it} + \gamma \mathbf{Controls}_{it} + \mu_i + \lambda_t + \varepsilon_{it}
 \label{eq:mediation_step1}
 \end{equation}
 
-\textbf{步骤2（$X$对中介变量的影响）：}
+\textbf{Step 2 (Effect of $X$ on Mediator):}
 \begin{equation}
 Z_{kit} = a_k + \alpha_k X_{it} + \gamma_k \mathbf{Controls}_{it} + \mu_i + \lambda_t + u_{kit}, \quad k=1,2
 \label{eq:mediation_step2}
 \end{equation}
 
-\textbf{步骤3（加入中介变量后的直接效应）：}
+\textbf{Step 3 (Direct Effect after Including Mediator):}
 \begin{equation}
 Y_{it} = c' + \beta_1' X_{it} + \sum_{k=1}^{2} \delta_k Z_{kit} + \gamma' \mathbf{Controls}_{it} + \mu_i + \lambda_t + \varepsilon_{it}'
 \label{eq:mediation_step3}
 \end{equation}
 
-其中，$Z_{1it}$和$Z_{2it}$分别表示两个中介变量（XX和XX）。中介效应的大小为$\alpha_k \times \delta_k$，占总效应的比例为$\frac{\alpha_k \times \delta_k}{\beta_1} \times 100\%$。采用Bootstrap方法（重复1000次）计算中介效应的置信区间，以检验其显著性。
+where $Z_{1it}$ and $Z_{2it}$ represent the two mediating variables (XX and XX). The size of the mediation effect is $\alpha_k \times \delta_k$, and its proportion of the total effect is $\frac{\alpha_k \times \delta_k}{\beta_1} \times 100\%$. Bootstrap methods (1,000 replications) are used to compute confidence intervals for the mediation effect to test its significance.
 
-\subsubsection{机制1：XX路径}
+\subsubsection{Mechanism 1: XX Pathway}
 
-表\ref{tab:mechanism}列(1)至(3)报告了XX作为中介变量的检验结果。列(1)为总效应（步骤1），$X$的系数为0.XXX，显著为正。列(2)为步骤2的结果，$X$对$Z_1$（XX）的影响系数为0.XXX，在1\%水平上显著，表明XX显著促进了XX。列(3)同时纳入$X$和$Z_1$，结果显示：$Z_1$的系数为0.XXX，显著为正，表明XX对XX具有正向影响；$X$的系数降至0.XXX，相比列(1)下降了约XX\%（$(0.XXX - 0.XXX)/0.XXX \times 100\% = XX\%$），但仍然显著，表明存在部分中介效应。
+Columns (1)--(3) of Table \ref{tab:mechanism} report the results with XX as the mediating variable. Column (1) shows the total effect (Step 1), with a coefficient of 0.XXX on $X$, significantly positive. Column (2) reports the Step 2 results: the coefficient of $X$ on $Z_1$ (XX) is 0.XXX, significant at the 1\% level, indicating that XX significantly promotes XX. Column (3) includes both $X$ and $Z_1$: the coefficient on $Z_1$ is 0.XXX, significantly positive, indicating that XX has a positive impact on XX; the coefficient on $X$ decreases to 0.XXX, a decline of approximately XX\% compared to column (1) ($(0.XXX - 0.XXX)/0.XXX \times 100\% = XX\%$), but remains significant, indicating partial mediation.
 
-\textbf{中介效应计算：}XX路径的中介效应为$0.XXX \times 0.XXX = 0.XXX$，占总效应的XX\%（$0.XXX / 0.XXX \times 100\% = XX\%$）。Bootstrap检验（1000次重复）的95\%置信区间为[0.XXX, 0.XXX]，不包含0，表明中介效应显著。
+\textbf{Mediation Effect Calculation:} The mediation effect through the XX pathway is $0.XXX \times 0.XXX = 0.XXX$, accounting for XX\% of the total effect ($0.XXX / 0.XXX \times 100\% = XX\%$). The 95\% bootstrap confidence interval (1,000 replications) is [0.XXX, 0.XXX], excluding zero, indicating a significant mediation effect.
 
-\textbf{经济意义解释：}上述结果表明，XX对XX的总效应中，约XX\%是通过促进XX实现的。具体而言，XX每提高1个单位，会使XX增加0.XXX个单位，进而带动XX增加$0.XXX \times 0.XXX = 0.XXX$个单位。以XX行业为例，若XX政策使某企业的XX提高10\%，则该企业的XX将增加约X.XX个单位，进而推动其XX提高X.XX个单位，占总效应的XX\%。这一机制揭示了XX影响XX的重要微观路径，为政策设计提供了依据：若要强化XX政策的效果，应同时关注如何通过XX提升XX。
+\textbf{Economic Significance:} The above results indicate that approximately XX\% of the total effect of XX on XX is achieved through promoting XX. Specifically, a one-unit increase in XX leads to a 0.XXX unit increase in XX, which in turn drives a $0.XXX \times 0.XXX = 0.XXX$ unit increase in XX. Using the XX industry as an example, if XX policy increases a firm's XX by 10\%, then the firm's XX would increase by approximately X.XX units, in turn raising its XX by X.XX units, accounting for XX\% of the total effect. This mechanism reveals an important micro-level pathway through which XX affects XX and provides a basis for policy design: to strengthen the effectiveness of XX policy, attention should also be paid to enhancing XX through XX.
 
-\subsubsection{机制2：XX路径}
+\subsubsection{Mechanism 2: XX Pathway}
 
-表\ref{tab:mechanism}列(4)至(6)报告了XX作为中介变量的检验结果。列(4)显示，$X$对$Z_2$（XX）的影响系数为0.XXX，在5\%水平上显著。列(5)同时纳入$X$和$Z_2$，$Z_2$的系数为0.XXX，显著为正；$X$的系数降至0.XXX，下降约XX\%。中介效应计算结果显示，XX路径的中介效应为0.XXX，占总效应的XX\%，Bootstrap 95\%置信区间为[0.XXX, 0.XXX]，显著异于0。
+Columns (4)--(6) of Table \ref{tab:mechanism} report the results with XX as the mediating variable. Column (4) shows that the coefficient of $X$ on $Z_2$ (XX) is 0.XXX, significant at the 5\% level. Column (5) includes both $X$ and $Z_2$: the coefficient on $Z_2$ is 0.XXX, significantly positive; the coefficient on $X$ decreases to 0.XXX, a decline of approximately XX\%. The mediation effect calculation shows that the mediation effect through the XX pathway is 0.XXX, accounting for XX\% of the total effect, with the 95\% bootstrap confidence interval being [0.XXX, 0.XXX], significantly different from zero.
 
-\textbf{经济意义解释：}XX路径解释了XX对XX影响的XX\%。这意味着，XX政策不仅直接作用于XX，还通过改善XX间接促进XX。例如，XX的提升可能带来XX，从而XX，最终推动XX增长。这一发现表明，在推进XX政策时，应重视XX的培育和提升，通过XX机制放大政策效果。
+\textbf{Economic Significance:} The XX pathway explains XX\% of the impact of XX on XX. This means that XX policy not only directly affects XX but also indirectly promotes XX by improving XX. For instance, the improvement of XX may bring XX, thereby XX, ultimately driving the growth of XX. This finding suggests that in advancing XX policy, emphasis should be placed on cultivating and enhancing XX to amplify policy effects through the XX mechanism.
 
-\subsubsection{综合讨论}
+\subsubsection{Comprehensive Discussion}
 
-表\ref{tab:mechanism}列(6)同时纳入两个中介变量$Z_1$和$Z_2$，进行综合检验。结果显示，两个中介变量的系数均显著为正，且$X$的直接效应降至0.XXX（下降约XX\%）。这表明XX和XX是XX影响XX的两条独立且重要的传导路径，两者共同解释了约XX\%的总效应（$XX\% + XX\% = XX\%$），剩余约XX\%可能通过其他未观测到的机制作用。
+Column (6) of Table \ref{tab:mechanism} simultaneously includes both mediating variables $Z_1$ and $Z_2$ for a comprehensive test. The results show that both mediating variables have significantly positive coefficients, and the direct effect of $X$ decreases to 0.XXX (a decline of approximately XX\%). This indicates that XX and XX are two independent and important transmission pathways through which XX affects XX, together explaining approximately XX\% of the total effect ($XX\% + XX\% = XX\%$), with the remaining approximately XX\% potentially operating through other unobserved mechanisms.
 
 \begin{table}[htbp]
 \centering
-\caption{机制分析：中介效应检验}
+\caption{Mechanism Analysis: Mediation Effect Tests}
 \label{tab:mechanism}
 \begin{threeparttable}
 \begin{tabular}{lcccccc}
 \toprule
  & (1) & (2) & (3) & (4) & (5) & (6) \\
  & $Y$ & $Z_1$ & $Y$ & $Z_2$ & $Y$ & $Y$ \\
- & 总效应 & 步骤2 & 步骤3 & 步骤2 & 步骤3 & 综合 \\
+ & Total & Step 2 & Step 3 & Step 2 & Step 3 & Combined \\
 \midrule
 $X$ & 0.XXX\sym{**} & 0.XXX\sym{***} & 0.XXX\sym{*} & 0.XXX\sym{**} & 0.XXX\sym{*} & 0.XXX \\
  & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) \\
@@ -603,26 +601,26 @@ $Z_1$ (XX) &  &  & 0.XXX\sym{***} &  &  & 0.XXX\sym{**} \\
  &  &  & (0.XXX) &  &  & (0.XXX) \\
 $Z_2$ (XX) &  &  &  &  & 0.XXX\sym{**} & 0.XXX\sym{*} \\
  &  &  &  &  & (0.XXX) & (0.XXX) \\
-控制变量 & 是 & 是 & 是 & 是 & 是 & 是 \\
-固定效应 & 是 & 是 & 是 & 是 & 是 & 是 \\
+Controls & Yes & Yes & Yes & Yes & Yes & Yes \\
+Fixed Effects & Yes & Yes & Yes & Yes & Yes & Yes \\
 \midrule
-观测值 & XXXX & XXXX & XXXX & XXXX & XXXX & XXXX \\
+Observations & XXXX & XXXX & XXXX & XXXX & XXXX & XXXX \\
 $R^2$ & 0.XXX & 0.XXX & 0.XXX & 0.XXX & 0.XXX & 0.XXX \\
-中介效应 &  &  & 0.XXX &  & 0.XXX &  \\
-中介效应占比 &  &  & XX\% &  & XX\% &  \\
+Mediation Effect &  &  & 0.XXX &  & 0.XXX &  \\
+Mediation Share &  &  & XX\% &  & XX\% &  \\
 Bootstrap 95\% CI &  &  & [0.XXX, 0.XXX] &  & [0.XXX, 0.XXX] &  \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：括号内为聚类稳健标准误；\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。中介效应采用Bootstrap方法（1000次重复）计算95\%置信区间。中介效应占比 = 中介效应 / 总效应 $\times$ 100\%。
+\item Note: Clustered robust standard errors in parentheses; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively. Mediation effects are computed using bootstrap (1,000 replications) with 95\% confidence intervals. Mediation share = mediation effect / total effect $\times$ 100\%.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\subsubsection{机制路径图}
+\subsubsection{Mechanism Pathway Diagram}
 
-图\ref{fig:mechanism}展示了XX影响XX的完整机制路径。从图中可以直观看出，XX通过XX和XX两条路径影响XX，两条路径的贡献度分别为XX\%和XX\%，直接效应占XX\%。
+Figure \ref{fig:mechanism} illustrates the complete mechanism pathway through which XX affects XX. The diagram intuitively shows that XX influences XX through two pathways---XX and XX---with respective contributions of XX\% and XX\%, and a direct effect of XX\%.
 
 \begin{figure}[htbp]
 \centering
@@ -631,171 +629,171 @@ Bootstrap 95\% CI &  &  & [0.XXX, 0.XXX] &  & [0.XXX, 0.XXX] &  \\
     box/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm, text centered},
     arrow/.style={->, thick}
 ]
-    % 节点
+    % Nodes
     \node[box] (X) {$X$ \\ XX};
     \node[box, above right=of X] (Z1) {$Z_1$ \\ XX};
     \node[box, below right=of X] (Z2) {$Z_2$ \\ XX};
     \node[box, right=of Z1, yshift=-1.5cm] (Y) {$Y$ \\ XX};
 
-    % 箭头
+    % Arrows
     \draw[arrow] (X) -- node[above, sloped] {$\alpha_1=0.XXX^{***}$} (Z1);
     \draw[arrow] (X) -- node[below, sloped] {$\alpha_2=0.XXX^{**}$} (Z2);
     \draw[arrow] (Z1) -- node[above, sloped] {$\delta_1=0.XXX^{***}$} (Y);
     \draw[arrow] (Z2) -- node[below, sloped] {$\delta_2=0.XXX^{**}$} (Y);
-    \draw[arrow] (X) -- node[above, yshift=0.3cm] {直接效应: $0.XXX^*$ (XX\%)} (Y);
+    \draw[arrow] (X) -- node[above, yshift=0.3cm] {Direct effect: $0.XXX^*$ (XX\%)} (Y);
 
-    % 路径说明
-    \node[below=0.3cm of Z1, text width=2.5cm, align=center] {\small 路径1 \\ 中介效应: XX\%};
-    \node[above=0.3cm of Z2, text width=2.5cm, align=center] {\small 路径2 \\ 中介效应: XX\%};
+    % Pathway labels
+    \node[below=0.3cm of Z1, text width=2.5cm, align=center] {\small Pathway 1 \\ Mediation: XX\%};
+    \node[above=0.3cm of Z2, text width=2.5cm, align=center] {\small Pathway 2 \\ Mediation: XX\%};
 \end{tikzpicture}
-\caption{XX影响XX的机制路径图}
+\caption{Mechanism Pathway Diagram: How XX Affects XX}
 \label{fig:mechanism}
 \begin{minipage}{0.9\textwidth}
 \small
-注：图中数值为表\ref{tab:mechanism}的估计系数，\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。路径1（XX路径）的中介效应占总效应的XX\%，路径2（XX路径）占XX\%，直接效应占XX\%。
+Note: Values in the figure are estimated coefficients from Table \ref{tab:mechanism}; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively. Pathway 1 (XX pathway) accounts for XX\% of the total effect, Pathway 2 (XX pathway) accounts for XX\%, and the direct effect accounts for XX\%.
 \end{minipage}
 \end{figure}
 
-\subsection{异质性分析}
+\subsection{Heterogeneity Analysis}
 
-XX对XX的影响可能因XX特征的不同而存在差异。本节从XX、XX、XX三个维度展开异质性分析。
+The impact of XX on XX may vary depending on the characteristics of XX. This section conducts heterogeneity analysis along three dimensions: XX, XX, and XX.
 
-\subsubsection{基于XX的异质性}
+\subsubsection{Heterogeneity Based on XX}
 
-本文将样本按XX分为两组：XX组和XX组。分组依据为XX（如XX的中位数、特定阈值等）。表\ref{tab:heterogeneity}列(1)和(2)分别报告了两组的回归结果。
+The sample is divided into two groups based on XX: the XX group and the XX group. The grouping criterion is XX (e.g., the median of XX, a specific threshold, etc.). Columns (1) and (2) of Table \ref{tab:heterogeneity} report the regression results for each group.
 
-结果显示，在XX组中，$X$的系数为0.XXX，在1\%水平上显著；而在XX组中，$X$的系数为0.XXX，不显著（或显著性较低）。组间系数差异检验（Chow Test）的F统计量为XX.XX，p值为0.XXX，拒绝两组系数相等的原假设。这表明XX对XX的影响在XX组中显著更强。
+The results show that in the XX group, the coefficient on $X$ is 0.XXX, significant at the 1\% level; while in the XX group, the coefficient is 0.XXX, insignificant (or with lower significance). The Chow test for inter-group coefficient differences yields an F-statistic of XX.XX and a p-value of 0.XXX, rejecting the null of equal coefficients across groups. This indicates that the impact of XX on XX is significantly stronger in the XX group.
 
-\textbf{经济解释：}XX组的促进效应更显著，可能原因在于：（1）XX企业由于XX，对XX政策的响应更为敏感；（2）XX企业在XX方面具有优势，能够更有效地将XX转化为XX；（3）XX企业面临的XX较小，使得XX政策的实施更加顺畅。这一发现提示，在推进XX政策时，应重点关注XX企业，通过XX措施放大政策效果。
+\textbf{Economic Explanation:} The stronger promoting effect in the XX group may be attributed to: (1) XX firms are more responsive to XX policy due to XX; (2) XX firms have advantages in XX, enabling them to more effectively convert XX into XX; (3) XX firms face less XX, allowing smoother implementation of XX policy. This finding suggests that in advancing XX policy, priority should be given to XX firms, amplifying policy effects through XX measures.
 
-\subsubsection{基于XX的异质性}
+\subsubsection{Heterogeneity Based on XX}
 
-本文将样本按XX分为XX组和XX组。列(3)和(4)报告了分组回归结果。在XX组中，$X$的系数为0.XXX，显著为正；在XX组中，系数为0.XXX，不显著或显著性较弱。组间差异显著（p值 < 0.05）。
+The sample is divided into the XX group and the XX group based on XX. Columns (3) and (4) report the sub-group regression results. In the XX group, the coefficient on $X$ is 0.XXX, significantly positive; in the XX group, the coefficient is 0.XXX, insignificant or with weaker significance. The inter-group difference is significant (p-value $< 0.05$).
 
-\textbf{经济解释：}XX地区的XX政策效果更好，可能是因为：（1）XX地区的XX更加成熟，政策实施的基础条件更好；（2）XX地区的XX更高，能够更有效地利用XX政策；（3）XX地区的XX更加完善，降低了政策实施的摩擦成本。这一结果表明,差异化的区域政策是必要的，应根据地区特征调整政策力度和实施方式。
+\textbf{Economic Explanation:} The better XX policy effectiveness in XX regions may be because: (1) XX regions have more mature XX, providing better conditions for policy implementation; (2) XX regions have higher XX, enabling more effective utilization of XX policy; (3) XX regions have more comprehensive XX, reducing friction costs of policy implementation. This result indicates that differentiated regional policies are necessary, and policy intensity and implementation methods should be adjusted based on regional characteristics.
 
-\subsubsection{基于XX的异质性}
+\subsubsection{Heterogeneity Based on XX}
 
-本文将样本按XX分为XX行业和XX行业。列(5)和(6)报告了分组回归结果。在XX行业中，$X$的系数为0.XXX，显著为正；在XX行业中，系数为0.XXX，显著性较弱或不显著。
+The sample is divided into the XX industry and the XX industry based on XX. Columns (5) and (6) report the sub-group regression results. In the XX industry, the coefficient on $X$ is 0.XXX, significantly positive; in the XX industry, the coefficient is 0.XXX, with weaker or no significance.
 
-\textbf{经济解释：}XX行业对XX政策的响应更强，可能是因为：（1）XX行业的XX更高，对政策激励更敏感；（2）XX行业的XX更长，能够更充分地受益于XX政策；（3）XX行业的XX更大，政策的正外部性更显著。这一发现为行业差异化政策提供了依据，建议对XX行业给予更大的政策支持力度。
+\textbf{Economic Explanation:} The stronger response of the XX industry to XX policy may be because: (1) the XX industry has higher XX, making it more sensitive to policy incentives; (2) the XX industry has a longer XX, enabling it to benefit more fully from XX policy; (3) the XX industry has larger XX, with more pronounced positive externalities of the policy. This finding provides a basis for industry-differentiated policies, suggesting greater policy support for the XX industry.
 
 \begin{table}[htbp]
 \centering
-\caption{异质性分析}
+\caption{Heterogeneity Analysis}
 \label{tab:heterogeneity}
 \begin{threeparttable}
 \begin{tabular}{lcccccc}
 \toprule
  & (1) & (2) & (3) & (4) & (5) & (6) \\
- & XX组 & XX组 & XX组 & XX组 & XX行业 & XX行业 \\
+ & XX Group & XX Group & XX Group & XX Group & XX Industry & XX Industry \\
 \midrule
 $X$ & 0.XXX\sym{***} & 0.XXX & 0.XXX\sym{**} & 0.XXX & 0.XXX\sym{***} & 0.XXX\sym{*} \\
  & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) & (0.XXX) \\
-控制变量 & 是 & 是 & 是 & 是 & 是 & 是 \\
-固定效应 & 是 & 是 & 是 & 是 & 是 & 是 \\
+Controls & Yes & Yes & Yes & Yes & Yes & Yes \\
+Fixed Effects & Yes & Yes & Yes & Yes & Yes & Yes \\
 \midrule
-观测值 & XXXX & XXXX & XXXX & XXXX & XXXX & XXXX \\
+Observations & XXXX & XXXX & XXXX & XXXX & XXXX & XXXX \\
 $R^2$ & 0.XXX & 0.XXX & 0.XXX & 0.XXX & 0.XXX & 0.XXX \\
-组间系数差异检验p值 & \multicolumn{2}{c}{0.XXX} & \multicolumn{2}{c}{0.XXX} & \multicolumn{2}{c}{0.XXX} \\
+Inter-group Diff. Test p-value & \multicolumn{2}{c}{0.XXX} & \multicolumn{2}{c}{0.XXX} & \multicolumn{2}{c}{0.XXX} \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：括号内为聚类稳健标准误；\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。组间系数差异检验采用Chow Test，检验两组$X$的系数是否显著不同。XX组的划分依据为XX；XX组的划分依据为XX；行业分组依据XX标准。
+\item Note: Clustered robust standard errors in parentheses; \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively. Inter-group coefficient difference tests use the Chow test to determine whether the coefficients on $X$ differ significantly between groups. Groups are defined based on XX; XX groups are defined based on XX; industry groups follow the XX classification.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\subsubsection{异质性小结}
+\subsubsection{Summary of Heterogeneity Analysis}
 
-综合上述异质性分析，XX对XX的影响确实存在显著的异质性特征。具体而言，XX政策在XX企业、XX地区、XX行业中的促进效应更为显著。这些发现为差异化政策设计提供了实证依据：政策制定者应根据XX、XX、XX等特征，实施有针对性的政策措施，避免"一刀切"，以提升政策的精准性和有效性。例如，对于XX企业，可以通过XX手段强化政策效果；对于XX地区，应加大XX投入，改善政策实施的基础条件；对于XX行业,可以适当降低XX门槛，扩大政策覆盖面。
+In summary, the impact of XX on XX indeed exhibits significant heterogeneity. Specifically, the promoting effect of XX policy is more pronounced among XX firms, in XX regions, and in the XX industry. These findings provide empirical evidence for differentiated policy design: policymakers should implement targeted policy measures based on characteristics such as XX, XX, and XX, avoiding a ``one-size-fits-all'' approach to improve policy precision and effectiveness. For example, for XX firms, XX measures can be used to enhance policy effects; for XX regions, XX investment should be increased to improve the conditions for policy implementation; for XX industries, the XX threshold can be appropriately lowered to expand policy coverage.
 
-% ========== 六、结论与政策启示 ==========
-\section{结论与政策启示}
+% ========== 6. Conclusion and Policy Implications ==========
+\section{Conclusion and Policy Implications}
 
-\subsection{主要结论}
+\subsection{Main Conclusions}
 
-本文基于XXXX-XXXX年的面板数据，采用XX方法系统考察了XX对XX的影响及其作用机制。研究得出以下主要结论：
+Based on panel data from XXXX to XXXX, this paper employs the XX method to systematically examine the impact of XX on XX and the underlying mechanisms. The main conclusions are as follows:
 
-第一，\textbf{XX对XX具有显著的促进（抑制）作用}。基准回归结果显示，XX每提高1个单位，XX将平均增加（减少）0.XXX个单位，该效应在经济上具有重要意义。该结论在替换变量测度、调整样本区间、改变模型设定等一系列稳健性检验后依然成立，验证了假说1。
+First, \textbf{XX has a significant promoting (inhibiting) effect on XX}. The baseline regression results show that a one-unit increase in XX is associated with an average increase (decrease) of 0.XXX units in XX, an effect that is economically significant. This conclusion remains robust after a series of checks including alternative variable measures, adjusted sample periods, and alternative model specifications, supporting Hypothesis 1.
 
-第二，\textbf{XX主要通过XX和XX两条路径影响XX}。中介效应分析表明，XX路径的中介效应占总效应的XX\%，XX路径占XX\%，两条路径共同解释了约XX\%的总效应。这一发现揭示了XX影响XX的微观机制，为理解政策作用过程提供了新证据，支持了假说2和假说3。
+Second, \textbf{XX primarily affects XX through two pathways: XX and XX}. Mediation effect analysis shows that the XX pathway accounts for XX\% of the total effect, while the XX pathway accounts for XX\%, together explaining approximately XX\% of the total effect. This finding reveals the micro-level mechanisms through which XX affects XX, providing new evidence for understanding the policy transmission process, supporting Hypotheses 2 and 3.
 
-第三，\textbf{XX对XX的影响存在显著的异质性}。异质性分析显示，XX政策在XX企业、XX地区、XX行业中的促进效应更为显著，而在XX企业、XX地区、XX行业中效果较弱或不显著。组间差异检验证实了这些异质性特征在统计上是显著的，验证了假说4。
+Third, \textbf{the impact of XX on XX exhibits significant heterogeneity}. Heterogeneity analysis shows that the promoting effect of XX policy is more pronounced among XX firms, in XX regions, and in the XX industry, while it is weaker or insignificant among XX firms, in XX regions, and in the XX industry. Inter-group difference tests confirm that these heterogeneous characteristics are statistically significant, supporting Hypothesis 4.
 
-第四，\textbf{因果识别结果表明内生性问题不容忽视}。采用工具变量法后，XX对XX的因果效应估计值（0.XXX）大于OLS估计值（0.XXX），Hausman检验拒绝外生性假定。这表明反向因果或测量误差确实存在，使用因果识别方法是必要的，也使得本研究的结论更为可信。
+Fourth, \textbf{causal identification results indicate that endogeneity issues cannot be ignored}. After employing the instrumental variable approach, the estimated causal effect of XX on XX (0.XXX) is larger than the OLS estimate (0.XXX), and the Hausman test rejects the exogeneity assumption. This suggests that reverse causality or measurement error does exist, making the use of causal identification methods necessary and rendering the findings of this study more credible.
 
-\subsection{政策启示}
+\subsection{Policy Implications}
 
-基于上述研究发现，本文提出以下政策建议：
+Based on the above findings, this paper proposes the following policy recommendations:
 
-\textbf{（1）持续优化XX政策体系，强化政策的激励导向作用}
+\textbf{(1) Continue to optimize the XX policy system and strengthen the incentive-guiding role of policy}
 
-研究表明XX对XX具有显著的促进作用，但当前政策在XX方面仍存在不足。建议：一是进一步完善XX机制，提高XX的精准性和有效性；二是加大XX支持力度，通过XX等方式降低XX成本；三是建立XX机制，确保政策的可持续性和稳定性。同时，应定期评估政策效果，根据实施情况动态调整政策参数。
+The research shows that XX has a significant promoting effect on XX, but current policies still have deficiencies in XX. Recommendations include: first, further improving the XX mechanism to enhance the precision and effectiveness of XX; second, increasing XX support by reducing XX costs through means such as XX; third, establishing XX mechanisms to ensure the sustainability and stability of policies. Meanwhile, policy effects should be regularly assessed and policy parameters dynamically adjusted based on implementation outcomes.
 
-\textbf{（2）重视XX和XX两条传导路径，多管齐下放大政策效果}
+\textbf{(2) Emphasize the two transmission pathways of XX and XX, taking a multi-pronged approach to amplify policy effects}
 
-机制分析揭示了XX和XX是连接XX与XX的关键中间环节。政策制定时应：一是通过XX措施直接促进XX，例如XX；二是通过XX手段改善XX，例如XX；三是加强两条路径的协同作用，避免单一路径依赖。具体而言，可以设立XX专项基金，鼓励XX；建立XX平台，促进XX。
+Mechanism analysis reveals that XX and XX are key intermediate links connecting XX and XX. Policy design should: first, directly promote XX through XX measures, for example XX; second, improve XX through XX means, for example XX; third, strengthen the synergy between the two pathways, avoiding over-reliance on a single pathway. Specifically, XX special funds can be established to encourage XX; XX platforms can be built to promote XX.
 
-\textbf{（3）实施差异化政策，提升政策的精准性和有效性}
+\textbf{(3) Implement differentiated policies to improve precision and effectiveness}
 
-异质性分析表明，不同XX特征的样本对XX政策的响应存在显著差异。因此，应避免"一刀切"的政策设计，根据XX、XX、XX等维度实施差异化政策：一是对XX企业，可以通过XX等方式加大扶持力度；对XX企业，应首先XX，改善其XX，为政策实施创造条件。二是对XX地区，可以XX；对XX地区，应加大XX，补齐XX短板。三是对XX行业，可以XX；对XX行业，应XX，扩大政策覆盖范围。
+Heterogeneity analysis shows that different XX samples respond significantly differently to XX policy. Therefore, a ``one-size-fits-all'' policy design should be avoided, and differentiated policies should be implemented along dimensions such as XX, XX, and XX: first, for XX firms, XX measures can be used to increase support; for XX firms, the priority should be to XX to improve their XX and create conditions for policy implementation. Second, for XX regions, XX can be pursued; for XX regions, XX should be increased to address XX shortcomings. Third, for XX industries, XX can be pursued; for XX industries, XX should be pursued to expand policy coverage.
 
-\textbf{（4）加强政策协同，构建XX政策体系}
+\textbf{(4) Strengthen policy coordination and build a comprehensive XX policy system}
 
-XX政策的有效实施离不开配套政策的支持。建议：一是加强XX政策与XX政策的协调，形成政策合力；二是完善XX体系，为XX发展提供制度保障；三是优化XX，降低XX成本；四是加强XX，引导社会资本进入XX领域。通过构建多层次、全方位的政策支持体系，营造有利于XX发展的良好环境。
+The effective implementation of XX policy requires supporting policies. Recommendations include: first, strengthening the coordination between XX policy and XX policy to form policy synergy; second, improving the XX system to provide institutional safeguards for XX development; third, optimizing XX to reduce XX costs; fourth, strengthening XX to guide private capital into the XX sector. By building a multi-layered, comprehensive policy support system, a favorable environment for the development of XX can be created.
 
-\subsection{研究局限与未来展望}
+\subsection{Limitations and Future Research}
 
-本研究存在以下局限性：
+This study has the following limitations:
 
-\textbf{（1）数据限制}：受数据可得性限制，本文样本期间为XXXX-XXXX年，无法捕捉近年来XX政策的最新变化及其影响。未来研究可在数据更新后进一步检验本文结论的时效性。
+\textbf{(1) Data Limitations}: Due to data availability constraints, the sample period of this paper is XXXX--XXXX, which cannot capture the most recent changes in XX policy and their effects. Future research can further test the temporal validity of the findings after data updates.
 
-\textbf{（2）外生冲击}：本文未充分考虑XX等外生冲击对XX和XX的影响。例如，XX可能显著改变了XX的成本收益结构，从而调节XX政策的效果。未来研究可探讨极端气候冲击等因素的调节作用。
+\textbf{(2) Exogenous Shocks}: This paper does not fully account for the impact of exogenous shocks such as XX on XX and XX. For example, XX may have significantly altered the cost-benefit structure of XX, thereby moderating the effectiveness of XX policy. Future research can explore the moderating role of factors such as extreme climate shocks.
 
-\textbf{（3）机制的完整性}：虽然本文检验了XX和XX两条主要传导路径，但仍有约XX\%的效应未被解释。可能存在其他未观测到的机制（如XX、XX等），有待未来研究进一步挖掘。
+\textbf{(3) Completeness of Mechanisms}: Although this paper tests the two main transmission pathways of XX and XX, approximately XX\% of the total effect remains unexplained. Other unobserved mechanisms may exist (such as XX and XX), which await further investigation in future research.
 
-\textbf{（4）政策长期效应}：本文主要关注XX政策的短中期效应，对长期动态影响和潜在的非线性效应探讨不足。未来研究可采用更长的时间跨度，运用时变参数模型或门槛回归模型，捕捉政策效应的动态演变特征。
+\textbf{(4) Long-term Policy Effects}: This paper primarily focuses on the short- to medium-term effects of XX policy, with insufficient exploration of long-term dynamic impacts and potential nonlinear effects. Future research can employ longer time spans and use time-varying parameter models or threshold regression models to capture the dynamic evolution of policy effects.
 
-\textbf{未来研究方向}包括：（1）结合机器学习和大数据技术（如文本挖掘、深度学习），从XX数据中挖掘更精细化的XX信息，提高变量测度的准确性；（2）利用XX（如自然实验、断点回归设计）进一步强化因果识别，提升研究的内部效度；（3）拓展研究视角，探讨XX与XX的交互效应，以及XX在其中的调节作用；（4）开展跨国比较研究，考察不同制度背景下XX政策效应的差异，为中国经验的国际化提供参考。
+\textbf{Future research directions} include: (1) combining machine learning and big data techniques (such as text mining and deep learning) to extract more refined XX information from XX data, improving the accuracy of variable measurement; (2) utilizing XX (such as natural experiments and regression discontinuity designs) to further strengthen causal identification and enhance the internal validity of research; (3) expanding the research perspective to explore the interaction effects between XX and XX and the moderating role of XX; (4) conducting cross-country comparative studies to examine differences in XX policy effects under different institutional settings, providing reference for the internationalization of China's experience.
 
-% ========== 参考文献 ==========
+% ========== References ==========
 \newpage
-\section*{参考文献}
-\addcontentsline{toc}{section}{参考文献}
+\section*{References}
+\addcontentsline{toc}{section}{References}
 
 \begin{thebibliography}{99}
 
-\bibitem{reference1} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference1} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference2} Author A, Author B. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
-\bibitem{reference3} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference3} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference4} Author C, Author D. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
-\bibitem{reference5} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference5} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference6} Author E. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
-\bibitem{reference7} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference7} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference8} Author F, Author G, Author H. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
-\bibitem{reference9} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference9} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference10} Author I. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
-\bibitem{reference11} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference11} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference12} Author J, Author K. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
-\bibitem{reference13} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference13} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference14} Author L. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
-\bibitem{reference15} 作者名. 文献标题[J]. 期刊名, 年份, 卷(期): 页码.
+\bibitem{reference15} Author. Paper Title[J]. Journal Name, Year, Volume(Issue): Pages.
 
 \bibitem{reference16} Author M, Author N. Title of the Paper[J]. Journal Name, Year, Volume(Issue): Pages.
 
@@ -803,39 +801,39 @@ XX政策的有效实施离不开配套政策的支持。建议：一是加强XX�
 
 \end{thebibliography}
 
-% ========== 附录 ==========
+% ========== Appendix ==========
 \newpage
 \appendix
-\section{附录A：变量定义与数据来源详表}
+\section{Appendix A: Detailed Variable Definitions and Data Sources}
 
 \begin{table}[htbp]
 \centering
-\caption{变量定义与数据来源}
+\caption{Variable Definitions and Data Sources}
 \begin{threeparttable}
 \begin{tabular}{p{3cm}p{5cm}p{5cm}}
 \toprule
-\textbf{变量名称} & \textbf{定义与计算方法} & \textbf{数据来源} \\
+\textbf{Variable} & \textbf{Definition and Calculation} & \textbf{Data Source} \\
 \midrule
-XX ($Y$) & XX，计算公式为$\frac{XX}{XX} \times 100\%$ & XX数据库 \\
-XX ($X$) & XX，经XX处理后取对数 & XX统计年鉴 \\
-XX ($Z_1$) & XX，计算公式为$\frac{XX}{XX} \times 100\%$ & XX数据库 \\
-XX ($Z_2$) & XX & 手工整理自XX \\
-XX ($Control_1$) & XX & XX统计年鉴 \\
-XX ($Control_2$) & XX & XX数据库 \\
+XX ($Y$) & XX, calculated as $\frac{XX}{XX} \times 100\%$ & XX Database \\
+XX ($X$) & XX, log-transformed after XX processing & XX Statistical Yearbook \\
+XX ($Z_1$) & XX, calculated as $\frac{XX}{XX} \times 100\%$ & XX Database \\
+XX ($Z_2$) & XX & Manually compiled from XX \\
+XX ($Control_1$) & XX & XX Statistical Yearbook \\
+XX ($Control_2$) & XX & XX Database \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \small
-\item 注：所有连续型变量均在1\%和99\%分位数水平进行Winsorize处理。
+\item Note: All continuous variables are winsorized at the 1st and 99th percentiles.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\section{附录B：相关性矩阵}
+\section{Appendix B: Correlation Matrix}
 
 \begin{table}[htbp]
 \centering
-\caption{主要变量相关性矩阵}
+\caption{Correlation Matrix of Main Variables}
 \begin{tabular}{lccccccc}
 \toprule
  & $Y$ & $X$ & $Z_1$ & $Z_2$ & $C_1$ & $C_2$ & $C_3$ \\
@@ -851,12 +849,12 @@ $C_3$ & 0.XXX\sym{***} & 0.XXX\sym{***} & 0.XXX\sym{**} & 0.XXX\sym{*} & 0.XXX\s
 \end{tabular}
 \begin{minipage}{0.9\textwidth}
 \small
-注：\sym{*}、\sym{**}、\sym{***}分别表示在10\%、5\%、1\%水平上显著。
+Note: \sym{*}, \sym{**}, and \sym{***} denote significance at the 10\%, 5\%, and 1\% levels, respectively.
 \end{minipage}
 \end{table}
 
-\section{附录C：稳健性检验补充结果}
+\section{Appendix C: Supplementary Robustness Check Results}
 
-【此处可添加更多稳健性检验表格，如PSM结果、分位数回归结果、空间计量模型结果等】
+[Additional robustness check tables can be added here, such as PSM results, quantile regression results, spatial econometric model results, etc.]
 
 \end{document}

@@ -1,22 +1,22 @@
 """
-VariableDesignerAgent的Prompt模板
-负责设置研究变量和代理变量
+VariableDesignerAgent Prompt Template
+Responsible for designing research variables and proxy variables
 """
 
-SYSTEM_PROMPT = """# 角色定义
-你是一名资深的经济学专家，专注于使用实证方法的经济学研究。你需要参考经济学/交叉学科顶级期刊，含 AER、JPE、QJE等英文经济学top5文献、《经济研究》《经济学（季刊）》《管理世界》及其他中英文顶刊文献、CSSCI/SSCI 检索的核心文献，以及 NBER/CEPR 工作论文。
+SYSTEM_PROMPT = """# Role Definition
+You are a senior economics expert specializing in empirical economics research. You should reference top journals in economics and interdisciplinary fields, including AER, JPE, QJE and other top-5 English economics journals, SSCI-indexed core literature, as well as NBER/CEPR working papers.
 
-# 核心能力
-- 精准的变量体系设计能力
-- 深厚的经济学理论功底
-- 丰富的数据实践经验
-- 严谨的学术规范意识
+# Core Capabilities
+- Precise variable system design ability
+- Deep economics theoretical foundation
+- Rich data practice experience
+- Rigorous academic standards awareness
 
-# 工作原则
-- 所有变量设置需服务于核心研究目标
-- 代理变量需与变量的经济学内涵高度契合
-- 一定要有实际意义且在数据库中具有现实的可得性
-- 确保变量间的经济学关联清晰、逻辑自洽"""
+# Working Principles
+- All variable settings must serve the core research objective
+- Proxy variables must closely align with the economic connotation of the variable
+- Must have practical significance and realistic data availability
+- Ensure economic relationships between variables are clear and logically consistent"""
 
 
 def get_task_prompt(
@@ -27,145 +27,145 @@ def get_task_prompt(
     parsed_input: str = ""
 ) -> str:
     """
-    生成VariableDesignerAgent的任务提示词
+    Generate the task prompt for VariableDesignerAgent
 
     Args:
-        research_topic: 研究主题
-        literature_summary: 文献综述摘要
-        variable_x: 核心解释变量X的描述
-        variable_y: 被解释变量Y的描述
-        parsed_input: 解析后的输入信息
+        research_topic: Research topic
+        literature_summary: Literature review summary
+        variable_x: Description of key explanatory variable X
+        variable_y: Description of dependent variable Y
+        parsed_input: Parsed input information
 
     Returns:
-        格式化的任务提示词
+        Formatted task prompt
     """
-    # 构建变量提示
+    # Build variable hint
     variable_hint = ""
     if variable_x or variable_y:
-        variable_hint = "\n# 核心变量提示\n"
+        variable_hint = "\n# Core Variable Hints\n"
         if variable_x:
-            variable_hint += f"- **核心解释变量（X）**：{variable_x}\n"
+            variable_hint += f"- **Key Explanatory Variable (X)**: {variable_x}\n"
         if variable_y:
-            variable_hint += f"- **被解释变量（Y）**：{variable_y}\n"
-        variable_hint += "\n请基于上述核心变量设计完整的变量体系。\n"
+            variable_hint += f"- **Dependent Variable (Y)**: {variable_y}\n"
+        variable_hint += "\nPlease design a complete variable system based on the above core variables.\n"
 
-    # 如果有解析后的输入信息，也包含进来
+    # Include parsed input if available
     parsed_info = ""
     if parsed_input:
-        parsed_info = f"\n# 输入解析信息\n{parsed_input}\n"
+        parsed_info = f"\n# Parsed Input Information\n{parsed_input}\n"
 
-    return f"""# 任务背景
-基于"{research_topic}"这一研究主题，你需要独立完成全变量体系的界定、代理变量筛选与设置，明确变量间的经济学关联，输出可直接用于实证研究的完整变量方案。
+    return f"""# Task Background
+Based on the research topic "{research_topic}", you need to independently complete the full variable system definition, proxy variable screening and design, clarify economic relationships between variables, and output a complete variable scheme ready for empirical research.
 {variable_hint}{parsed_info}
-# 文献参考信息
-{literature_summary if literature_summary else "（请基于你的专业知识和经验设计变量体系）"}
+# Literature Reference
+{literature_summary if literature_summary else "(Please design the variable system based on your professional knowledge and experience)"}
 
-# 具体操作要求
+# Specific Requirements
 
-## 一、变量类型界定与核心目标
+## I. Variable Type Definition and Core Objective
 
-### 1. 明确三大类核心变量
-（1）**核心解释变量（X）**：即研究中的"{research_topic}"中的自变量
-（2）**被解释变量（Y）**：即X的影响对象
-（3）**潜在中介/调节变量**：若无则明确说明"本研究暂不设置中介/调节变量"
+### 1. Define Three Core Variable Types
+(1) **Key Explanatory Variable (X)**: The independent variable in the research topic "{research_topic}"
+(2) **Dependent Variable (Y)**: The outcome affected by X
+(3) **Potential Mediating/Moderating Variables**: If none, explicitly state "This study does not include mediating/moderating variables"
 
-### 2. 核心目标
-所有变量的设置需服务于"量化X对Y的影响关系"这一核心目标。
+### 2. Core Objective
+All variable settings must serve the core objective of "quantifying the impact of X on Y."
 
-## 二、核心解释变量（X）的代理变量筛选与设置
+## II. Proxy Variable Screening and Design for Key Explanatory Variable (X)
 
-### 1. 筛选要求
-至少提供**3个独立的代理变量**，覆盖不同测量维度。
+### 1. Screening Requirements
+Provide at least **3 independent proxy variables** covering different measurement dimensions.
 
-每个代理变量需满足：
+Each proxy variable must satisfy:
 
-**（1）经济学内涵清晰**
-- 明确该代理变量如何反映X的核心特征
-- 例如：X=新能源技术应用，Zx1=新能源设备投资占比，需说明"该指标通过量化企业在新能源技术硬件上的投入强度，直接反映技术应用的实际落地水平"
+**(1) Clear Economic Connotation**
+- Clearly explain how this proxy variable reflects the core characteristics of X
+- Example: X = renewable energy technology adoption, Zx1 = share of renewable energy equipment investment, explaining that "this indicator directly reflects the actual implementation level of technology adoption by quantifying the investment intensity in renewable energy hardware"
 
-**（2）文献支撑充分**
-- 标注1-2篇近5年经济学顶刊或领域核心期刊中采用该代理变量的文献
-- 格式：作者. 论文题目[J]. 期刊名称, 发表年份
+**(2) Sufficient Literature Support**
+- Cite 1-2 recent top economics or field-specific journal articles that used this proxy variable
+- Format: Author. Paper Title[J]. Journal Name, Year
 
-**（3）数据可得性强**
-- 明确说明数据可从哪类主流数据库、统计渠道获取
-- 如：上市公司年报、CSMAR数据库、Wind数据库、国家统计局宏观数据平台、行业统计年鉴、企业调研数据等
+**(3) Strong Data Availability**
+- Clearly state from which mainstream databases or statistical channels the data can be obtained
+- Such as: company annual reports, CSMAR database, Wind database, national statistics platforms, industry statistical yearbooks, firm survey data, etc.
 
-### 2. 具体设置内容
-- 代理变量定义：精准描述变量的计算方式
-- 统计口径说明：明确变量的统计范围、单位、时间维度
-- 数据处理方案：说明针对该变量的预处理方法，并简要说明处理理由
+### 2. Specific Design Content
+- Proxy variable definition: Precise description of variable calculation method
+- Statistical scope: Clarify the variable's statistical range, unit, and time dimension
+- Data processing scheme: Describe preprocessing methods and briefly explain the rationale
 
-## 三、被解释变量（Y）的代理变量筛选与设置
+## III. Proxy Variable Screening and Design for Dependent Variable (Y)
 
-### 1. 筛选要求
-提供**1-2个核心代理变量**，优先选择经济学实证研究中被广泛认可、标准化程度高的指标，也可以自创有充分理由的指标。
+### 1. Screening Requirements
+Provide **1-2 core proxy variables**, prioritizing widely recognized and highly standardized indicators in empirical economics research, or create well-justified novel indicators.
 
-每个代理变量需满足的要求同上。
+Each proxy variable must satisfy the same requirements as above.
 
-### 2. 具体设置内容
-同上。
+### 2. Specific Design Content
+Same as above.
 
-## 四、中介/调节变量（Z）的代理变量筛选与设置（若有）
+## IV. Proxy Variable Screening and Design for Mediating/Moderating Variables (Z) (If Applicable)
 
-### 1. 变量界定
-明确Z的类型（中介变量/调节变量），并简要说明其在"X对Y的影响"中的角色定位。
+### 1. Variable Definition
+Clarify the type of Z (mediating/moderating variable) and briefly describe its role in "the impact of X on Y."
 
-### 2. 筛选与设置要求
-每个Z提供**2个以上代理变量**，要求同上。
+### 2. Screening and Design Requirements
+Provide **2 or more proxy variables** for each Z, with requirements same as above.
 
-## 五、Z1与Z2的经济学逻辑关联界定（针对存在中介/调节变量的场景）
+## V. Economic Logic of the Relationship Between Z1 and Z2 (For Scenarios with Mediating/Moderating Variables)
 
-### 1. 明确关联类型
-清晰说明Z1（如中介变量）与Z2（如X/Y）的具体逻辑关系，需基于经济学理论或现实经济规律推导，避免无依据的关联假设。
+### 1. Clarify Relationship Type
+Clearly describe the specific logical relationship between Z1 (e.g., mediating variable) and Z2 (e.g., X/Y), based on economic theory or real-world economic patterns, avoiding unfounded relational assumptions.
 
-### 2. 逻辑推导要求
-- 详细说明"X为何能影响Z1"
-- 详细说明"Z1为何能影响Y"
-- 详细说明"Z2为何能调节X对Y的影响"
+### 2. Logical Derivation Requirements
+- Explain in detail "why X can affect Z1"
+- Explain in detail "why Z1 can affect Y"
+- Explain in detail "why Z2 can moderate the impact of X on Y"
 
-### 3. 文献支撑
-每个逻辑关联最好有文献支撑。
+### 3. Literature Support
+Each logical relationship should be supported by literature.
 
-## 六、控制变量的补充设置
+## VI. Supplementary Control Variable Design
 
-### 1. 筛选原则
-基于经济学理论与过往同类研究，筛选对Y有显著影响但未纳入核心解释变量、中介/调节变量的变量，避免遗漏重要混淆因素。
+### 1. Screening Principles
+Based on economic theory and previous similar research, select variables that significantly affect Y but are not included as key explanatory variables or mediating/moderating variables, avoiding omission of important confounders.
 
-### 2. 设置要求
-至少提供**5个控制变量**
-- 企业层面：企业规模、资产负债率、股权性质、研发投入强度、成立年限
-- 区域层面：人均GDP、产业结构、财政支出强度、人口密度、基础设施水平
+### 2. Design Requirements
+Provide at least **5 control variables**
+- Firm level: firm size, leverage ratio, ownership type, R&D intensity, firm age
+- Regional level: GDP per capita, industrial structure, fiscal expenditure intensity, population density, infrastructure level
 
-每个控制变量需明确：代理变量定义、数据来源、统计口径、处理方案。
+Each control variable must specify: proxy variable definition, data source, statistical scope, and processing scheme.
 
-## 七、输出结果要求（格式规范、信息完整）
+## VII. Output Requirements (Standardized Format, Complete Information)
 
-### 1. 核心输出：变量体系总表
-以表格形式呈现所有变量的详细信息，表格列示维度为：
-- 变量类型（核心解释变量/被解释变量/中介变量/调节变量/控制变量）
-- 变量名称
-- 代理变量编号及定义
-- 经济学内涵依据
-- 文献支撑（作者-期刊-年份）
-- 数据来源
-- 统计口径（单位+时间/样本范围）
-- 数据处理方案
+### 1. Core Output: Variable System Summary Table
+Present all variable details in tabular form, with columns:
+- Variable type (key explanatory/dependent/mediating/moderating/control)
+- Variable name
+- Proxy variable number and definition
+- Economic connotation justification
+- Literature support (Author-Journal-Year)
+- Data source
+- Statistical scope (unit + time/sample range)
+- Data processing scheme
 
-### 2. 补充说明
+### 2. Supplementary Notes
 
-**（1）变量设置合理性总结（500-800字）**
-从经济学内涵契合度、数据可得性、学术规范性三个维度，综合说明本次变量体系设置的科学性。
+**(1) Variable Design Rationality Summary (500-800 words)**
+From three dimensions---economic connotation fit, data availability, and academic rigor---comprehensively explain the scientific basis of this variable system.
 
-若存在代理变量的局限性（如部分数据需手工整理、样本覆盖范围有限），需如实说明并提出可行的弥补方案。
+If proxy variables have limitations (e.g., some data require manual collection, limited sample coverage), honestly describe them and propose feasible remedies.
 
-**（2）变量逻辑关联说明（针对有中介/调节变量的场景，300-500字）**
-单独阐述Z1与Z2的经济学逻辑关联，强化关联的合理性与说服力。
+**(2) Variable Logic Relationship Explanation (For scenarios with mediating/moderating variables, 300-500 words)**
+Separately explain the economic logic of the relationship between Z1 and Z2 to strengthen the rationality and persuasiveness of the relationship.
 
-### 3. 格式要求
-- 文本清晰分段
-- 表格采用规范的文字表格形式（无需代码或特殊格式）
-- 文献标注统一、准确
-- 避免口语化表述，符合经济学学术写作规范
+### 3. Format Requirements
+- Clear paragraph structure
+- Tables in standard text table format (no code or special formatting required)
+- Uniform and accurate literature citations
+- Avoid colloquial expressions; conform to economics academic writing standards
 
-请立即开始执行任务。"""
+Please begin the task immediately."""

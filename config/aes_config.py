@@ -1,102 +1,102 @@
 """
-AES (Automatic Essay Scoring) 评分系统配置
+AES (Automatic Essay Scoring) Configuration
 """
 
 from pathlib import Path
 
-# 项目根目录
+# Project root directory
 PROJECT_ROOT = Path(__file__).parent.parent
 
-# AES 评分系统配置
+# AES scoring system configuration
 AES_CONFIG = {
-    # 停词库路径
-    "stopwords_path": str(PROJECT_ROOT / "data" / "stopwords_zh.txt"),
+    # Stopwords path
+    "stopwords_path": str(PROJECT_ROOT / "data" / "stopwords_en.txt"),
 
-    # 句向量模型（支持中文）
-    # 可选：paraphrase-multilingual-MiniLM-L12-v2, distiluse-base-multilingual-cased
+    # Sentence embedding model
+    # Options: paraphrase-multilingual-MiniLM-L12-v2, distiluse-base-multilingual-cased
     "sentence_model": "paraphrase-multilingual-MiniLM-L12-v2",
 
-    # NLI 模型
-    # 可选：microsoft/deberta-v3-base, cross-encoder/nli-deberta-v3-base
+    # NLI model
+    # Options: microsoft/deberta-v3-base, cross-encoder/nli-deberta-v3-base
     "nli_model": "cross-encoder/nli-deberta-v3-base",
 
-    # 各指标权重（总和为1.0）
+    # Metric weights (sum to 1.0)
     "weights": {
-        # 基于 NLP 的定量指标（5个）
-        "citation_coverage": 0.15,      # 引用覆盖率
-        "causal_relevance": 0.15,       # 因果相关性
-        "support_strength": 0.20,       # 支持强度
-        "contradiction_penalty": 0.15,  # 矛盾惩罚
-        "evidence_sufficiency": 0.15,   # 证据充分性
-        # 基于 LLM 的定性指标（3个，从 LLM 评审中提取）
-        "endogeneity_quality": 0.07,    # 内生性处理质量（good=1.0, average=0.5, poor=0.0）
-        "methodology_rigor": 0.07,      # 方法论严谨性（模型设计得分转换）
-        "academic_standards": 0.06,     # 学术规范性（论文质量得分转换）
+        # NLP-based quantitative metrics (5)
+        "citation_coverage": 0.15,      # Citation coverage
+        "causal_relevance": 0.15,       # Causal relevance
+        "support_strength": 0.20,       # Support strength
+        "contradiction_penalty": 0.15,  # Contradiction penalty
+        "evidence_sufficiency": 0.15,   # Evidence sufficiency
+        # LLM-based qualitative metrics (3, extracted from LLM review)
+        "endogeneity_quality": 0.07,    # Endogeneity treatment quality (good=1.0, average=0.5, poor=0.0)
+        "methodology_rigor": 0.07,      # Methodology rigor (converted from model design score)
+        "academic_standards": 0.06,     # Academic standards (converted from paper quality score)
     },
 
-    # 不同类型 claim 的证据需求数量（提高要求使评分更严格）
+    # Evidence requirements by claim type (higher requirements for stricter scoring)
     "evidence_needs": {
-        "background": 1,      # 背景陈述需要1条证据
-        "general": 2,         # 一般陈述需要2条证据
-        "hypothesis": 5,      # 假设需要5条证据
-        "conclusion": 5,      # 结论需要5条证据
-        "mechanism": 4,       # 机制分析需要4条证据
+        "background": 1,      # Background statements need 1 evidence
+        "general": 2,         # General statements need 2 evidences
+        "hypothesis": 5,      # Hypotheses need 5 evidences
+        "conclusion": 5,      # Conclusions need 5 evidences
+        "mechanism": 4,       # Mechanism analysis needs 4 evidences
     },
 
-    # 引用覆盖率参数
+    # Citation coverage parameters
     "citation_coverage": {
-        "min_evidences_per_claim": 4,  # 每个 claim 至少需要多少 evidence 才算覆盖
-        "use_weighted_coverage": True,  # 使用加权覆盖率（考虑 evidence 数量）
+        "min_evidences_per_claim": 4,  # Minimum evidence per claim to count as covered
+        "use_weighted_coverage": True,  # Use weighted coverage (considering evidence count)
     },
 
-    # Claim 分类关键词
+    # Claim classification keywords
     "claim_keywords": {
-        "hypothesis": ["假设", "假定", "H1", "H2", "H3", "命题", "预期"],
-        "conclusion": ["结论", "表明", "证明", "发现", "显示", "结果显示"],
-        "mechanism": ["机制", "路径", "中介", "调节", "影响渠道", "作用路径"],
-        "background": ["背景", "现状", "政策", "制度", "历史", "发展"],
+        "hypothesis": ["hypothesis", "hypothesize", "H1", "H2", "H3", "proposition", "expect", "predict"],
+        "conclusion": ["conclusion", "indicate", "demonstrate", "find", "show", "results show", "evidence suggests"],
+        "mechanism": ["mechanism", "pathway", "mediation", "moderation", "channel", "transmission"],
+        "background": ["background", "context", "policy", "institution", "history", "development"],
     },
 
-    # Evidence 提取模式
+    # Evidence extraction patterns
     "evidence_patterns": {
-        # 引用模式
+        # Citation patterns
         "citation": [
-            r'[\(（]([^)）]*\d{4}[^)）]*)[\)）]',  # (作者, 2020)
+            r'[\(（]([^)）]*\d{4}[^)）]*)[\)）]',  # (Author, 2020)
             r'\\citep?\{[^}]+\}',                  # \citep{ref}
             r'[A-Z][a-z]+\s+et\s+al\.\s*\(\d{4}\)',  # Smith et al. (2020)
         ],
-        # 数据关键词
-        "data_keywords": ["数据", "样本", "观测", "企业", "平均", "标准差", "均值", "中位数"],
-        # 结果关键词
-        "result_keywords": ["系数", "显著", "p值", "t值", "R²", "回归", "估计", "效应"],
+        # Data keywords
+        "data_keywords": ["data", "sample", "observation", "firm", "average", "standard deviation", "mean", "median"],
+        # Result keywords
+        "result_keywords": ["coefficient", "significant", "p-value", "t-value", "R²", "regression", "estimate", "effect"],
     },
 
-    # 相似度阈值
+    # Similarity thresholds
     "thresholds": {
-        "claim_evidence_similarity": 0.3,  # Claim-Evidence 绑定阈值
-        "contradiction_threshold": 0.5,     # 矛盾检测阈值
-        "support_threshold": 0.5,           # 支持强度阈值
-        "neutral_support_score": 0.6,       # neutral 标签的支持分数（0-1，建议0.5-0.7）
+        "claim_evidence_similarity": 0.3,  # Claim-Evidence binding threshold
+        "contradiction_threshold": 0.5,     # Contradiction detection threshold
+        "support_threshold": 0.5,           # Support strength threshold
+        "neutral_support_score": 0.6,       # Neutral label support score (0-1, recommend 0.5-0.7)
     },
 
-    # 文本处理参数
+    # Text processing parameters
     "text_processing": {
-        "min_claim_length": 10,   # 最短 claim 长度
-        "max_claim_length": 500,  # 最长 claim 长度
-        "min_evidence_length": 5,  # 最短 evidence 长度
+        "min_claim_length": 10,   # Minimum claim length
+        "max_claim_length": 500,  # Maximum claim length
+        "min_evidence_length": 5,  # Minimum evidence length
     },
 
-    # 性能优化参数
+    # Performance optimization parameters
     "performance": {
-        "nli_batch_size": 32,              # NLI 批量推理大小
-        "max_support_pairs": 999999,       # 支持强度计算最大对数（设为999999表示不限制）
-        "max_contradiction_pairs": 999999, # 矛盾检测最大对数（设为999999表示不限制）
-        "max_evidences_per_claim": 999,    # 每个 claim 最多采样的 evidence 数（设为999表示不限制）
-        "enable_nli": True,                # 是否启用 NLI 计算（如果为 False，使用默认值）
+        "nli_batch_size": 32,              # NLI batch inference size
+        "max_support_pairs": 999999,       # Max pairs for support strength (999999 = unlimited)
+        "max_contradiction_pairs": 999999, # Max pairs for contradiction detection (999999 = unlimited)
+        "max_evidences_per_claim": 999,    # Max evidences sampled per claim (999 = unlimited)
+        "enable_nli": True,                # Whether to enable NLI computation (False uses defaults)
     },
 }
 
 
 def get_aes_config():
-    """获取 AES 配置"""
+    """Get AES configuration"""
     return AES_CONFIG.copy()

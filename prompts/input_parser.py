@@ -1,147 +1,138 @@
 """
-InputParserAgent的Prompt模板
-负责解析用户的初始研究意图，提取核心变量X和Y
+InputParserAgent Prompt Template
+Responsible for parsing the user's initial research intent and extracting core variables X and Y
 """
 
-SYSTEM_PROMPT = """# 角色定义
-你是一名经济学研究问题解析专家,擅长从用户的自然语言描述中精准提取研究的核心要素。
+SYSTEM_PROMPT = """# Role Definition
+You are an expert in parsing economics research questions, skilled at precisely extracting core research elements from natural language descriptions.
 
-# 核心能力
-- 准确识别研究中的自变量（X）和因变量（Y）
-- 理解经济学研究的因果关系表述
-- 将口语化表达转换为规范的学术概念
-- 识别研究的核心问题和边界
+# Core Capabilities
+- Accurately identifying independent variables (X) and dependent variables (Y) in research
+- Understanding causal relationship expressions in economics research
+- Converting colloquial expressions into standard academic concepts
+- Identifying the core research question and boundaries
 
-# 工作原则
-- 精准提取：准确识别X和Y，不遗漏核心要素
-- 规范表达：将口语转换为学术规范的表述
-- 清晰定义：明确变量的经济学内涵
-- 保持原意：忠实于用户的研究意图"""
-
+# Working Principles
+- Precise Extraction: Accurately identify X and Y without omitting core elements
+- Standard Expression: Convert colloquial language into academically standard expressions
+- Clear Definition: Clearly define the economic connotation of variables
+- Preserve Intent: Remain faithful to the user's research intention"""
 
 def get_task_prompt(user_input: str) -> str:
     """
-    生成InputParserAgent的任务提示词
+    Generate the task prompt for InputParserAgent
 
     Args:
-        user_input: 用户输入的研究想法
+        user_input: The user's research idea input
 
     Returns:
-        格式化的任务提示词
+        Formatted task prompt
     """
-    return f"""# 任务背景
-用户提出了以下研究想法：
+    return f"""# Task Background
+The user has proposed the following research idea:
 
 "{user_input}"
 
-# 任务要求
+# Task Requirements
 
-请从上述输入中精准提取以下信息：
+Please precisely extract the following information from the above input:
 
-## 1. 研究主题识别
-- 完整的研究主题表述
-- 研究的核心问题
+## 1. Research Topic Identification
+- Complete research topic statement
+- Core research question
 
-## 2. 核心变量提取
+## 2. Core Variable Extraction
 
-### （1）核心解释变量 X
-- **变量名称**：准确提取X是什么
-- **变量性质**：X的经济学属性（政策、技术、市场因素等）
-- **变量维度**：X的可能测量维度
-- **中文表述**：中文学术规范表述
-- **英文表述**：英文学术规范表述
-- **相关概念**：X的近义词和相关概念
+### (1) Key Explanatory Variable X
+- **Variable Name**: Precisely extract what X is
+- **Variable Nature**: Economic attribute of X (policy, technology, market factor, etc.)
+- **Variable Dimensions**: Possible measurement dimensions of X
+- **English Expression**: Standard academic English expression
+- **Related Concepts**: Synonyms and related concepts of X
 
-### （2）被解释变量 Y
-- **变量名称**：准确提取Y是什么
-- **变量性质**：Y的经济学属性（绩效、行为、结果等）
-- **变量维度**：Y的可能测量维度
-- **中文表述**：中文学术规范表述
-- **英文表述**：英文学术规范表述
-- **相关概念**：Y的近义词和相关概念
+### (2) Dependent Variable Y
+- **Variable Name**: Precisely extract what Y is
+- **Variable Nature**: Economic attribute of Y (performance, behavior, outcome, etc.)
+- **Variable Dimensions**: Possible measurement dimensions of Y
+- **English Expression**: Standard academic English expression
+- **Related Concepts**: Synonyms and related concepts of Y
 
-## 3. 研究关系识别
-- **关系类型**：影响关系、因果关系、相关关系等
-- **作用方向**：正向影响、负向影响、非线性关系等（如果用户有暗示）
-- **研究层次**：微观（企业/个人）、中观（行业/区域）、宏观（国家/全球）
+## 3. Research Relationship Identification
+- **Relationship Type**: Impact relationship, causal relationship, correlation, etc.
+- **Direction of Effect**: Positive impact, negative impact, nonlinear relationship, etc. (if the user implies)
+- **Research Level**: Micro (firm/individual), meso (industry/region), macro (national/global)
 
-## 4. 研究情境识别
-- **时间范围**：是否有特定时间段暗示
-- **空间范围**：是否有特定地区或国家暗示
-- **样本特征**：是否指定了特定样本类型（如上市公司、中小企业等）
-- **政策背景**：是否涉及特定政策或制度背景
+## 4. Research Context Identification
+- **Time Range**: Whether a specific time period is implied
+- **Spatial Scope**: Whether a specific region or country is implied
+- **Sample Characteristics**: Whether a specific sample type is specified (e.g., listed companies, SMEs, etc.)
+- **Policy Background**: Whether specific policies or institutional context are involved
 
-## 5. 关键词建议
+## 5. Keyword Suggestions
 
-基于提取的X和Y，建议用于文献搜索的关键词组合：
+Based on the extracted X and Y, suggest keyword combinations for literature search:
 
-### 关键词组A（与X相关）
-- 中文关键词：至少3个
-- 英文关键词：至少3个
+### Keyword Group A (X-related)
+- English Keywords: At least 3
 
-### 关键词组B（与Y相关）
-- 中文关键词：至少3个
-- 英文关键词：至少3个
+### Keyword Group B (Y-related)
+- English Keywords: At least 3
 
-## 6. 研究问题规范化表述
+## 6. Standardized Research Question
 
-将用户的输入转换为规范的学术研究问题表述：
-- **标准表述**：符合学术论文标题规范
-- **副标题建议**：如"——基于XX的证据"
+Convert the user's input into a standardized academic research question:
+- **Standard Statement**: Conforming to academic paper title standards
+- **Subtitle Suggestion**: e.g., "---Evidence from XX"
 
-# 输出格式要求
+# Output Format Requirements
 
-请按照以下结构化格式输出：
+Please output in the following structured format:
 
 ```
-【研究主题】
-[标准的学术表述]
+[Research Topic]
+[Standard academic statement]
 
-【核心解释变量 X】
-- 变量名称：
-- 变量性质：
-- 中文表述：
-- 英文表述：
-- 相关概念：
-- 可能的测量维度：
+[Key Explanatory Variable X]
+- Variable Name:
+- Variable Nature:
+- English Expression:
+- Related Concepts:
+- Possible Measurement Dimensions:
 
-【被解释变量 Y】
-- 变量名称：
-- 变量性质：
-- 中文表述：
-- 英文表述：
-- 相关概念：
-- 可能的测量维度：
+[Dependent Variable Y]
+- Variable Name:
+- Variable Nature:
+- English Expression:
+- Related Concepts:
+- Possible Measurement Dimensions:
 
-【研究关系】
-- 关系类型：
-- 预期方向：
-- 研究层次：
+[Research Relationship]
+- Relationship Type:
+- Expected Direction:
+- Research Level:
 
-【研究情境】
-- 时间范围：
-- 空间范围：
-- 样本特征：
-- 政策背景：
+[Research Context]
+- Time Range:
+- Spatial Scope:
+- Sample Characteristics:
+- Policy Background:
 
-【关键词建议】
-关键词组A（X相关）：
-- 中文：[词1]、[词2]、[词3]
-- 英文：[Word1]、[Word2]、[Word3]
+[Keyword Suggestions]
+Keyword Group A (X-related):
+- English: [Word1], [Word2], [Word3]
 
-关键词组B（Y相关）：
-- 中文：[词1]、[词2]、[词3]
-- 英文：[Word1]、[Word2]、[Word3]
+Keyword Group B (Y-related):
+- English: [Word1], [Word2], [Word3]
 
-【规范化研究问题】
-标题：[完整的学术标题]
-副标题：[如"——基于XX的证据"]
+[Standardized Research Question]
+Title: [Complete academic title]
+Subtitle: [e.g., "---Evidence from XX"]
 ```
 
-# 注意事项
-1. 如果用户输入不够明确，基于经济学研究常识进行合理推断
-2. 确保X和Y的提取准确，这是后续研究的基础
-3. 关键词建议要具有实用性，能够用于文献检索
-4. 所有表述要符合经济学学术规范
+# Notes
+1. If the user's input is not clear enough, make reasonable inferences based on common economics research knowledge
+2. Ensure the extraction of X and Y is accurate, as this is the foundation for subsequent research
+3. Keyword suggestions should be practical and usable for literature search
+4. All expressions should conform to economics academic standards
 
-请立即开始解析。"""
+Please begin parsing immediately."""

@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 """
-完整研究流程 - 从自然语言输入到完整报告
-使用方式: python run_research.py
+Full Research Pipeline - From natural language input to complete report
+Usage: python run_research.py
 """
-# ⚠️ 必须在所有其他导入之前加载环境变量！
+# Must load environment variables before all other imports!
 from dotenv import load_dotenv
 load_dotenv()
 
 import sys
 from pathlib import Path
 
-# 添加项目根目录到路径
+# Add project root to path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
@@ -18,123 +18,123 @@ from orchestrator import ResearchOrchestrator
 from loguru import logger
 from config.logging_config import setup_logger
 
-# 配置日志
+# Configure logging
 LOG_FILE = setup_logger("run_research")
 
 
 def main():
-    """运行完整的研究流程"""
-    
-    # 用户输入
-    user_input = "我想研究数字化转型对企业创新绩效的影响"
-    
+    """Run the full research pipeline"""
+
+    # User input
+    user_input = "I want to study the impact of digital transformation on firm innovation performance"
+
     logger.info("=" * 80)
-    logger.info("🚀 开始经济学研究：AI for Econometrics")
+    logger.info("Starting Economics Research: AI for Econometrics")
     logger.info("=" * 80)
-    logger.info(f"\n📝 研究问题: {user_input}\n")
-    
-    # 初始化编排器
+    logger.info(f"\nResearch Question: {user_input}\n")
+
+    # Initialize orchestrator
     orchestrator = ResearchOrchestrator(output_dir="output/research")
-    
+
     try:
-        # 运行完整流程
-        logger.info("🔄 启动多智能体研究流程...\n")
-        
+        # Run full pipeline
+        logger.info("Launching multi-agent research pipeline...\n")
+
         result = orchestrator.run_full_pipeline(
             user_input=user_input,
             enable_steps=[
-                "input_parse",    # 0. 输入解析
-                "literature",     # 1. 文献搜集
-                "variable",       # 2. 指标设置
-                "theory",         # 3. 理论设置
-                "model",          # 4. 模型设计
-                # "analysis",     # 5. 数据分析（需要真实数据）
-                # "report",       # 6. 报告撰写
+                "input_parse",    # 0. Input parsing
+                "literature",     # 1. Literature collection
+                "variable",       # 2. Variable design
+                "theory",         # 3. Theory design
+                "model",          # 4. Model design
+                # "analysis",     # 5. Data analysis (requires real data)
+                # "report",       # 6. Report writing
             ],
-            min_papers=8,         # 搜集至少8篇文献
-            enable_review=False,  # 暂不启用审稿
+            min_papers=8,         # Collect at least 8 papers
+            enable_review=False,  # Review not enabled for now
         )
-        
-        # 输出结果摘要
+
+        # Output result summary
         logger.info("\n" + "=" * 80)
-        logger.info("✅ 研究流程完成！")
+        logger.info("Research pipeline complete!")
         logger.info("=" * 80)
-        
-        logger.info(f"\n📊 研究主题: {result.get('research_topic')}")
-        
+
+        logger.info(f"\nResearch Topic: {result.get('research_topic')}")
+
         if "input_parsed_data" in result:
             parsed = result["input_parsed_data"]
-            logger.info(f"\n🔍 核心变量:")
-            logger.info(f"  • 解释变量(X): {parsed.get('variable_x', {}).get('chinese')}")
-            logger.info(f"  • 被解释变量(Y): {parsed.get('variable_y', {}).get('chinese')}")
-        
+            logger.info(f"\nCore Variables:")
+            logger.info(f"  - Explanatory Variable (X): {parsed.get('variable_x', {}).get('name')}")
+            logger.info(f"  - Dependent Variable (Y): {parsed.get('variable_y', {}).get('name')}")
+
         if "literature_list" in result:
             lit_count = len(result["literature_list"])
-            logger.info(f"\n📚 文献搜集: {lit_count} 篇核心文献")
-            
+            logger.info(f"\nLiterature Collection: {lit_count} core papers")
+
             if lit_count > 0:
-                logger.info("\n前3篇文献示例:")
+                logger.info("\nFirst 3 papers:")
                 for i, lit in enumerate(result["literature_list"][:3], 1):
                     logger.info(f"  {i}. {lit.get('title', 'N/A')}")
-                    logger.info(f"     作者: {lit.get('authors', 'N/A')} ({lit.get('year', 'N/A')})")
-                    logger.info(f"     期刊: {lit.get('journal', 'N/A')}\n")
-        
+                    logger.info(f"     Authors: {lit.get('authors', 'N/A')} ({lit.get('year', 'N/A')})")
+                    logger.info(f"     Journal: {lit.get('journal', 'N/A')}\n")
+
         if "variable_system_data" in result:
             var_data = result["variable_system_data"]
-            logger.info("📐 变量体系设计完成:")
-            
+            logger.info("Variable System Design Complete:")
+
             core_vars = var_data.get("core_variables", {})
             x_vars = core_vars.get("explanatory_variable_x", [])
             y_vars = core_vars.get("dependent_variable_y", [])
             control_vars = var_data.get("control_variables", [])
-            
-            logger.info(f"  • 解释变量: {len(x_vars)} 个")
-            logger.info(f"  • 被解释变量: {len(y_vars)} 个")
-            logger.info(f"  • 控制变量: {len(control_vars)} 个")
-        
+
+            logger.info(f"  - Explanatory variables: {len(x_vars)}")
+            logger.info(f"  - Dependent variables: {len(y_vars)}")
+            logger.info(f"  - Control variables: {len(control_vars)}")
+
         if "theory_framework_data" in result:
             theory_data = result["theory_framework_data"]
             theories = theory_data.get("theoretical_framework", [])
             hypotheses = theory_data.get("research_hypotheses", [])
-            
-            logger.info(f"\n📖 理论框架:")
-            logger.info(f"  • 理论基础: {len(theories)} 个理论")
-            logger.info(f"  • 研究假设: {len(hypotheses)} 个假设")
-            
+
+            logger.info(f"\nTheoretical Framework:")
+            logger.info(f"  - Theories: {len(theories)}")
+            logger.info(f"  - Hypotheses: {len(hypotheses)}")
+
             if hypotheses:
-                logger.info("\n假设示例:")
+                logger.info("\nHypothesis examples:")
                 for i, hyp in enumerate(hypotheses[:2], 1):
                     logger.info(f"  H{i}: {hyp.get('hypothesis_content', 'N/A')}")
-        
+
         if "model_design_data" in result:
             model_data = result["model_design_data"]
-            logger.info(f"\n🧮 计量模型:")
-            
+            logger.info(f"\nEconometric Models:")
+
             baseline = model_data.get("baseline_model", {})
-            logger.info(f"  • 基准模型: {baseline.get('model_type', 'N/A')}")
-            
+            logger.info(f"  - Baseline model: {baseline.get('model_type', 'N/A')}")
+
             mechanism = model_data.get("mechanism_models", [])
             heterogeneity = model_data.get("heterogeneity_models", [])
             robustness = model_data.get("robustness_checks", [])
-            
-            logger.info(f"  • 机制检验: {len(mechanism)} 个模型")
-            logger.info(f"  • 异质性分析: {len(heterogeneity)} 个维度")
-            logger.info(f"  • 稳健性检验: {len(robustness)} 个方法")
-        
-        # 输出文件位置
+
+            logger.info(f"  - Mechanism tests: {len(mechanism)} models")
+            logger.info(f"  - Heterogeneity analysis: {len(heterogeneity)} dimensions")
+            logger.info(f"  - Robustness checks: {len(robustness)} methods")
+
+        # Output file locations
         logger.info("\n" + "=" * 80)
-        logger.info("📁 输出文件:")
+        logger.info("Output Files:")
         logger.info("=" * 80)
-        logger.info("  • 完整报告: output/research/report_*.md")
-        logger.info("  • JSON数据: output/research/report_*.json")
-        logger.info("  • 阶段结果: output/research/stages/*.json")
-        
-        logger.success("\n✨ 研究流程成功完成！")
-        
+        logger.info("  - Full report: output/research/report_*.md")
+        logger.info("  - JSON data: output/research/report_*.json")
+        logger.info("  - Stage results: output/research/stages/*.json")
+
+        logger.success("\nResearch pipeline completed successfully!")
+
         return result
-        
+
     except Exception as e:
-        logger.error(f"\n❌ 研究流程出错: {str(e)}")
+        logger.error(f"\nResearch pipeline error: {str(e)}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

@@ -1,37 +1,37 @@
 """
-DataAnalystAgent的Prompt模板
-负责执行数据预处理、统计分析和模型估计
+DataAnalystAgent Prompt Template
+Responsible for data preprocessing, statistical analysis, and model estimation
 """
 
-SYSTEM_PROMPT = """# 角色定义
-你是一名精通计量经济学和数据科学的资深数据分析专家，擅长将理论模型转化为实际的数据分析流程，并产出严谨、可靠的实证结果。
+SYSTEM_PROMPT = """# Role Definition
+You are a senior data analysis expert proficient in econometrics and data science, skilled at translating theoretical models into practical data analysis workflows and producing rigorous, reliable empirical results.
 
-# 核心能力
-- 精通数据预处理和清洗技术
-- 熟练掌握各类计量经济学模型的实现
-- 深刻理解统计检验的原理和应用
-- 能够准确解读回归结果的经济意义
-- **能够使用本地数据进行分析**
+# Core Capabilities
+- Proficient in data preprocessing and cleaning techniques
+- Skilled in implementing various econometric models
+- Deep understanding of the principles and applications of statistical tests
+- Able to accurately interpret the economic significance of regression results
+- **Able to use local data for analysis**
 
-# 数据能力
-你可以访问本地数据存储系统，具备以下数据操作能力：
-1. **数据发现**: 根据研究需求搜索并选择合适的数据集
-2. **数据预览**: 查看数据结构、列名、数据类型
-3. **数据统计**: 获取描述性统计、缺失值情况、相关系数
-4. **数据查询**: 根据条件筛选数据
+# Data Capabilities
+You can access the local data storage system with the following data operations:
+1. **Data Discovery**: Search and select appropriate datasets based on research needs
+2. **Data Preview**: View data structure, column names, data types
+3. **Data Statistics**: Obtain descriptive statistics, missing value information, correlation coefficients
+4. **Data Query**: Filter data based on conditions
 
-当提供了"可用数据集"信息时，请：
-- 仔细阅读数据集的描述和列信息
-- 根据研究需求选择最合适的数据集
-- 基于实际数据特征设计分析方案
-- 在分析报告中明确说明使用了哪些数据
+When "available datasets" information is provided, please:
+- Carefully read the dataset descriptions and column information
+- Select the most suitable dataset based on research needs
+- Design the analysis plan based on actual data characteristics
+- Clearly state which data were used in the analysis report
 
-# 工作原则
-- 数据处理需透明、可复现
-- 结果呈现需规范、完整
-- 解读分析需结合理论和经济意义
-- 诚实报告所有发现，包括意外结果
-- **优先使用本地可用数据，而非假设数据存在**"""
+# Working Principles
+- Data processing must be transparent and reproducible
+- Results presentation must be standardized and complete
+- Interpretation and analysis must combine theory and economic significance
+- Honestly report all findings, including unexpected results
+- **Prioritize using locally available data rather than assuming data exists**"""
 
 
 def get_task_prompt(
@@ -42,183 +42,183 @@ def get_task_prompt(
     data_info: str = ""
 ) -> str:
     """
-    生成DataAnalystAgent的任务提示词
+    Generate the task prompt for DataAnalystAgent
 
     Args:
-        research_topic: 研究主题
-        variable_system: 变量体系描述
-        theory_framework: 理论框架描述
-        model_design: 计量模型设计
-        data_info: 数据信息
+        research_topic: Research topic
+        variable_system: Variable system description
+        theory_framework: Theoretical framework description
+        model_design: Econometric model design
+        data_info: Data information
 
     Returns:
-        格式化的任务提示词
+        Formatted task prompt
     """
-    return f"""# 任务背景
-请基于以下研究设计，按照规范完成系统性数据分析，确保结果与理论逻辑、模型设定完全适配。
+    return f"""# Task Background
+Please complete systematic data analysis based on the following research design, ensuring results are fully consistent with the theoretical logic and model specifications.
 
-## 研究选题
+## Research Topic
 {research_topic}
 
-## 变量体系
-{variable_system if variable_system else "（请参考模型设计中的变量定义）"}
+## Variable System
+{variable_system if variable_system else "(Please refer to variable definitions in the model design)"}
 
-## 理论框架与假设
-{theory_framework if theory_framework else "（请参考模型设计推断）"}
+## Theoretical Framework and Hypotheses
+{theory_framework if theory_framework else "(Please infer from the model design)"}
 
-## 计量模型设计
-{model_design if model_design else "（请基于研究主题推断模型）"}
+## Econometric Model Design
+{model_design if model_design else "(Please infer the model based on the research topic)"}
 
-## 数据信息
-{data_info if data_info else "（请说明需要什么样的数据）"}
+## Data Information
+{data_info if data_info else "(Please specify what kind of data is needed)"}
 
-# 具体操作要求
+# Specific Requirements
 
-## 1. 数据预处理
+## 1. Data Preprocessing
 
-### （1）数据匹配
-- 明确数据来源、样本范围（时间/截面/面板维度）
-- 按指标定义匹配核心变量、中介变量、控制变量及异质性分组变量的数据
+### (1) Data Matching
+- Specify data sources, sample scope (time/cross-section/panel dimensions)
+- Match data for core variables, mediating variables, control variables, and heterogeneity grouping variables according to indicator definitions
 
-### （2）数据清洗
-- 处理缺失值（说明填充/删除逻辑）
-- 识别并处理异常值（如缩尾/截尾处理，标注处理阈值）
-- 统一变量计量口径（如单位标准化、数据格式转换，适配计算机与经济学交叉研究的数据特性）
+### (2) Data Cleaning
+- Handle missing values (explain imputation/deletion logic)
+- Identify and handle outliers (e.g., winsorizing/trimming, note processing thresholds)
+- Standardize variable measurement scales (e.g., unit standardization, data format conversion)
 
-### （3）输出预处理报告
-- 明确样本量变化
-- 变量处理细节
-- 确保数据可用性
+### (3) Output Preprocessing Report
+- Specify sample size changes
+- Variable processing details
+- Confirm data usability
 
-## 2. 描述性统计分析
+## 2. Descriptive Statistics Analysis
 
-### （1）变量描述性统计
-- 对所有核心变量、中介变量、控制变量进行描述性统计
-- 输出：均值、标准差、最小值、最大值、分位数
-- 结合研究主题解读变量分布特征
+### (1) Variable Descriptive Statistics
+- Compute descriptive statistics for all core variables, mediating variables, and control variables
+- Output: mean, standard deviation, minimum, maximum, percentiles
+- Interpret variable distribution characteristics in the context of the research topic
 
-### （2）分组统计
-- 针对异质性分组变量，进行分组描述性统计对比
-- 呈现不同组间核心变量的分布差异
+### (2) Group Statistics
+- Compute grouped descriptive statistics for heterogeneity grouping variables
+- Present distribution differences in core variables across groups
 
-## 3. 基准回归分析
+## 3. Baseline Regression Analysis
 
-### （1）执行回归
-- 严格按照计量模型执行回归
-- 输出完整回归结果：
-  - 系数值
-  - 标准误（或聚类标准误，说明聚类层级）
-  - t值/z值
-  - p值
-  - 显著性水平（标注 *p<0.1, **p<0.05, ***p<0.01）
-  - 模型拟合优度（R²/调整后R²）
-  - F统计量（或工具变量弱识别检验统计量、断点有效性检验统计量等模型适配性指标）
+### (1) Execute Regression
+- Strictly follow the econometric model to execute regression
+- Output complete regression results:
+  - Coefficient values
+  - Standard errors (or clustered standard errors, specify clustering level)
+  - t-values/z-values
+  - p-values
+  - Significance levels (mark *p<0.1, **p<0.05, ***p<0.01)
+  - Model fit (R-squared/Adjusted R-squared)
+  - F-statistic (or weak instrument test statistic, discontinuity validity test statistic, etc.)
 
-### （2）结果解读
-- 结合核心假设，解读基准回归系数的经济意义（如边际效应大小、弹性等）
-- 明确结果是否支持核心假设
+### (2) Interpretation
+- Interpret baseline regression coefficients' economic significance (e.g., marginal effects, elasticities) in the context of core hypotheses
+- Clearly state whether results support core hypotheses
 
-## 4. 传导机制检验分析
+## 4. Transmission Mechanism Testing
 
-### （1）分步回归
-按传导机制模型（如逐步回归、中介效应检验模型）分步执行回归：
-- 第一步：X对Y
-- 第二步：X对中介变量Z
-- 第三步：X与Z共同对Y
+### (1) Stepwise Regression
+Execute regressions step by step following the mechanism model (e.g., stepwise regression, mediation effect testing):
+- Step 1: X on Y
+- Step 2: X on mediating variable Z
+- Step 3: X and Z jointly on Y
 
-### （2）输出与解读
-- 输出每一步回归的系数、标准误、显著性水平
-- 计算中介效应大小（直接效应、间接效应占比）
-- 验证X→Z→Y的传导路径是否成立
-- 明确各中介变量的作用强度
+### (2) Output and Interpretation
+- Report coefficients, standard errors, significance levels for each step
+- Calculate mediation effect size (direct effect, indirect effect share)
+- Verify whether the X->Z->Y transmission pathway holds
+- Quantify the contribution of each mediating variable
 
-### （3）多中介检验（若有）
-若存在多个中介变量（Z1、Z2），需分别检验：
-- 单个中介效应
-- 链式中介效应（Z1→Z2→Y）
-- 输出对应统计结果
+### (3) Multiple Mediation Testing (If Applicable)
+If multiple mediating variables exist (Z1, Z2), test separately:
+- Individual mediation effects
+- Sequential mediation effects (Z1->Z2->Y)
+- Report corresponding statistical results
 
-## 5. 异质性验证分析
+## 5. Heterogeneity Analysis
 
-### （1）分组回归
-- 依据分组标准（如样本特征、场景差异等）拆分样本
-- 执行分组回归
-- 输出各组的核心系数、标准误、显著性及模型适配指标
+### (1) Sub-group Regression
+- Split sample according to grouping criteria (e.g., sample characteristics, scenario differences)
+- Execute sub-group regressions
+- Report core coefficients, standard errors, significance, and model fit indicators for each group
 
-### （2）组间对比
-- 对比不同组间核心效应的系数大小、方向、显著性差异
-- 结合理论路径解读异质性来源（如某类样本中效应更强的原因）
-- 验证异质性假设
+### (2) Inter-group Comparison
+- Compare coefficient magnitudes, directions, and significance differences across groups
+- Interpret the sources of heterogeneity in the context of theoretical pathways (e.g., why effects are stronger in certain samples)
+- Verify heterogeneity hypotheses
 
-## 6. 稳健性检验分析
+## 6. Robustness Check Analysis
 
-### （1）执行检验
-逐一执行所有稳健性检验模型：
-- 替换核心变量衡量指标
-- 调整样本区间
-- 改变模型设定
-- 安慰剂检验等
+### (1) Execute Checks
+Execute all robustness check models one by one:
+- Replace key variable measures
+- Adjust sample period
+- Change model specification
+- Placebo test, etc.
 
-### （2）结果对比
-- 输出每种检验的回归结果（核心系数、显著性、模型指标）
-- 与基准回归结果对比
-- 判断核心结论是否稳定可靠
+### (2) Result Comparison
+- Report regression results for each check (core coefficients, significance, model indicators)
+- Compare with baseline regression results
+- Determine whether core conclusions are stable and reliable
 
-### （3）安慰剂检验（若有）
-- 报告随机化处理后的系数分布、p值分布
-- 验证基准结果并非偶然
+### (3) Placebo Test (If Applicable)
+- Report coefficient distribution and p-value distribution after randomization
+- Verify that baseline results are not due to chance
 
-## 7. 内生性处理验证（若模型涉及）
+## 7. Endogeneity Treatment Verification (If Model Involves)
 
-若有内生性解决方案（如IV、PSM、Heckman两阶段等），需输出对应检验结果：
+If endogeneity solutions are included (e.g., IV, PSM, Heckman two-stage), report corresponding test results:
 
-### IV模型
-- 弱工具变量检验（F值）
-- 过度识别检验（Sargan/Hansen统计量）
+### IV Model
+- Weak instrument test (F-statistic)
+- Over-identification test (Sargan/Hansen statistic)
 
 ### PSM
-- 匹配平衡性检验（标准化偏差、t检验结果）
+- Balance test (standardized bias, t-test results)
 
 ### Heckman
-- 第一阶段逆米尔斯比率显著性等
+- First-stage inverse Mills ratio significance, etc.
 
-说明内生性处理的有效性，验证核心结果的因果识别可靠性。
+Assess the effectiveness of endogeneity treatment and verify the reliability of causal identification for core results.
 
-## 8. 结果可视化与汇总
+## 8. Results Visualization and Summary
 
-### （1）生成规范表格
-- 基准回归表
-- 传导机制检验表
-- 异质性回归表
-- 稳健性检验表
+### (1) Generate Standard Tables
+- Baseline regression table
+- Mechanism testing table
+- Heterogeneity regression table
+- Robustness check table
 
-表格格式符合经济学论文规范（标注模型编号、控制变量/固定效应是否包含等）
+Table format should conform to economics paper standards (label model numbers, whether controls/fixed effects are included, etc.)
 
-### （2）绘制关键图表
-- 核心系数对比图
-- 异质性效应柱状图
-- DID平行趋势图
-- RD断点图
-- 中介效应路径图等
+### (2) Plot Key Figures
+- Core coefficient comparison chart
+- Heterogeneity effect bar chart
+- DID parallel trends chart
+- RD discontinuity plot
+- Mediation effect pathway diagram, etc.
 
-图表需清晰呈现核心结论
+Figures must clearly present core conclusions.
 
-### （3）汇总结论
-汇总所有分析结果，形成简明结论：
-- 明确哪些假设得到支持
-- 核心效应大小及经济意义
-- 传导机制与异质性特征
-- 结果的稳健性与可靠性
+### (3) Summary of Conclusions
+Summarize all analysis results into concise conclusions:
+- Specify which hypotheses are supported
+- Core effect magnitude and economic significance
+- Transmission mechanisms and heterogeneity characteristics
+- Robustness and reliability of results
 
-## 9. 衔接要求
+## 9. Integration Requirements
 
-### （1）假设对应
-所有分析结果需对应外源输入的假设编号
+### (1) Hypothesis Correspondence
+All analysis results must correspond to externally provided hypothesis numbers.
 
-### （2）可复现性
-输出的数据、表格、图表需具备可复现性，标注分析工具（如Stata、Python、R等）及核心代码逻辑
+### (2) Reproducibility
+Output data, tables, and figures must be reproducible; annotate analysis tools (e.g., Stata, Python, R) and core code logic.
 
-### （3）异常说明
-若分析中发现异常结果（如与假设矛盾、系数不显著等），需结合数据特性、模型设定进行初步排查与说明
+### (3) Anomaly Explanation
+If anomalous results are found during analysis (e.g., contradicting hypotheses, insignificant coefficients), conduct preliminary investigation and explanation based on data characteristics and model specification.
 
-请立即开始执行任务。"""
+Please begin the task immediately."""

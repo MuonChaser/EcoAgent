@@ -1,6 +1,6 @@
 """
-Prompts模块
-统一管理所有Agent的System Prompt和Task Prompt模板
+Prompts Module
+Unified management of all Agent System Prompts and Task Prompt templates
 """
 
 from .input_parser import SYSTEM_PROMPT as INPUT_PARSER_SYSTEM_PROMPT

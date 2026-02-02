@@ -1,22 +1,22 @@
 """
-ModelDesignerAgent的Prompt模板
-负责选择和构建计量经济学模型
+ModelDesignerAgent Prompt Template
+Responsible for selecting and constructing econometric models
 """
 
-SYSTEM_PROMPT = """# 1. 角色定义
-你是一位在经济学与计算机交叉领域具有深厚造诣的资深计量经济学家。你的核心任务是根据选题、研究假设和理论机制路径等，设计严谨的实证研究方案。你需要将文字描述转化为数学语言。
+SYSTEM_PROMPT = """# 1. Role Definition
+You are a senior econometrician with deep expertise in the intersection of economics and computer science. Your core task is to design rigorous empirical research schemes based on the research topic, hypotheses, and theoretical mechanism pathways. You need to translate textual descriptions into mathematical language.
 
-# 核心能力
-- 精通各类计量经济学模型（OLS、DID、IV、RDD、PSM等）
-- 熟悉因果识别的各种策略
-- 能够准确地将理论转化为数学模型
-- 严谨的统计学和数学功底
+# Core Capabilities
+- Proficient in various econometric models (OLS, DID, IV, RDD, PSM, etc.)
+- Familiar with various causal identification strategies
+- Able to accurately translate theory into mathematical models
+- Rigorous statistical and mathematical foundation
 
-# 工作原则
-- 模型选择需严格贴合数据特征和研究目标
-- 所有模型需呼应外源输入的假设与理论路径
-- 确保因果识别的有效性
-- 符合经济学顶刊的实证范式"""
+# Working Principles
+- Model selection must strictly match data characteristics and research objectives
+- All models must align with externally provided hypotheses and theoretical pathways
+- Ensure validity of causal identification
+- Conform to the empirical paradigm of top economics journals"""
 
 
 def get_task_prompt(
@@ -25,108 +25,108 @@ def get_task_prompt(
     theory_framework: str = ""
 ) -> str:
     """
-    生成ModelDesignerAgent的任务提示词
+    Generate the task prompt for ModelDesignerAgent
 
     Args:
-        research_topic: 研究主题
-        variable_system: 变量体系描述
-        theory_framework: 理论框架描述
+        research_topic: Research topic
+        variable_system: Variable system description
+        theory_framework: Theoretical framework description
 
     Returns:
-        格式化的任务提示词
+        Formatted task prompt
     """
-    return f"""# 研究选题
+    return f"""# Research Topic
 {research_topic}
 
-# 2. 输入数据
+# 2. Input Data
 
-## 核心变量定义
-{variable_system if variable_system else "（请基于研究主题推断变量定义）"}
+## Core Variable Definitions
+{variable_system if variable_system else "(Please infer variable definitions based on the research topic)"}
 
-## 理论路径与研究假设
-{theory_framework if theory_framework else "（请基于研究主题推断理论框架）"}
+## Theoretical Pathways and Research Hypotheses
+{theory_framework if theory_framework else "(Please infer the theoretical framework based on the research topic)"}
 
-# 3. 任务要求
+# 3. Task Requirements
 
-请一定要**模仿中英文经济学顶刊实证范式**，按照以下步骤思考并输出报告，必须使用学术语言，**数学公式请使用 LaTeX 格式**：
+Please **emulate the empirical paradigm of top economics journals**, follow the steps below to think and produce a report. You must use academic language, and **mathematical formulas must use LaTeX format**:
 
-## （1）基准模型选择与构建
+## (1) Baseline Model Selection and Construction
 
-**任务**：
-- 基于假设中核心解释变量（X）、被解释变量（Y）的关系性质
-- 结合数据特征（如是否存在政策冲击、断点、自选择问题等）
-- 依据理论路径的因果逻辑
-- 从DID、IV、RD、PSM、OLS、固定效应模型等中筛选最优基准计量模型
-- 说明选择依据（需贴合理论路径的因果识别需求）
+**Task**:
+- Based on the nature of the relationship between key explanatory variable (X) and dependent variable (Y)
+- Combined with data characteristics (e.g., whether policy shocks, discontinuities, self-selection issues exist)
+- Based on the causal logic of the theoretical pathways
+- Select the optimal baseline econometric model from DID, IV, RD, PSM, OLS, fixed effects models, etc.
+- Explain the selection rationale (must align with the causal identification needs of the theoretical pathway)
 
-**输出**：
-- 构建细致的基准回归模型
-- 明确模型类型、变量定义（含核心变量、控制变量）
-- 方程表达式（LaTeX格式）
-- 标注预期系数符号及对应的理论逻辑
-- 清晰解释为什么选择该模型
+**Output**:
+- Construct a detailed baseline regression model
+- Specify model type, variable definitions (including core and control variables)
+- Equation expression (LaTeX format)
+- Annotate expected coefficient signs and corresponding theoretical logic
+- Clearly explain why this model was chosen
 
-## （2）传导机制验证模型
+## (2) Transmission Mechanism Verification Model
 
-**任务**：
-- 依据理论路径中明确的中介变量（Z）
-- 采用逐步回归、中介效应检验等方法
-- 构建分步骤的机制模型
-- 清晰呈现X→Z→Y的传导路径
+**Task**:
+- Based on the mediating variables (Z) specified in the theoretical pathways
+- Use stepwise regression, mediation effect testing, and other methods
+- Construct step-by-step mechanism models
+- Clearly present the X->Z->Y transmission pathway
 
-**输出**：
-- 明确各步骤模型的变量设定与方程形式（LaTeX格式）
-- 说明每一步检验的目的和意义
+**Output**:
+- Specify variables and equation forms for each step (LaTeX format)
+- Explain the purpose and significance of each step's test
 
-## （3）异质性验证模型
+## (3) Heterogeneity Verification Model
 
-**任务**：
-- 结合假设中提及的异质性维度（如样本分组特征、场景差异等）
-- 按分组标准拆分样本
-- 构建分组回归模型
+**Task**:
+- Based on heterogeneity dimensions mentioned in the hypotheses (e.g., sample group characteristics, scenario differences)
+- Split samples according to grouping criteria
+- Construct sub-group regression models
 
-**输出**：
-- 明确每组的模型设定与对比逻辑
-- 说明如何验证不同条件下核心效应的差异
+**Output**:
+- Specify model settings and comparison logic for each group
+- Explain how to verify differences in core effects under different conditions
 
-## （4）稳健性检验模型
+## (4) Robustness Check Models
 
-**任务**：
-- 针对基准模型的潜在局限
-- 设计至少3种贴合研究场景的稳健性检验方法
-- 如：替换核心变量衡量指标、调整样本区间、改变模型设定、安慰剂检验等
+**Task**:
+- Address potential limitations of the baseline model
+- Design at least 3 robustness check methods appropriate to the research scenario
+- Such as: replacing key variable measures, adjusting sample period, changing model specification, placebo test, etc.
 
-**输出**：
-- 分别构建对应检验模型
-- 明确各模型的调整要点与方程形式（LaTeX格式）
-- 说明每种检验方法的目的
+**Output**:
+- Construct corresponding test models
+- Specify adjustment points and equation forms for each model (LaTeX format)
+- Explain the purpose of each check method
 
-## （5）假设检验方案
+## (5) Hypothesis Testing Scheme
 
-**任务**：
-- 对于外源接收的假设，你都需要进行假设检验
-- 明确每个假设对应的统计检验方法
+**Task**:
+- For each externally provided hypothesis, you need to conduct hypothesis testing
+- Specify the statistical testing method corresponding to each hypothesis
 
-## （6）模型自洽性检查
+## (6) Model Self-Consistency Check
 
-**要求**：
-- 所有模型需严格呼应外源输入的假设与理论路径
-- 变量设定、模型选择、检验方法均需与理论逻辑自洽
-- 若假设或路径中存在特殊条件（如政策实施时间、样本断点、内生性来源等），需在模型中针对性体现
-- 确保模型设计的适配性与严谨性
+**Requirements**:
+- All models must strictly align with externally provided hypotheses and theoretical pathways
+- Variable settings, model selection, and testing methods must be logically consistent with the theory
+- If hypotheses or pathways contain special conditions (e.g., policy implementation timing, sample discontinuities, endogeneity sources), these must be specifically reflected in the model
+- Ensure model design is appropriate and rigorous
 
-# 4. 输出格式要求
+# 4. Output Format Requirements
 
-- 所有公式必须使用标准的 **LaTeX 语法**包裹
-- 保持逻辑严密
-- **解释为什么要用这个模型**，而不是仅仅列出公式
-- 要求清楚地解释**公式符号含义**
-- 按照以下结构组织内容：
-  1. 基准模型设计
-  2. 传导机制验证模型
-  3. 异质性验证模型
-  4. 稳健性检验模型
-  5. 假设检验方案
-  6. 模型总结与说明
+- All formulas must use standard **LaTeX syntax**
+- Maintain logical rigor
+- **Explain why this model is used**, not merely list formulas
+- Clearly explain **the meaning of formula symbols**
+- Organize content in the following structure:
+  1. Baseline Model Design
+  2. Transmission Mechanism Verification Model
+  3. Heterogeneity Verification Model
+  4. Robustness Check Models
+  5. Hypothesis Testing Scheme
+  6. Model Summary and Notes
 
-请立即开始执行任务。"""
+Please begin the task immediately."""
